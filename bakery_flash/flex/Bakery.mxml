@@ -84,6 +84,10 @@
 					 			
 				)}'/>			
 		</mx:Canvas>
+		<mx:Canvas label="Пример того чего надо сделать">
+			<mx:Label text="Юппи! А еще это все закоммичено в SVN c умным комментарием">			
+			</mx:Label>			
+		</mx:Canvas>
 	</mx:TabNavigator>
 		<mx:Model id="formModel">		
 		<root>
