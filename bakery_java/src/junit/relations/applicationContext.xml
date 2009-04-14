@@ -214,6 +214,8 @@
 				<value>org/bakery/server/domain/production/Unit.hbm.xml</value>
 				<value>org/bakery/server/domain/production/Warehouse.hbm.xml</value>
 				<value>org/bakery/server/domain/production/ProductType.hbm.xml</value>
+				<value>org/bakery/server/domain/production/Recipe.hbm.xml</value>		
+				<value>org/bakery/server/domain/production/RecipeEffect.hbm.xml</value>
 		
 				<value>org/bakery/server/domain/log/Order.hbm.xml</value>
 				<value>org/bakery/server/domain/log/MoneyMove.hbm.xml</value>
@@ -225,6 +227,11 @@
 				<value>org/bakery/server/domain/accounting/Address.hbm.xml</value>
 				<value>org/bakery/server/domain/accounting/Account.hbm.xml</value>
 				<value>org/bakery/server/domain/accounting/Contragent.hbm.xml</value>
+				<value>org/bakery/server/domain/accounting/ProductionPlan.hbm.xml</value>
+				
+				<value>org/bakery/server/domain/hardware/Measure.hbm.xml</value>
+				<value>org/bakery/server/domain/hardware/Device.hbm.xml</value>
+				<value>org/bakery/server/domain/hardware/DeviceParameter.hbm.xml</value>
 			</list>
 		</property>
 		<property name="hibernateProperties">

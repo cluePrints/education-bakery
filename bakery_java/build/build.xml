@@ -9,7 +9,7 @@
 	<property name="appName" value="bakery"/>
 	<property name="fileToDeploy" value="${appName}.war" />
 	
-	<property name="server.glassfish.home" value="D:\Install\Glassfish"/>
+	<property name="server.glassfish.home" value="C:\Glassfish"/>
 	<property name="server.glassfish.domain" value="domain1"/>
 	<property name="server.glassfish.autodeploy.dir" value="${server.glassfish.home}/domains/${server.glassfish.domain}/autodeploy"/>
 	<property name="server.glassfish.expanded.dir" value="${server.glassfish.home}/domains/${server.glassfish.domain}/applications/j2ee-modules/${appName}"/>

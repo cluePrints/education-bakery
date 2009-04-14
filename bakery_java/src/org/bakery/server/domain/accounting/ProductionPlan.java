@@ -27,7 +27,7 @@ public class ProductionPlan extends BusinessEntity {
 	/**
 	 * Start date
 	 */
-	private Date usageDate=(Date) NULL_DATE.clone();
+	private Date startDate=(Date) NULL_DATE.clone();
 	@Override
 	public void validate(Errors errors) {
 		// TODO Auto-generated method stub
@@ -40,17 +40,17 @@ public class ProductionPlan extends BusinessEntity {
 		this.order = order;
 	}
 
-	public Date getUsageDate() {
-		return usageDate;
-	}
-	public void setUsageDate(Date usageDate) {
-		this.usageDate = usageDate;
-	}
 	public Recipe getRecipe() {
 		return recipe;
 	}
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
+	}
+	public Date getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
 }

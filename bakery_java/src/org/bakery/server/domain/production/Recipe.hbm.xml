@@ -29,5 +29,13 @@
 			<key column="recipe_effect_recipe"/>
 			<one-to-many class="org.bakery.server.domain.production.RecipeEffect"/> 
 		</set>
+		<set name="parameters"
+			cascade="save-update"
+			outer-join="true"
+			table="recipe_parameters">
+				<key column="recipe_id"/>
+            <many-to-many column="device_parameter_id"
+                class="org.bakery.server.domain.hardware.DeviceParameter"/>			
+		</set>
 	</class>
 </hibernate-mapping>

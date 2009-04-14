@@ -31,6 +31,8 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	 */
 	private Date time;
 	
+	private Set<DeviceParameter> parameters = new HashSet<DeviceParameter>();
+	
 	private Set<RecipeEffect> effects = new HashSet<RecipeEffect>();
 	
 	@Override
@@ -61,5 +63,11 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	}
 	public void setEffects(Set<RecipeEffect> effects) {
 		this.effects = effects;
+	}
+	public Set<DeviceParameter> getParameters() {
+		return parameters;
+	}
+	public void setParameters(Set<DeviceParameter> parameters) {
+		this.parameters = parameters;
 	}
 }

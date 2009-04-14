@@ -1198,7 +1198,7 @@
 <table-description>Эта табличка нужна потомучто параметр может учавстовать в куче рецептов, а в рецепте куча параметров</table-description>
 <table-figure-bounds height="-1" width="-1" x="607" y="667"/>
 <column-list>
-<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="recip_parameter_id" remarks="" uid="117d8d5:11ed453eca4:-7438">
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="recip_id" remarks="" uid="117d8d5:11ed453eca4:-7438">
 <column-description/>
 <data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
 <variant type-name-pattern="INTEGER"/>
@@ -1235,7 +1235,7 @@
 <foreign-key-figure>
 <fk-fig-bendpoint-list/>
 </foreign-key-figure>
-<foreign-key-column column-name="recip_parameter_id" referenced-key-column-name="recip_id"/>
+<foreign-key-column column-name="recip_id" referenced-key-column-name="recip_id"/>
 </foreign-key>
 <foreign-key alias="" name="FK_recip_parameters_2" on-delete="" on-update="" referenced-key="PK_DEVICE_PARAMETERS" referenced-table="device_parameters" referenced-table-schema="BAKERY" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="" uid="117d8d5:11ed453eca4:-738b">
 <foreign-key-description/>
