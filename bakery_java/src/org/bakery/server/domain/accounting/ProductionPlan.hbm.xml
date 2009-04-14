@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.accounting.ProductionPlan"
+		table="plans">
+		<id name="id"
+			column="plan_id">
+			<generator class="increment"/>
+		</id>
+		<many-to-one 
+			name="order"
+			column="order_id"/>
+		<many-to-one
+			name="recipe"
+			column="recipe_id"/>
+		<property
+			name="startDate"
+			column="start_date"/>
+	</class>
+</hibernate-mapping>

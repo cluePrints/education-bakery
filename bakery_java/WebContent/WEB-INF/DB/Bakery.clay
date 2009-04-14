@@ -690,6 +690,12 @@
 <variant type-name-pattern="INT ZEROFILL"/>
 </data-type>
 </column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="recipe_time" remarks="" uid="3afc0c:120a61a91d7:-7feb">
+<column-description/>
+<data-type jdbc-type="93" literal-prefix="'" literal-suffix="'" name="DATETIME" selected-variant-pattern="DATETIME">
+<variant type-name-pattern="DATETIME"/>
+</data-type>
+</column>
 </column-list>
 <primary-key alias="" name="PK_RECIPS" remarks="" uid="117d8d5:11ed453eca4:-77bb">
 <primary-key-description/>
@@ -1426,8 +1432,14 @@
 <variant type-name-pattern="INTEGER ZEROFILL"/>
 </data-type>
 </column>
-<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="device_id" remarks="" uid="117d8d5:11ed453eca4:-70e4">
-<column-description>Программа, которая будет запущена</column-description>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="start_date" remarks="" uid="117d8d5:11ed453eca4:-70c2">
+<column-description/>
+<data-type jdbc-type="93" literal-prefix="'" literal-suffix="'" name="DATETIME" selected-variant-pattern="DATETIME">
+<variant type-name-pattern="DATETIME"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="recip_id" remarks="" uid="3afc0c:120a61a91d7:-7fa8">
+<column-description/>
 <data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
 <variant type-name-pattern="INTEGER"/>
 <variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n)"/>
@@ -1437,12 +1449,6 @@
 <variant type-name-pattern="INTEGER UNSIGNED"/>
 <variant type-name-pattern="INTEGER UNSIGNED ZEROFILL"/>
 <variant type-name-pattern="INTEGER ZEROFILL"/>
-</data-type>
-</column>
-<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="end_date" remarks="" uid="117d8d5:11ed453eca4:-70c2">
-<column-description/>
-<data-type jdbc-type="93" literal-prefix="'" literal-suffix="'" name="DATETIME" selected-variant-pattern="DATETIME">
-<variant type-name-pattern="DATETIME"/>
 </data-type>
 </column>
 </column-list>
@@ -1459,13 +1465,19 @@
 </foreign-key-figure>
 <foreign-key-column column-name="order_id" referenced-key-column-name="order_id"/>
 </foreign-key>
-<foreign-key alias="" name="FK_plans_2" on-delete="" on-update="" referenced-key="PK_DEVICES" referenced-table="devices" referenced-table-schema="BAKERY" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="" uid="117d8d5:11ed453eca4:-70e5">
+<foreign-key alias="" name="FK_plans_2" on-delete="" on-update="" referenced-key="PK_RECIPS" referenced-table="recips" referenced-table-schema="BAKERY" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="" uid="3afc0c:120a61a91d7:-7fa9">
 <foreign-key-description/>
 <foreign-key-figure>
-<fk-fig-target-terminal x="200" y="56"/>
 <fk-fig-bendpoint-list/>
 </foreign-key-figure>
-<foreign-key-column column-name="device_id" referenced-key-column-name="device_id"/>
+<foreign-key-column column-name="recip_id" referenced-key-column-name="recip_id"/>
+</foreign-key>
+<foreign-key alias="" name="FK_plans_3" on-delete="" on-update="" referenced-key="PK_PLANS" referenced-table="plans" referenced-table-schema="BAKERY" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="" uid="3afc0c:120a61a91d7:-7f90">
+<foreign-key-description/>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="plan_id" referenced-key-column-name="plan_id"/>
 </foreign-key>
 </foreign-key-list>
 <index-list/>

@@ -7,6 +7,7 @@ import java.util.Set;
 import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.accounting.Contragent;
+import org.bakery.server.domain.accounting.ProductionPlan;
 import org.springframework.validation.Errors;
 
 /**
@@ -51,6 +52,8 @@ public class Order extends BusinessEntity {
 	 * order, order is 'Fully payed'.
 	 */
 	private Set<MoneyMove> moneyMoves = new HashSet<MoneyMove>();
+	
+	private Set<ProductionPlan> productionPlans = new HashSet<ProductionPlan>();
 	
 	
 	
@@ -121,5 +124,13 @@ public class Order extends BusinessEntity {
 	}
 	public void setMoneyMoves(Set<MoneyMove> moneyMoves) {
 		this.moneyMoves = moneyMoves;
+	}
+
+	public Set<ProductionPlan> getProductionPlans() {
+		return productionPlans;
+	}
+
+	public void setProductionPlans(Set<ProductionPlan> productionPlans) {
+		this.productionPlans = productionPlans;
 	}
 }

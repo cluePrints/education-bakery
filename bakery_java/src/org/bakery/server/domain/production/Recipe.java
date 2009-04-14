@@ -31,10 +31,7 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	 */
 	private Date time;
 	
-	/**
-	 * Parameters, involved into recipe
-	 */
-	private Set<DeviceParameter> involvedParameters = new HashSet<DeviceParameter>();
+	private Set<RecipeEffect> effects = new HashSet<RecipeEffect>();
 	
 	@Override
 	public void validate(Errors errors) {
@@ -52,5 +49,17 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	}
 	public void setFormula(String formula) {
 		this.formula = formula;
+	}
+	public Date getTime() {
+		return time;
+	}
+	public void setTime(Date time) {
+		this.time = time;
+	}
+	public Set<RecipeEffect> getEffects() {
+		return effects;
+	}
+	public void setEffects(Set<RecipeEffect> effects) {
+		this.effects = effects;
 	}
 }

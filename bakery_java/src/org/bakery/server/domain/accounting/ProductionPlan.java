@@ -3,8 +3,8 @@ package org.bakery.server.domain.accounting;
 import java.util.Date;
 
 import org.bakery.server.domain.BusinessEntity;
-import org.bakery.server.domain.hardware.Device;
 import org.bakery.server.domain.log.Order;
+import org.bakery.server.domain.production.Recipe;
 import org.springframework.validation.Errors;
 /**
  * This entity links together and devices used to produce something.
@@ -20,9 +20,9 @@ public class ProductionPlan extends BusinessEntity {
 	private Order order;
 	
 	/**
-	 * Used device
+	 * Used recipe. Device could be recognized by recipe
 	 */
-	private Device device;
+	private Recipe recipe;
 	
 	/**
 	 * Start date
@@ -39,17 +39,18 @@ public class ProductionPlan extends BusinessEntity {
 	public void setOrder(Order order) {
 		this.order = order;
 	}
-	public Device getDevice() {
-		return device;
-	}
-	public void setDevice(Device device) {
-		this.device = device;
-	}
+
 	public Date getUsageDate() {
 		return usageDate;
 	}
 	public void setUsageDate(Date usageDate) {
 		this.usageDate = usageDate;
+	}
+	public Recipe getRecipe() {
+		return recipe;
+	}
+	public void setRecipe(Recipe recipe) {
+		this.recipe = recipe;
 	}
 
 }

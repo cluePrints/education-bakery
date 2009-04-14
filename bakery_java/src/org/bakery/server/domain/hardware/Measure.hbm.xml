@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.hardware.Measure"
+		table="measures">
+		<id name="id"
+			column="measure_id">
+			<generator class="increment"/>
+		</id>
+		<property name="active"
+			  type="integer"
+			  column="device_active"/>
+		<property
+			name="time"
+			column="measure_time"/>
+		<property
+			name="value"
+			column="measure_value"/>
+		<many-to-one 
+			name="parameter"
+			column="measure_device_parameter"/>		
+	</class>
+</hibernate-mapping>

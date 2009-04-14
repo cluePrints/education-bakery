@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.production.RecipeEffect"
+		table="recip_effects">
+		<id name="id"
+			column="recip_effect_id">
+			<generator class="increment"/>
+		</id>
+		<!-- property name="active"
+			  type="integer"
+			  column="recipe_effect_active" -->
+		<property
+			name="amount"
+			column="recip_effect_product_amount"/>
+		<many-to-one
+			outer-join="true"
+			name="productType"
+			column="recip_effect_product_type"/>
+		<property
+			name="resultFormula"
+			column="recip_effect_result_formula"/>
+		<many-to-one
+			outer-join="true"
+			name="recipe"
+			column="recip_effect_recip"/>
+		<property
+			name="consumed"
+			column="recip_effect_isconsumed"/>
+
+			
+	</class>
+</hibernate-mapping>
