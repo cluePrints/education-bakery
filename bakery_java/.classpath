@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="javadoc"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="DB"/>
@@ -34,5 +33,5 @@
 	<classpathentry kind="lib" path="D:/Software/Google/GWT/gwt-windows-1.5.3/gwt-benchmark-viewer.jar"/>
 	<classpathentry kind="lib" path="D:/Software/Google/GWT/gwt-windows-1.5.3/gwt-servlet.jar" sourcepath="D:/Software/Google/GWT/gwt-windows-1.5.3/doc/javadoc"/>
 	<classpathentry kind="lib" path="D:/Software/Google/GWT/gwt-windows-1.5.3/gwt-user.jar"/>
-	<classpathentry kind="output" path="src"/>
+	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
