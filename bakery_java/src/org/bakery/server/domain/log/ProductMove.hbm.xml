@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.log.ProductMove"
+		table="product_moves">
+		<id name="id"
+			column="product_move_id">
+			<generator class="increment"/>
+		</id>
+		<property
+			name="date"
+			column="product_move_date"/>
+		<many-to-one
+			name="destinationWarehouse"
+			column="product_move_destination"/>
+		<many-to-one
+			name="sourceWarehouse"
+			column="product_move_source"/>
+		<many-to-one
+			name="moneyMove"
+			column="product_move_money_move"/>		
+	</class>
+</hibernate-mapping>

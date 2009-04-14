@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()">
+	<mx:HTTPService id="unitSvc" 
+		useProxy="false"
+		method="POST"
+		url="{unitDataSvcUrl}"
+		result="httpUnitResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+		
+	<mx:HTTPService id="productTypeSvc" 
+		useProxy="false"
+		method="POST"
+		url="{productTypeDataSvcUrl}"
+		result="httpproducttypeResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.validators.RegExpValidator;
+			import mx.utils.StringUtil;
+			import mx.rpc.http.mxml.HTTPService;
+			import flash.sampler.getInvocationCount;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			
+			public var unitDataSvcUrl:String;
+			public var productTypeDataSvcUrl:String;
+			
+			[Bindable]
+            private var productTypes:*;
+            [Bindable]
+            private var availableUnits:*;
+			[Bindable]
+            private var units:*;
+			
+			public function init():void{
+				createNew();
+				unitSvc.cancel();
+				productTypeSvc.cancel();
+				formModel.mode="FETCH";
+				unitSvc.send(formModel);
+				productTypeSvc.send(formModel);				
+			}
+			private function httpFaultHandler(event:Event):void{
+				Alert.show("HTTP error");
+			} 
+			private function httpproducttypeResultHandler(event:*):void{
+				productTypes = event.result.mainData;
+				productTypes["producttype"].filterFunction = mainFilterFunction;
+			} 
+			private function httpUnitResultHandler(event:*):void{
+				availableUnits = event.result.available;
+				units = event.result.mainData;
+			} 
+			private function mainFilterFunction(item:*){
+				var result:Boolean=true;
+				if (!cbShowNonActive.selected && item.active<=0)
+					return false;
+				if (!cbShowActive.selected && item.active>0)
+					return false;					
+				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
+					if (!new RegExp(edFilter.text).test(item.name))
+						return false;
+				}
+				return result;
+			} 
+			function bindSelected():void{
+				if (dgData.selectedIndex>=0){
+					cbActive.selected = (dgData.selectedItem.active == 1);
+					tiId.text=dgData.selectedItem.id;
+					tiName.text=dgData.selectedItem.name;	
+					cbUnits.selectedIndex=getProductTypeUnitPos(dgData.selectedItem.unit);
+					formModel.unit=dgData.selectedItem.unit;				
+				}													
+			}
+			function createNew():void{
+				tiId.text="";
+				cbActive.selected=true;
+				formModel.mode="NEW";
+				formModel.unit=0;				
+				cbUnits.selectedIndex=-1;
+				tiName.text="<undefined>";			
+			}
+			function cancel():void{
+				bindSelected();
+			}
+			function saveSelected():void{
+				formModel.mode="EDIT";
+				productTypeSvc.cancel();			
+				productTypeSvc.send(formModel);
+			}
+			function filterRefresh():void{
+				productTypes["producttype"].refresh();
+			}
+			function activeToString(item:Object, column:DataGridColumn):String{				
+				return (item.active>0 ? "active" : "not active"); 
+			}
+			function getUnitIdByProductTypeId(_id:int){
+				var a = availableUnits[id==_id.toString()].id;
+				return a;
+			}
+			function getProductTypeUnitPos(_unitId:int){
+				var result=0;
+				for each (var unit in availableUnits.unit){ 
+					if (unit.id == _unitId) {
+						return result;
+					}
+					result++;
+				} 		
+				return -1;		
+			}
+			function getProductTypeUnit(_id:int){
+				var result=null;
+				for each (var unit in units.unit){ 
+					if (unit.id == _id) {
+						result = unit;
+					}
+				} 
+				return result;
+			}
+			function getProductTypeUnitName(item:Object, column:DataGridColumn):String{
+				var tmp = getProductTypeUnit(item.unit);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+		]]>
+	</mx:Script>			
+	<mx:Model id="formModel">		
+		<root>
+			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
+			<unit></unit>
+			<id>{tiId.text}</id>		
+			<active>{cbActive.selected == true ? "1" : "0"}</active>
+			<name>{tiName.text}</name>
+		</root>		
+	</mx:Model>		
+		<mx:Label text="Product types management panel"/>
+		<mx:HBox x="0" y="0">
+			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
+				<mx:DataGrid height="100%" width="100%" 
+					id="dgData" 
+					dataProvider="{productTypes['producttype']}"
+					itemClick="bindSelected()">
+					<mx:columns>
+						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Name" dataField="name"/>
+						<mx:DataGridColumn headerText="Unit" labelFunction="getProductTypeUnitName"/>
+						<mx:DataGridColumn dataField="active" labelFunction="activeToString"/>
+					</mx:columns>
+				</mx:DataGrid>
+			</mx:VBox>
+			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
+				<mx:VBox horizontalAlign="left">	
+					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+					<mx:TextInput id="tiId" visible="false" text=""/>
+					<mx:FormItem label="Name:" 
+						required="true">												
+						<mx:TextInput id="tiName"/>
+					</mx:FormItem>
+					<mx:FormItem label="Unit:" 
+						required="true">												
+						<mx:ComboBox id="cbUnits"
+							dataProvider="{availableUnits.unit}"
+							labelField="name"
+							change="{formModel.unit=availableUnits.unit[cbUnits.selectedIndex].id}"
+							/>
+					</mx:FormItem>
+					<mx:FormItem label="Active">
+						<mx:CheckBox id="cbActive"/>
+					</mx:FormItem>
+				</mx:VBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="Save" click="saveSelected()"/>							
+					<mx:Button label="Cancel" click="cancel()"/>
+				</mx:HBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="CreateNew" click="createNew()"/>							
+				</mx:HBox>
+				<mx:VBox id="filterPanel">
+					<mx:Script>
+						<![CDATA[
+							[Bindable]
+							public var filterPanelMinimized:Boolean=true;							
+						]]>
+					</mx:Script>
+					<mx:HBox horizontalAlign="right" width="100%">
+						<mx:FormItem label="Filter items">
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+						</mx:FormItem>												
+					</mx:HBox>					
+					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
+						<mx:FormItem label="Show" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Active"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Inactive"/>
+						</mx:FormItem>
+						<mx:FormItem label="Name pattern:" >
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+						</mx:FormItem>	
+					</mx:VBox>					
+				</mx:VBox>
+			</mx:VBox>
+		</mx:HBox>
+	</mx:VBox>

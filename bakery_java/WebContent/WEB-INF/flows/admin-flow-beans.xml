@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+	
+	<bean id="unitFormAction" class="org.bakery.server.controllers.action.UnitFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.UnitFormBean"/>
+		<property name="formObjectName" value="unitFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>
+		<property name="mainDAO" ref="unitDAO"/>	
+    </bean>
+    
+    <bean id="addressFormAction" class="org.bakery.server.controllers.action.AddressFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.AddressFormBean"/>
+		<property name="formObjectName" value="addressFormBean"/>		
+		<property name="mainDAO" ref="addressDAO"/>	
+		<property name="validator" ref="commonFormValidator"/>
+    </bean>    
+    
+    <bean id="productTypeFormAction" class="org.bakery.server.controllers.action.ProductTypeFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.ProductTypeFormBean"/>
+		<property name="formObjectName" value="productTypeFormBean"/>		
+		<property name="mainDAO" ref="productTypeDAO"/>	
+		<property name="unitDAO" ref="unitDAO"/>
+		<property name="validator" ref="commonFormValidator"/>
+    </bean>    
+    
+    <bean id="contragentFormAction" class="org.bakery.server.controllers.action.ContragentFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.ContragentFormBean"/>
+		<property name="formObjectName" value="contragentFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>	
+		<property name="mainDAO" ref="contragentDAO"/>	
+		<property name="addressDAO" ref="addressDAO"/>		
+    </bean>    
+        
+    <bean id="accountFormAction" class="org.bakery.server.controllers.action.AccountFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.AccountFormBean"/>
+		<property name="formObjectName" value="accountFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>		
+		<property name="mainDAO" ref="accountDAO"/>	
+		<property name="contragentDAO" ref="contragentDAO"/>
+    </bean>  
+    
+     <bean id="warehouseFormAction" class="org.bakery.server.controllers.action.WarehouseFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.WarehouseFormBean"/>
+		<property name="formObjectName" value="warehouseFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>		
+		<property name="mainDAO" ref="warehouseDAO"/>	
+		<property name="contragentDAO" ref="contragentDAO"/>
+		<property name="addressDAO" ref="addressDAO"/>
+    </bean>
+    
+     <bean id="priceListFormAction" class="org.bakery.server.controllers.action.PriceListFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.PriceListFormBean"/>
+		<property name="formObjectName" value="priceListFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>		
+		<property name="mainDAO" ref="priceListDAO"/>	
+		<property name="contragentDAO" ref="contragentDAO"/>
+		<property name="productTypeDAO" ref="productTypeDAO"/>
+    </bean>
+    
+     <bean id="priceFormAction" class="org.bakery.server.controllers.action.PriceFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.PriceFormBean"/>
+		<property name="formObjectName" value="priceFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>		
+		<property name="mainDAO" ref="priceDAO"/>	
+		<property name="priceListDAO" ref="priceListDAO"/>
+		<property name="productTypeDAO" ref="productTypeDAO"/>
+    </bean>
+    
+     <bean id="orderFormAction" class="org.bakery.server.controllers.action.OrderFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.OrderFormBean"/>
+		<property name="formObjectName" value="orderFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>		
+		<property name="mainDAO" ref="orderDAO"/>	
+		<property name="contragentDAO" ref="contragentDAO"/>
+    </bean>
+    
+     <bean id="moneyMoveFormAction" class="org.bakery.server.controllers.action.MoneyMoveFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.MoneyMoveFormBean"/>
+		<property name="formObjectName" value="moneyMoveFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>		
+		<property name="mainDAO" ref="moneyMoveDAO"/>	
+		<property name="accountDAO" ref="accountDAO"/>
+		<property name="orderDAO" ref="orderDAO"/>
+		<property name="priceDAO" ref="priceDAO"/>
+    </bean>
+    
+    <bean id="productMoveFormAction" class="org.bakery.server.controllers.action.ProductMoveFormAction">
+		<property name="formObjectClass" value="org.bakery.server.controllers.beans.ProductMoveFormBean"/>
+		<property name="formObjectName" value="productMoveFormBean"/>
+		<property name="validator" ref="commonFormValidator"/>		
+		<property name="mainDAO" ref="productMoveDAO"/>	
+		<property name="productTypeDAO" ref="productTypeDAO"/>
+		<property name="moneyMoveDAO" ref="moneyMoveDAO"/>
+		<property name="warehouseDAO" ref="warehouseDAO"/>
+    </bean>
+      
+    <bean id="commonFormValidator" class="org.bakery.server.controllers.validation.CommonFormValidator"/>
+</beans>

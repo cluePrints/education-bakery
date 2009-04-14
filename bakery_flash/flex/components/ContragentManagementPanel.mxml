@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()">
+	<mx:HTTPService id="addressSvc" 
+		useProxy="false"
+		method="POST"
+		url="{addressDataSvcUrl}"
+		result="httpAddressResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+		
+	<mx:HTTPService id="contragentSvc" 
+		useProxy="false"
+		method="POST"
+		url="{contragentDataSvcUrl}"
+		result="httpContragentResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.validators.RegExpValidator;
+			import mx.utils.StringUtil;
+			import mx.rpc.http.mxml.HTTPService;
+			import flash.sampler.getInvocationCount;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			
+			public var addressDataSvcUrl:String;
+			public var contragentDataSvcUrl:String;
+			
+			[Bindable]
+            private var contragents:*;
+            [Bindable]
+            private var availableAddresses:*;
+			[Bindable]
+            private var addresses:*;
+			
+			public function init():void{
+				createNew();
+				formModel.mode="FETCH";
+				formModel.address=0;
+				addressSvc.send(formModel);
+				contragentSvc.send(formModel);				
+			}
+			private function httpFaultHandler(event:Event):void{
+				Alert.show("HTTP error");
+			} 
+			private function httpContragentResultHandler(event:*):void{
+				contragents = event.result.mainData;
+				contragents["contragent"].filterFunction = mainFilterFunction;
+			} 
+			private function httpAddressResultHandler(event:*):void{
+				availableAddresses = event.result.available;
+				addresses = event.result.mainData;
+			} 
+			private function mainFilterFunction(item:*){
+				var result:Boolean=true;
+				if (!cbShowNonActive.selected && item.active<=0)
+					return false;
+				if (!cbShowActive.selected && item.active>0)
+					return false;					
+				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
+					if (!new RegExp(edFilter.text).test(item.name))
+						return false;
+				}
+				return result;
+			} 
+			function bindSelected():void{
+				if (dgData.selectedIndex>=0){
+					cbActive.selected = (dgData.selectedItem.active == 1);
+					tiId.text=dgData.selectedItem.id;
+					tiName.text=dgData.selectedItem.name;	
+					cbAddresses.selectedIndex=getContragentAddressPos(dgData.selectedItem.address);
+					formModel.address=dgData.selectedItem.address;
+					cbChild.selected= (dgData.selectedItem.child ==1);				
+				}													
+			}
+			function createNew():void{
+				tiId.text="";
+				cbActive.selected=true;
+				cbChild.selected=false;
+				formModel.mode="NEW";
+				cbAddresses.selectedIndex=-1;
+				tiName.text="<undefined>";			
+			}
+			function cancel():void{
+				bindSelected();
+			}
+			function saveSelected():void{
+				formModel.mode="EDIT";
+				contragentSvc.cancel();			
+				contragentSvc.send(formModel);
+			}
+			function filterRefresh():void{
+				contragents["contragent"].refresh();
+			}
+			function activeToString(item:Object, column:DataGridColumn):String{				
+				return (item.active>0 ? "active" : "not active"); 
+			}
+			function childToString(item:Object, column:DataGridColumn):String{				
+				return (item.child>0 ? "+" : "-"); 
+			}
+			function getAddressIdByContragentId(_id:int){
+				var a = availableAddresses[id==_id.toString()].id;
+				return a;
+			}
+			function getContragentAddressPos(_addressId:int){
+				var result=0;
+				if (availableAddresses == undefined)
+					return null;
+				for each (var address in availableAddresses.address){ 
+					if (address.id == _addressId) {
+						return result;
+					}
+					result++;
+				} 		
+				return -1;		
+			}
+			function getContragentAddress(_id:int){
+				var result=null;
+				if (addresses == undefined)
+					return null;
+				for each (var address in addresses.address){ 
+					if (address.id == _id) {
+						result = address;
+					}
+				} 
+				return result;
+			}
+			function getContragentAddressName(item:Object, column:DataGridColumn):String{
+				var tmp = getContragentAddress(item.address);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+		]]>
+	</mx:Script>			
+	<mx:Model id="formModel">		
+		<root>
+			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
+			<address></address>
+			<id>{tiId.text}</id>		
+			<active>{cbActive.selected == true ? "1" : "0"}</active>
+			<child>{cbChild.selected == true ? "1" : "0"}</child>
+			<name>{tiName.text}</name>
+		</root>		
+	</mx:Model>		
+		<mx:Label text="Contragents management panel"/>
+		<mx:HBox x="0" y="0">
+			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
+				<mx:DataGrid height="100%" width="100%" 
+					id="dgData" 
+					dataProvider="{contragents['contragent']}"
+					itemClick="bindSelected()">
+					<mx:columns>
+						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Name" dataField="name"/>
+						<mx:DataGridColumn headerText="Address" labelFunction="getContragentAddressName"/>
+						<mx:DataGridColumn headerText="Child" labelFunction="childToString"/>
+						<mx:DataGridColumn dataField="active" labelFunction="activeToString"/>
+					</mx:columns>
+				</mx:DataGrid>
+			</mx:VBox>
+			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
+				<mx:VBox horizontalAlign="left">	
+					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+					<mx:TextInput id="tiId" visible="false" text=""/>
+					<mx:FormItem label="Name:" 
+						required="true">												
+						<mx:TextInput id="tiName"/>
+					</mx:FormItem>
+					<mx:FormItem label="Address:" 
+						required="true">												
+						<mx:ComboBox id="cbAddresses"
+							dataProvider="{availableAddresses.address}"
+							labelField="name"
+							change="{formModel.address=availableAddresses.address[cbAddresses.selectedIndex].id}"
+							/>
+					</mx:FormItem>
+					<mx:FormItem label="Child">
+						<mx:CheckBox id="cbChild"/>
+					</mx:FormItem>
+					<mx:FormItem label="Active">
+						<mx:CheckBox id="cbActive"/>
+					</mx:FormItem>
+				</mx:VBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="Save" click="saveSelected()"/>							
+					<mx:Button label="Cancel" click="cancel()"/>
+				</mx:HBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="CreateNew" click="createNew()"/>							
+				</mx:HBox>
+				<mx:VBox id="filterPanel">
+					<mx:Script>
+						<![CDATA[
+							[Bindable]
+							public var filterPanelMinimized:Boolean=true;							
+						]]>
+					</mx:Script>
+					<mx:HBox horizontalAlign="right" width="100%">
+						<mx:FormItem label="Filter items">
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+						</mx:FormItem>												
+					</mx:HBox>					
+					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
+						<mx:FormItem label="Show" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Active"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Inactive"/>
+						</mx:FormItem>
+						<mx:FormItem label="Name pattern:" >
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+						</mx:FormItem>	
+					</mx:VBox>					
+				</mx:VBox>
+			</mx:VBox>
+		</mx:HBox>
+	</mx:VBox>

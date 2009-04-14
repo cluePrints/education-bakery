@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.pricing.PriceList"
+		table="price_list_heads">
+		<id name="id"
+			column="price_list_head_id">
+			<generator class="increment"/>
+		</id>
+		<property name="active"
+			  type="integer"
+			  column="price_list_head_active"/>
+		<property
+			name="date"
+			column="price_list_head_date"/>
+		<property
+			name="comment"
+			column="price_list_head_comment"/>
+		<many-to-one
+			name="owner"
+			fetch="join"
+			outer-join="true"
+			column="price_list_head_contragent"/>
+		<set 
+			name="items"
+			inverse="true"
+			cascade="save-update">
+			<key column="price_list_item_head"/>
+			<one-to-many class="org.bakery.server.domain.pricing.PriceListItem"/>
+		</set>	
+	</class>
+</hibernate-mapping>

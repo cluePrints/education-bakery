@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()">
+
+	<mx:HTTPService id="warehouseSvc" 
+		useProxy="false"
+		method="POST"
+		url="{warehouseDataSvcUrl}"
+		result="httpwarehouseResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.validators.RegExpValidator;
+			import mx.utils.StringUtil;
+			import mx.rpc.http.mxml.HTTPService;
+			import flash.sampler.getInvocationCount;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			
+			public var ownerDataSvcUrl:String;
+			public var warehouseDataSvcUrl:String;
+			public var addressDataSvcUrl:String;
+			
+			[Bindable]
+            private var warehouses:*;
+            [Bindable]
+            private var availableOwners:*;
+			[Bindable]
+            private var owners:*;
+            [Bindable]
+            private var availableAddresses:*;
+			[Bindable]
+            private var addresses:*;
+			
+			public function init():void{
+				createNew();
+				formModel.mode="FETCH";
+				//ownerSvc.send(formModel);
+				warehouseSvc.send(formModel);
+				//addressSvc.send(formModel);				
+			}
+			private function httpFaultHandler(event:Event):void{
+				Alert.show("HTTP error");
+			} 
+			private function httpwarehouseResultHandler(event:*):void{
+				warehouses = event.result.mainData;
+				
+				availableAddresses = event.result.availableAddresses;
+				addresses = event.result.addresses;
+				
+				availableOwners = event.result.availableContragents;
+				owners = event.result.contragents;
+				
+				warehouses["warehouse"].filterFunction = mainFilterFunction;
+			} 
+ 
+			private function mainFilterFunction(item:*){
+				var result:Boolean=true;
+				if (!cbShowNonActive.selected && item.active<=0)
+					return false;
+				if (!cbShowActive.selected && item.active>0)
+					return false;					
+				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
+					if (!new RegExp(edFilter.text).test(item.name))
+						return false;
+				}
+				return result;
+			} 
+			function bindSelected():void{
+				if (dgData.selectedIndex>=0){
+					cbActive.selected = (dgData.selectedItem.active == 1);
+					tiId.text=dgData.selectedItem.id;
+					tiName.text=dgData.selectedItem.name;	
+					cbOwners.selectedIndex=getWarehouseOwnerPos(dgData.selectedItem.owner);
+					formModel.owner=dgData.selectedItem.owner;
+					cbAddresses.selectedIndex=getWarehouseAddressPos(dgData.selectedItem.address);
+					formModel.address=dgData.selectedItem.address;				
+				}													
+			}
+			function createNew():void{
+				tiId.text="";
+				cbActive.selected=true;
+				formModel.mode="NEW";
+				formModel.owner=0;
+				formModel.address=0;
+				cbOwners.selectedIndex=-1;
+				cbAddresses.selectedIndex=-1;
+				tiName.text="<undefined>";			
+			}
+			function cancel():void{
+				bindSelected();
+			}
+			function saveSelected():void{
+				formModel.mode="EDIT";
+				warehouseSvc.cancel();			
+				warehouseSvc.send(formModel);
+			}
+			function filterRefresh():void{
+				warehouses["warehouse"].refresh();
+			}
+			function activeToString(item:Object, column:DataGridColumn):String{				
+				return (item.active>0 ? "active" : "not active"); 
+			}
+			function getAddressIdByWarehouseId(_id:int){
+				var a = availableAddresses[id==_id.toString()].id;
+				return a;
+			}
+			function getWarehouseAddressPos(_addressId:int){
+				if (availableAddresses == undefined)
+					return -1;
+				var result=0;
+				for each (var address in availableAddresses.address){ 
+					if (address.id == _addressId) {
+						return result;
+					}
+					result++;
+				} 		
+				return -1;		
+			}
+			function getOwnerIdByWarehouseId(_id:int){
+				var a = availableOwners[id==_id.toString()].id;
+				return a;
+			}
+			function getWarehouseOwnerPos(_ownerId:int){
+				if (availableOwners == undefined)
+					return -1;
+				var result=0;
+				for each (var owner in availableOwners.contragent){ 
+					if (owner.id == _ownerId) {
+						return result;
+					}
+					result++;
+				} 		
+				return -1;		
+			}
+			function getWarehouseOwner(_id:int){
+				if (owners == undefined)
+					return null;
+				var result=null;
+				for each (var owner in owners.contragent){ 
+					if (owner.id == _id) {
+						result = owner;
+					}
+				} 
+				return result;
+			}
+			function getWarehouseAddress(_id:int){
+				if (addresses == undefined)
+					return null;
+				var result=null;
+				for each (var address in addresses.address){ 
+					if (address.id == _id) {
+						result = address;
+					}
+				} 
+				return result;
+			}
+			function getWarehouseOwnerName(item:Object, column:DataGridColumn):String{
+				var tmp = getWarehouseOwner(item.owner);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+			function getWarehouseAddressName(item:Object, column:DataGridColumn):String{
+				var tmp = getWarehouseAddress(item.address);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+		]]>
+	</mx:Script>			
+	<mx:Model id="formModel">		
+		<root>
+			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
+			<owner></owner>
+			<address></address>
+			<id>{tiId.text}</id>		
+			<active>{cbActive.selected == true ? "1" : "0"}</active>
+			<name>{tiName.text}</name>
+		</root>		
+	</mx:Model>		
+		<mx:Label text="Warehouse management panel"/>
+		<mx:HBox x="0" y="0">
+			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
+				<mx:DataGrid height="100%" width="100%" 
+					id="dgData" 
+					dataProvider="{warehouses['warehouse']}"
+					itemClick="bindSelected()">
+					<mx:columns>
+						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Name" dataField="name"/>
+						<mx:DataGridColumn headerText="Owner" labelFunction="getWarehouseOwnerName"/>
+						<mx:DataGridColumn headerText="Address" labelFunction="getWarehouseAddressName"/>
+						<mx:DataGridColumn dataField="active" labelFunction="activeToString"/>
+					</mx:columns>
+				</mx:DataGrid>
+			</mx:VBox>
+			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
+				<mx:VBox horizontalAlign="left">	
+					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+					<mx:TextInput id="tiId" visible="false" text=""/>
+					<mx:FormItem label="Name:" 
+						required="true">												
+						<mx:TextInput id="tiName"/>
+					</mx:FormItem>
+					<mx:FormItem label="Owner:" 
+						required="true">												
+						<mx:ComboBox id="cbOwners"
+							dataProvider="{availableOwners.contragent}"
+							labelField="name"
+							change="{formModel.owner=availableOwners.owner[cbOwners.selectedIndex].id}"
+							/>
+					</mx:FormItem>
+					<mx:FormItem label="Address:" 
+						required="true">												
+						<mx:ComboBox id="cbAddresses"
+							dataProvider="{availableAddresses.address}"
+							labelField="name"
+							change="{formModel.address=availableAddresses.address[cbAddresses.selectedIndex].id}"
+							/>
+					</mx:FormItem>
+					<mx:FormItem label="Active">
+						<mx:CheckBox id="cbActive"/>
+					</mx:FormItem>
+				</mx:VBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="Save" click="saveSelected()"/>							
+					<mx:Button label="Cancel" click="cancel()"/>
+				</mx:HBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="CreateNew" click="createNew()"/>							
+				</mx:HBox>
+				<mx:VBox id="filterPanel">
+					<mx:Script>
+						<![CDATA[
+							[Bindable]
+							public var filterPanelMinimized:Boolean=true;							
+						]]>
+					</mx:Script>
+					<mx:HBox horizontalAlign="right" width="100%">
+						<mx:FormItem label="Filter items">
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+						</mx:FormItem>												
+					</mx:HBox>					
+					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
+						<mx:FormItem label="Show" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Active"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Inactive"/>
+						</mx:FormItem>
+						<mx:FormItem label="Name pattern:" >
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+						</mx:FormItem>	
+					</mx:VBox>					
+				</mx:VBox>
+			</mx:VBox>
+		</mx:HBox>
+	</mx:VBox>

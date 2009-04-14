@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.log.MoneyMove"
+		table="money_moves">
+		<id name="id"
+			column="money_move_id">
+			<generator class="increment"/>
+		</id>
+		<property
+			name="amount"
+			column="money_move_amount"/>
+		<property
+			name="date"
+			column="money_move_date"/>
+		<many-to-one
+			name="destinationAccount"
+			column="money_move_destination"
+			not-null="true"/>
+		<many-to-one
+			name="sourceAccount"
+			column="money_move_source"
+			not-null="true"/>
+		<property
+			name="desc"
+			column="money_move_desc"/>
+		<many-to-one
+			name="order"
+			column="money_move_order"
+			not-null="true"/>	
+		<many-to-one
+			name="price"
+			column="money_move_product"
+			not-null="true"/>			
+		<set
+			name="productMoves"
+			inverse="true"
+			cascade="save-update"
+			outer-join="true">
+			<key column="product_move_id"/>
+			<one-to-many class="org.bakery.server.domain.log.ProductMove"/>
+		</set>
+			
+	</class>
+</hibernate-mapping>

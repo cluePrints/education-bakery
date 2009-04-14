@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+  <!--bean id="myTransform" class="org.apache.camel.example.osgi.MyTransform">
+    <property name="prefix" value="MyTransform"/>
+  </bean-->
+	
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="cache" value="true"/>
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>  
+    
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/bakery" />
+		<property name="username" value="root" />
+		<property name="password" value="password" />
+	</bean>
+	
+	<bean id="abstractDAO"
+		class="org.bakery.server.persistence.AbstractDAO" abstract="true">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<bean id="unitDAO" class="org.bakery.server.persistence.dao.UnitDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.production.Unit"/>
+		<property name="querySearchByName" value="from Unit u where u.name like :searchName order by u.active desc, u.name asc"/>
+		<property name="queryGetAvailable" value="from Unit u where u.active>0 order by u.name asc"/>
+	</bean>
+    
+    <bean id="addressDAO" class="org.bakery.server.persistence.dao.AddressDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.accounting.Address"/>
+		<property name="querySearchByName" value="from Address t where t.name like :searchName order by t.active desc, t.name asc"/>
+		<property name="queryGetAvailable" value="from Address t where t.active>0 order by t.name asc"/>
+	</bean>
+	
+	<bean id="productTypeDAO" class="org.bakery.server.persistence.dao.ProductTypeDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.production.ProductType"/>
+		<property name="querySearchByName" value="from ProductType t left join fetch t.unit u where t.name like :searchName order by t.active desc, t.name asc"/>
+		<property name="queryGetAvailable" value="from ProductType t where t.active>0 order by t.name asc"/>
+	</bean>
+	
+	<bean id="contragentDAO" class="org.bakery.server.persistence.dao.ContragentDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.accounting.Contragent"/>
+		<property name="querySearchByName" value="from Contragent t left join fetch t.address a where t.name like :searchName order by t.active desc, t.name asc"/>
+		<property name="queryGetAvailable" value="from Contragent с where с.active>0 order by с.name asc"/>
+	</bean>
+	
+	<bean id="accountDAO" class="org.bakery.server.persistence.dao.AccountDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.accounting.Account"/>
+		<property name="querySearchByName" value="from Account t left join fetch t.owner a where t.name like :searchName order by a.name asc, t.active desc, t.name asc"/>
+		<property name="queryGetAvailable" value="from Account a left join fetch a.owner where a.active>0 order by a.active desc, a.name asc"/>
+	</bean>
+	
+	<bean id="warehouseDAO" class="org.bakery.server.persistence.dao.WarehouseDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.production.Warehouse"/>
+		<property name="querySearchByName" value="from Warehouse t left join fetch t.owner o join fetch t.address a where t.name like :searchName order by t.active desc, a.name asc, t.name asc"/>
+		<property name="queryGetAvailable">
+			<value>
+				from Warehouse w
+					left join fetch w.owner
+					left join fetch w.address
+				where w.active>0 order by w.name asc
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="priceListDAO" class="org.bakery.server.persistence.dao.PriceListDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.pricing.PriceList"/>
+		<property name="querySearchByName" value="from PriceList p left join fetch p.items i left join fetch p.owner o where p.comment like :searchName order by p.active desc, p.owner.name asc"/>
+		<property name="queryGetAvailable" value="from PriceList p left join fetch p.owner own where p.active>0 order by p.comment asc"/>		
+	</bean>
+	   
+	<bean id="priceDAO" class="org.bakery.server.persistence.dao.PriceDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.pricing.PriceListItem"/>
+		<property name="querySearchByName" value="from PriceListItem pli left join fetch pli.parent par left join fetch pli.product prod left outer join fetch pli.parent.owner own where pli.product.name like :searchName order by pli.active desc, pli.product.name asc, pli.price asc"/>
+		<property name="queryGetAvailable">
+			<value>
+				from PriceListItem pli 
+					left join fetch pli.parent par 
+						left join fetch par.owner 
+					left join fetch pli.product
+				
+				where pli.active>0 order by par asc
+			</value>
+		</property>
+		<property name="queryFetchByParent">
+			<value>
+				from PriceListItem pli 
+					left join fetch pli.parent par
+						left outer join fetch par.owner own 
+					left join fetch pli.product prod 					 
+						where par.id=:searchId order by prod.name asc, pli.price desc
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="orderDAO" class="org.bakery.server.persistence.dao.OrderDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.log.Order"/>
+		<property name="querySearchByName" value="from Order ord left join fetch ord.provider left join fetch ord.consumer where ord.provider.name like :searchName or ord.consumer.name like :searchName order by ord.creationDate desc, ord.doneDate asc, ord.active desc, ord.consumer.name asc"/>
+		<property name="queryGetAvailable" value="from Order ord left join fetch ord.provider left join fetch ord.consumer where ord.active>0 order by ord.consumer.name asc"/>
+		<property name="queryGetAccountsAvailableForOrder">
+			<!-- get Accounts, used in Order
+				Order has contragents, they have accounts, they're used-->
+			<value>
+				from Account a 
+					left join fetch a.owner own
+				where
+					a.owner.id in (select ord.consumer.id from Order ord where ord.id=:searchId)
+				or
+					a.owner.id in (select ord.provider.id from Order ord where ord.id=:searchId)
+			</value>
+		</property>		
+	</bean>
+	
+	<bean id="moneyMoveDAO" class="org.bakery.server.persistence.dao.MoneyMoveDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.log.MoneyMove"/>
+		<property name="querySearchByName" value="from MoneyMove mv left join fetch mv.destinationAccount dest join fetch mv.sourceAccount src left join fetch mv.price pli left join fetch pli.product left join fetch dest.owner dest left join fetch src.owner where src.owner.name like :searchName order by mv.date asc"/>
+		<property name="queryGetAvailable">
+			<value>
+				from MoneyMove mv
+					left join fetch mv.price pli
+						left join fetch pli.product 
+					left join fetch mv.destinationAccount dest
+						left join fetch dest.owner dest
+					left join fetch mv.sourceAccount src
+						left join fetch src.owner 												
+					
+					order by mv.id desc
+				
+			</value>
+		</property>
+		<property name="queryFetchByParent">
+			<value>
+				from MoneyMove mv left
+					join fetch mv.order ord
+						left join fetch ord.consumer
+						left join fetch ord.provider
+					left join fetch mv.destinationAccount dest
+						left join fetch dest.owner
+					left join fetch mv.sourceAccount src
+						left join fetch src.owner 
+					left join fetch mv.price pli 
+						left join fetch pli.product 
+						left join fetch pli.parent.owner					 					 
+						where ord.id=:searchId order by mv.date asc
+			</value>
+		</property>		
+	</bean>
+	
+	<bean id="productMoveDAO" class="org.bakery.server.persistence.dao.ProductMoveDAO" parent="abstractDAO">
+		<property name="targetClassName" value="org.bakery.server.domain.log.ProductMove"/>
+		<property name="querySearchByName">
+		<value>
+			from ProductMove pmv
+				left join fetch pmv.destinationWarehouse dw
+					left join fetch dw.owner
+				left join fetch pmv.sourceWarehouse sw
+					left join fetch sw.owner
+				left join fetch pmv.moneyMove mmv
+					left join fetch mmv.destinationAccount.owner
+					left join fetch mmv.sourceAccount.owner
+					left join fetch mmv.price pr
+						left join fetch pr.product
+			where pmv.moneyMove.desc like :searchName
+			order by pmv.date asc
+		</value>
+		</property>		 
+		<property name="queryGetAvailable">
+			<value>
+				from ProductMove pmv
+				left join fetch pmv.destinationWarehouse dw
+					left join fetch dw.owner
+				left join fetch pmv.sourceWarehouse sw
+					left join fetch sw.owner
+				left join fetch pmv.moneyMove mmv
+					left join fetch mmv.destinationAccount.owner
+					left join fetch mmv.sourceAccount.owner
+					left join fetch mmv.price pr
+						left join fetch pr.product
+				order by pmv.date asc
+			</value>
+		</property>
+		
+		<property name="queryFetchByParent">
+			<value>
+				from ProductMove pmv
+					left join fetch pmv.destinationWarehouse dw
+					left join fetch dw.owner
+				left join fetch pmv.sourceWarehouse sw
+					left join fetch sw.owner
+				left join fetch pmv.moneyMove mmv
+					left join fetch mmv.destinationAccount.owner
+					left join fetch mmv.sourceAccount.owner
+					left join fetch mmv.price pr
+						left join fetch pr.product		
+									 					 
+				where mmv.id=:searchId order by pmv.date asc
+			</value>
+		</property>		
+	</bean>	
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingResources">
+			<list>
+				<value>org/bakery/server/domain/production/Unit.hbm.xml</value>
+				<value>org/bakery/server/domain/production/Warehouse.hbm.xml</value>
+				<value>org/bakery/server/domain/production/ProductType.hbm.xml</value>
+		
+				<value>org/bakery/server/domain/log/Order.hbm.xml</value>
+				<value>org/bakery/server/domain/log/MoneyMove.hbm.xml</value>
+				<value>org/bakery/server/domain/log/ProductMove.hbm.xml</value>
+
+				<value>org/bakery/server/domain/pricing/PriceList.hbm.xml</value>
+				<value>org/bakery/server/domain/pricing/PriceListItem.hbm.xml</value>
+		
+				<value>org/bakery/server/domain/accounting/Address.hbm.xml</value>
+				<value>org/bakery/server/domain/accounting/Account.hbm.xml</value>
+				<value>org/bakery/server/domain/accounting/Contragent.hbm.xml</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+	
+	<!--bean class="org.springframework.remoting.rmi.RmiServiceExporter">		
+		<property name="serviceName" value="DAOInterface"/>
+		<property name="service" ref="accountDAO"/>
+		<property name="serviceInterface" value="org.bakery.server.persistence.DAOInterface"/>		
+		<property name="registryPort" value="1199"/>
+	</bean-->
+
+</beans>

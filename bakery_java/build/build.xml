@@ -1,0 +1,88 @@
+<project name="AdRegister" default="deployOnGlassfish" basedir=".">
+	<property name="src" value="../src" />
+	<property name="web" value="../WebContent" />
+	<property name="l10n" value="${web}/l10n" />
+	<property name="build" value="${web}/WEB-INF/classes" />
+	<property name="dist" value="../dist" />
+	<property name="lib" value="${web}/WEB-INF/lib" />
+	<property name="libcompile" value="lib" />	
+	<property name="appName" value="bakery"/>
+	<property name="fileToDeploy" value="${appName}.war" />
+	
+	<property name="server.glassfish.home" value="D:\Install\Glassfish"/>
+	<property name="server.glassfish.domain" value="domain1"/>
+	<property name="server.glassfish.autodeploy.dir" value="${server.glassfish.home}/domains/${server.glassfish.domain}/autodeploy"/>
+	<property name="server.glassfish.expanded.dir" value="${server.glassfish.home}/domains/${server.glassfish.domain}/applications/j2ee-modules/${appName}"/>
+
+        <property name="portal.wsp.user" value="wpadmin"/>
+        <property name="portal.wsp.password" value="Password_1"/>
+        <property name="portal.wsp.hostname" value="http://localhost"/>
+	<property name="portal.wsp.xmlaccess.port" value="10040"/>
+	<property name="portal.home" value="D:\SERVERS\IBM"/>
+
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${dist}" />
+                <mkdir dir="${build}" />
+	</target>
+
+	
+	<target name="compile" depends="init">
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}" source="1.5" target="1.5" debug="on" fork="true">
+			<classpath>
+				<fileset dir="${lib}">
+					<include name="**/*.jar" />
+				</fileset>
+				<fileset dir="${libcompile}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>			
+		</javac>
+		<copy todir="${build}">
+			<fileset dir="${web}">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy todir="${build}">
+			<fileset dir="${src}">
+				<include name="**/*.hbm.xml" />
+			</fileset>
+		</copy>
+		<copy todir="${build}" overwrite="true">
+			<fileset dir="${l10n}">
+				<include name="**/*.*"/>
+			</fileset>
+		</copy>		
+	</target>
+
+	<target name="dist" depends="clean">
+		<antcall target="init"/>
+		<antcall target="compile"/>
+		<war destfile="${fileToDeploy}" webxml="${web}/WEB-INF/web.xml">
+			<exclude name="**/WEB-INF/web.xml" />
+			<fileset dir="${web}"/>
+		</war>
+		<antcall target="clean"/>
+	</target>
+	
+        <target name="clean">
+                <delete dir="${dist}" />
+		<delete dir="${build}" />
+        </target>
+
+	<target name="jsp">
+		<copy todir="${server.glassfish.expanded.dir}" overwrite="true">
+			<fileset dir="${web}"/>
+		</copy>
+	</target>
+
+
+    <target name="deployOnGlassfish" depends="dist">
+	<copy todir="${server.glassfish.autodeploy.dir}" file="${fileToDeploy}" overwrite="true"/>
+    </target>
+</project>
+

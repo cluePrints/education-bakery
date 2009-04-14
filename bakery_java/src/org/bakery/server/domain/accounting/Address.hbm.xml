@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.accounting.Address"
+		table="addresses">
+		<id name="id"
+			column="address_id">
+			<generator class="increment"/>
+		</id>
+		<property name="active"
+			  type="integer"
+			  column="address_active"/>	
+		<set name="contragents"
+			 inverse="true"
+			 cascade="all"
+			 outer-join="true">
+			<key column="contragent_address"/>
+			<one-to-many class="org.bakery.server.domain.accounting.Contragent"/>
+		</set>
+		
+		<set name="warehouses"
+			 inverse="true"
+			 cascade="save-update"
+			 outer-join="true">
+			<key column="product_warehouse_address"/>
+			<one-to-many class="org.bakery.server.domain.production.Warehouse"/>
+		</set>
+		<property
+			name="name"
+			column="address_address"/>
+	</class>
+</hibernate-mapping>

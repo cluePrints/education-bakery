@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.pricing.PriceListItem"
+		table="price_list_items">
+		<id name="id"
+			column="price_list_item_id">
+			<generator class="increment"/>
+		</id>
+		<property name="active"
+			  type="integer"
+			  column="price_list_item_active"/>
+		<property
+			name="price"
+			column="price_list_item_price"/>
+		<many-to-one
+			name="product"
+			column="price_list_product_type"
+			not-null="true"/>
+		<many-to-one
+			name="parent"
+			column="price_list_item_head"
+			not-null="true"/>
+	</class>
+</hibernate-mapping>

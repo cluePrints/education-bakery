@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.accounting.Contragent"
+		table="contragents">
+		<id name="id"
+			column="contragent_id">
+			<generator class="increment"/>
+		</id>
+		<property name="active"
+			  type="integer"
+			  column="contragent_active"/>
+		<property
+			name="name"
+			column="contragent_name"/>
+			
+		<many-to-one
+			name="address"
+			column="contragent_address"/>
+			
+		<set name="accounts"
+			 inverse="true"
+			 cascade="save-update">
+			<key column="account_contragent"/>
+			<one-to-many class="org.bakery.server.domain.accounting.Account"/>
+		</set>
+		
+		<set name="warehouses"
+			 inverse="true"
+			 cascade="save-update">
+			<key column="product_warehouse_owner"/>
+			<one-to-many class="org.bakery.server.domain.production.Warehouse"/>
+		</set>
+
+		<property
+			name="child"
+			column="contragent_ischild"/>
+	</class>
+</hibernate-mapping>
