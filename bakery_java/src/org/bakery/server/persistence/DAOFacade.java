@@ -2,6 +2,7 @@ package org.bakery.server.persistence;
 
 public class DAOFacade {
 	private AbstractDAO addressDAO;
+	private AbstractDAO deviceDAO;
 	private AbstractDAO accountDAO;
 	private AbstractDAO contragentDAO;
 	private AbstractDAO moneyMoveDAO;
@@ -77,5 +78,11 @@ public class DAOFacade {
 	}
 	public void setWarehouseDAO(AbstractDAO warehouseDAO) {
 		this.warehouseDAO = warehouseDAO;
+	}
+	public AbstractDAO getDeviceDAO() {
+		return deviceDAO;
+	}
+	public void setDeviceDAO(AbstractDAO deviceDAO) {
+		this.deviceDAO = deviceDAO;
 	}
 }

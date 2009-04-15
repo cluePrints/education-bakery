@@ -55,19 +55,21 @@ public abstract class BusinessEntity implements Serializable {
 		final String G=">";
 		final String L="<";
 		final String LE="</";
+		final String SHORT = "   ";
+		final String LONG = "      ";
 		StringBuilder tmp = new StringBuilder();
 		Class clazz = this.getClass();
 		String classInstanceName = clazz.getSimpleName().toLowerCase();
-		tmp.append(L).append(classInstanceName).append(G);
+		tmp.append("\n").append(SHORT).append(L).append(classInstanceName).append(G);
 		BeanInfo inf = java.beans.Introspector.getBeanInfo(clazz, Object.class);
 		PropertyDescriptor[] propDescriptors = inf.getPropertyDescriptors();
 		for (PropertyDescriptor prop : propDescriptors) {			
 			String propName = prop.getName();
 			Method readMethod = prop.getReadMethod();
 			Object result = readMethod.invoke(this);
-			tmp.append(L).append(propName).append(G);	//<paramName>
+			tmp.append("\n").append(LONG).append(L).append(propName).append(G);	//<paramName>
 			
-			
+			tmp.append(LONG);
 			if (result == null) {
 				// append nothing
 			} else if (result instanceof BusinessEntity) {
@@ -83,10 +85,10 @@ public abstract class BusinessEntity implements Serializable {
 					|| result instanceof Double
 					|| result instanceof Boolean){
 				tmp.append(result);
-			}
-			tmp.append(LE).append(propName).append(G);  //</paramName>			
+			}			
+			tmp.append("\n").append(LONG).append(LE).append(propName).append(G);  //</paramName>			
 		}
-		tmp.append(LE).append(classInstanceName).append(G);
+		tmp.append("\n").append(SHORT).append(LE).append(classInstanceName).append(G);
 		return tmp.toString();		
 	};
 	

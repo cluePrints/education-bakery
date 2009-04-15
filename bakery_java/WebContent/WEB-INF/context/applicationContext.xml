@@ -35,6 +35,16 @@
 					value="from Unit u where u.active>0 order by u.name asc" />
 			</bean>
 		</property>
+		<property name="deviceDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.hardware.Device" />
+				<property name="querySearchByName"
+					value="from Device d where d.name like :searchName order by d.active desc, d.name asc" />
+				<property name="queryGetAvailable"
+					value="from Device d where d.active>0 order by d.name asc" />
+			</bean>
+		</property>
 		<property name="addressDAO">
 			<bean id="addressDAO" parent="abstractDAO">
 				<property name="targetClassName"

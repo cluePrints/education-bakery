@@ -9,21 +9,21 @@ import org.bakery.server.persistence.AbstractDAO;
 public class SvcHelper {
 	public static void writeAvailable(PrintWriter out, AbstractDAO dao, String sectionId) throws Exception{
 		List<BusinessEntity> entities = dao.getAvailable();
-		out.write("<"+sectionId+">");
+		out.write("\n<"+sectionId+">\n");
 		for (BusinessEntity e : entities) {
 			out.write(e.toXml());
 		}
-		out.write("</"+sectionId+">");
+		out.write("\n<"+sectionId+">\n");
 		out.flush();
 	}
 	
 	public static void write(PrintWriter out, AbstractDAO dao, String sectionId) throws Exception{
 		List<BusinessEntity> entities = dao.searchByName("%", 1, 200);
-		out.write("<"+sectionId+">");
+		out.write("\n<"+sectionId+">\n");
 		for (BusinessEntity e : entities) {
 			out.write(e.toXml());
 		}
-		out.write("</"+sectionId+">");
+		out.write("\n</"+sectionId+">\n");
 		out.flush();
-	}
+	}	
 }
