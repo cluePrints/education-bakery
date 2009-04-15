@@ -23,13 +23,5 @@ public class DeviceSvc extends AbstractCommand {
 
 	protected void executeInternal(HttpServletRequest request,
 			HttpServletResponse response, SvcController controller, AbstractFormMode mode) throws Exception {
-		/*List<BusinessEntity> entities = controller.getDAOFacade().getUnitDAO().getAvailable();
-		PrintWriter out = response.getWriter();
-		out.write("<availableUnits>");
-		for (BusinessEntity e : entities) {
-			out.write(e.toXml());
-		}
-		out.write("</availableUnits>");
-		out.flush();*/
 	}
 }
