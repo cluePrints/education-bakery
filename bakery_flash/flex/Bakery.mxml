@@ -88,6 +88,12 @@
 			<mx:Label text="Юппи! А еще это все закоммичено в SVN c умным комментарием">			
 			</mx:Label>			
 		</mx:Canvas>
+		<mx:Canvas label="device" width="100%" height="100%" show="manageDevice.init()">
+		 <comp:DeviceManagmentPanel 
+		 	id="manageDevice"
+		 	deviceDataSvcUrl = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.deviceSvc"
+		 	/>
+		</mx:Canvas>
 	</mx:TabNavigator>
 		<mx:Model id="formModel">		
 		<root>
