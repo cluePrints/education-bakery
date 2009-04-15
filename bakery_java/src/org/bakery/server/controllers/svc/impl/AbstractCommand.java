@@ -6,6 +6,7 @@ import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,8 +66,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		}
 	}
 	private void bindCommand(HttpServletRequest request)
-			throws IntrospectionException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
+			throws Exception {
 		Class clazz = command.getClass();
 		BeanInfo inf = java.beans.Introspector.getBeanInfo(clazz, Object.class);
 		PropertyDescriptor[] propDescriptors = inf.getPropertyDescriptors();

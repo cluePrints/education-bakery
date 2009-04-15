@@ -67,9 +67,7 @@ public abstract class BusinessEntity implements Serializable {
 			String propName = prop.getName();
 			Method readMethod = prop.getReadMethod();
 			Object result = readMethod.invoke(this);
-			tmp.append("\n").append(LONG).append(L).append(propName).append(G);	//<paramName>
-			
-			tmp.append(LONG);
+			tmp.append("\n").append(LONG).append(L).append(propName).append(G);	//<paramName>			
 			if (result == null) {
 				// append nothing
 			} else if (result instanceof BusinessEntity) {
@@ -86,7 +84,7 @@ public abstract class BusinessEntity implements Serializable {
 					|| result instanceof Boolean){
 				tmp.append(result);
 			}			
-			tmp.append("\n").append(LONG).append(LE).append(propName).append(G);  //</paramName>			
+			tmp.append(LE).append(propName).append(G);  //</paramName>			
 		}
 		tmp.append("\n").append(SHORT).append(LE).append(classInstanceName).append(G);
 		return tmp.toString();		
