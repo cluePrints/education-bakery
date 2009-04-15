@@ -12,17 +12,17 @@ public class WarehouseSvc extends AbstractCommand {
 
 	@Override
 	public void init(SvcController controller) {
-		setMainDAO(controller.getWarehouseDAO());
+		setMainDAO(controller.getDAOFacade().getWarehouseDAO());
 		setCommand(new Warehouse());
 	}
 
 	protected void executeInternal(HttpServletRequest request,
 			HttpServletResponse response, SvcController controller,
 			AbstractFormMode mode) throws Exception {
-		SvcHelper.writeAvailable(response.getWriter(), controller.getAddressDAO(), "availableAddresses");
-		SvcHelper.writeAvailable(response.getWriter(), controller.getContragentDAO(), "availableContragents");
+		SvcHelper.writeAvailable(response.getWriter(), controller.getDAOFacade().getAddressDAO(), "availableAddresses");
+		SvcHelper.writeAvailable(response.getWriter(), controller.getDAOFacade().getContragentDAO(), "availableContragents");
 		
-		SvcHelper.write(response.getWriter(), controller.getAddressDAO(), "addresses");
-		SvcHelper.write(response.getWriter(), controller.getContragentDAO(), "contragents");
+		SvcHelper.write(response.getWriter(), controller.getDAOFacade().getAddressDAO(), "addresses");
+		SvcHelper.write(response.getWriter(), controller.getDAOFacade().getContragentDAO(), "contragents");
 	}
 }

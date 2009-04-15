@@ -12,7 +12,7 @@ public class AddressSvc extends AbstractCommand {
 
 	@Override
 	public void init(SvcController controller) {
-		setMainDAO(controller.getAddressDAO());
+		setMainDAO(controller.getDAOFacade().getAddressDAO());
 		setCommand(new Address());
 	}
 

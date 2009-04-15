@@ -11,7 +11,7 @@ public class ProductTypeSvc extends AbstractCommand {
 
 	@Override
 	public void init(SvcController controller) {
-		setMainDAO(controller.getProductTypeDAO());
+		setMainDAO(controller.getDAOFacade().getProductTypeDAO());
 		setCommand(new ProductType());
 	}
 

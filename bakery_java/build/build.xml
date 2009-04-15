@@ -9,10 +9,11 @@
 	<property name="appName" value="bakery"/>
 	<property name="fileToDeploy" value="${appName}.war" />
 	
-	<property name="server.glassfish.home" value="C:\Glassfish"/>
+	<property name="server.glassfish.home" value="D:\Install\Glassfish"/>
 	<property name="server.glassfish.domain" value="domain1"/>
 	<property name="server.glassfish.autodeploy.dir" value="${server.glassfish.home}/domains/${server.glassfish.domain}/autodeploy"/>
 	<property name="server.glassfish.expanded.dir" value="${server.glassfish.home}/domains/${server.glassfish.domain}/applications/j2ee-modules/${appName}"/>
+	<property name="server.glassfish.blazeds.swf.dir" value="${server.glassfish.home}/domains/${server.glassfish.domain}/applications/j2ee-modules/blazeds/${appName}-debug"/>
 
         <property name="portal.wsp.user" value="wpadmin"/>
         <property name="portal.wsp.password" value="Password_1"/>
@@ -46,12 +47,20 @@
 			<fileset dir="${web}">
 				<exclude name="**/*.java" />
 			</fileset>
-		</copy>
+		</copy>              
 		<copy todir="${build}">
 			<fileset dir="${src}">
 				<include name="**/*.hbm.xml" />
 			</fileset>
 		</copy>
+		<copy todir="${build}/../.." overwrite="true">
+			<fileset dir="${server.glassfish.blazeds.swf.dir}">
+				<include name="*.swf"/>
+				<include name="*.html"/>
+				<include name="*.js"/>
+			</fileset>
+		</copy>
+
 		<copy todir="${build}" overwrite="true">
 			<fileset dir="${l10n}">
 				<include name="**/*.*"/>
@@ -72,6 +81,14 @@
         <target name="clean">
                 <delete dir="${dist}" />
 		<delete dir="${build}" />
+		<delete>
+			<fileset dir="${build}/../..">
+				<include name="*.swf"/>
+				<include name="*.html"/>
+				<include name="*.js"/>
+			</fileset>
+		</delete>
+
         </target>
 
 	<target name="jsp">

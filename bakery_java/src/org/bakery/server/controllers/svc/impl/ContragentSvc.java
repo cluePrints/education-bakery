@@ -11,7 +11,7 @@ public class ContragentSvc extends AbstractCommand {
 
 	@Override
 	public void init(SvcController controller) {
-		setMainDAO(controller.getContragentDAO());
+		setMainDAO(controller.getDAOFacade().getContragentDAO());
 		setCommand(new Contragent());
 	}
 

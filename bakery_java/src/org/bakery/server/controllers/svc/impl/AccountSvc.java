@@ -11,7 +11,7 @@ public class AccountSvc extends AbstractCommand {
 
 	@Override
 	public void init(SvcController controller) {
-		setMainDAO(controller.getAccountDAO());
+		setMainDAO(controller.getDAOFacade().getAccountDAO());
 		setCommand(new Account());
 	}
 

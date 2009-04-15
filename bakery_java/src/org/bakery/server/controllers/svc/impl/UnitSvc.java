@@ -16,13 +16,13 @@ public class UnitSvc extends AbstractCommand {
 
 	@Override
 	public void init(SvcController controller) {
-		setMainDAO(controller.getUnitDAO());
+		setMainDAO(controller.getDAOFacade().getUnitDAO());
 		setCommand(new Unit());
 	}
 
 	protected void executeInternal(HttpServletRequest request,
 			HttpServletResponse response, SvcController controller, AbstractFormMode mode) throws Exception {
-		/*List<BusinessEntity> entities = controller.getUnitDAO().getAvailable();
+		/*List<BusinessEntity> entities = controller.getDAOFacade().getUnitDAO().getAvailable();
 		PrintWriter out = response.getWriter();
 		out.write("<availableUnits>");
 		for (BusinessEntity e : entities) {

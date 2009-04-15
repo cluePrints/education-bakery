@@ -21,16 +21,6 @@
 	</bean>	
 	
 	<bean name="/svc.htm" id="svcController" class="org.bakery.server.controllers.svc.SvcController">
-		<property name="addressDAO" ref="addressDAO"/>
-		<property name="accountDAO" ref="accountDAO"/>
-		<property name="contragentDAO" ref="contragentDAO"/>
-		<property name="moneyMoveDAO" ref="moneyMoveDAO"/>
-		<property name="orderDAO" ref="orderDAO"/>
-		<property name="priceDAO" ref="priceDAO"/>
-		<property name="priceListDAO" ref="priceListDAO"/>
-		<property name="productMoveDAO" ref="productMoveDAO"/>
-		<property name="productTypeDAO" ref="productTypeDAO"/>
-		<property name="unitDAO" ref="unitDAO"/>
-		<property name="warehouseDAO" ref="warehouseDAO"/>
+		<property name="DAOFacade" ref="DAOFacade"/>
 	</bean>
 </beans>

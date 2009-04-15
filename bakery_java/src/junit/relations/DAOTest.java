@@ -1,95 +1,40 @@
 package junit.relations;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import junit.util.TestConst;
 
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
-import org.bakery.server.domain.accounting.Account;
 import org.bakery.server.domain.accounting.Address;
 import org.bakery.server.domain.log.MoneyMove;
 import org.bakery.server.domain.log.ProductMove;
-import org.bakery.server.domain.pricing.PriceList;
-import org.bakery.server.domain.pricing.PriceListItem;
 import org.bakery.server.domain.production.Warehouse;
 import org.bakery.server.persistence.AbstractDAO;
-import org.bakery.server.persistence.dao.AccountDAO;
-import org.bakery.server.persistence.dao.AddressDAO;
-import org.bakery.server.persistence.dao.ContragentDAO;
-import org.bakery.server.persistence.dao.MoneyMoveDAO;
-import org.bakery.server.persistence.dao.OrderDAO;
-import org.bakery.server.persistence.dao.PriceDAO;
-import org.bakery.server.persistence.dao.PriceListDAO;
-import org.bakery.server.persistence.dao.ProductMoveDAO;
-import org.bakery.server.persistence.dao.ProductTypeDAO;
-import org.bakery.server.persistence.dao.UnitDAO;
-import org.bakery.server.persistence.dao.WarehouseDAO;
+import org.bakery.server.persistence.DAOFacade;
 
 public class DAOTest extends AbstractSpringTest{
-	protected ProductTypeDAO productTypeDAO;
-	protected UnitDAO unitDAO;
-	protected AddressDAO addressDAO;
-	protected ContragentDAO contragentDAO;
-	protected AccountDAO accountDAO;	
-	protected WarehouseDAO warehouseDAO;
-	protected PriceListDAO priceListDAO;
-	protected PriceDAO priceDAO;
-	protected OrderDAO orderDAO;
-	protected MoneyMoveDAO moneyMoveDAO;
-	protected ProductMoveDAO productMoveDAO;
-	public UnitDAO getUnitDAO() {
-		return unitDAO;
-	}
-
-	public void setUnitDAO(UnitDAO unitDAO) {
-		this.unitDAO = unitDAO;
-	}
-
-	public AddressDAO getAddressDAO() {
-		return addressDAO;
-	}
-
-	public void setAddressDAO(AddressDAO addressDAO) {
-		this.addressDAO = addressDAO;
-	}
-
-	public ProductTypeDAO getProductTypeDAO() {
-		return productTypeDAO;
-	}
-
-	public void setProductTypeDAO(ProductTypeDAO productTypeDAO) {
-		this.productTypeDAO = productTypeDAO;
-	}
+	protected DAOFacade facade;	
 
 	public void testDAOs() throws Exception {
-		assertNotNull(orderDAO.getAccountsAvailableForOrder(4L));
-		assertTrue("Order should have available account", orderDAO.getAccountsAvailableForOrder(1L).size()>0);	
 		
 		/* Lazy init tests*/
-		assertNotNull(((Warehouse) warehouseDAO.getAvailable().get(0)).getOwner().getName());
-		assertNotNull(((MoneyMove) moneyMoveDAO.getAvailable().get(1)).getSourceAccount().getOwner().getName());
-		assertTrue(productMoveDAO.fetchByParentId(2L).get(0) instanceof ProductMove);
+		assertNotNull(((Warehouse) facade.getWarehouseDAO().getAvailable().get(0)).getOwner().getName());
+		assertNotNull(((MoneyMove) facade.getMoneyMoveDAO().getAvailable().get(1)).getSourceAccount().getOwner().getName());
 		
-		assertNotNull(priceDAO.fetchByParentId(1L).get(0).getParent().getOwner().getName());
-		assertNotNull(moneyMoveDAO.fetchByParentId(2L).get(0).getDestinationAccount().getOwner().getName());
-		assertNotNull(((PriceList)priceListDAO.getAvailable().get(0)).getOwner().getName());
-		assertNotNull(((PriceListItem)priceDAO.getAvailable().get(0)).getParent().getOwner().getName());
-		assertNotNull(((Account) accountDAO.getAvailable().get(0)).getOwner().getName());
-		assertNotNull(((Account) orderDAO.getAccountsAvailableForOrder(1L).get(0)).getOwner().getName());
-		assertNotNull((moneyMoveDAO.fetchByParentId(2L).get(0).getOrder().getConsumer().getName()));
-		assertNotNull((moneyMoveDAO.fetchByParentId(2L).get(0).getOrder().getProvider().getName()));		
+		BeanInfo info = Introspector.getBeanInfo(facade.getClass(), Object.class);
+		PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+		for (PropertyDescriptor propDesc : descriptors){
+			if (AbstractDAO.class.isAssignableFrom(propDesc.getPropertyType())){
+				Method readMethod = propDesc.getReadMethod();
+				AbstractDAO dao = (AbstractDAO) readMethod.invoke(facade);
+				testSingleDAO(dao);
+			}
+		}
 		
-		testSingleDAO(productMoveDAO);		
-		testSingleDAO(unitDAO);		
-		testSingleDAO(productTypeDAO);		
-		testSingleDAO(addressDAO);
-		testSingleDAO(contragentDAO);
-		testSingleDAO(accountDAO);
-		testSingleDAO(warehouseDAO);
-		testSingleDAO(priceListDAO);
-		testSingleDAO(priceDAO);
-		testSingleDAO(orderDAO);
-		testSingleDAO(moneyMoveDAO);			/* Lazy init tests*/		
 	}
 	
 	protected void testAvailable(AbstractDAO dao) throws Exception {
@@ -144,69 +89,5 @@ public class DAOTest extends AbstractSpringTest{
 			System.out.println(obj.getClass().getCanonicalName()+ " is not named.");
 		}		
 		testAvailable(dao);
-	}
-
-	public ContragentDAO getContragentDAO() {
-		return contragentDAO;
-	}
-
-	public void setContragentDAO(ContragentDAO contragentDAO) {
-		this.contragentDAO = contragentDAO;
-	}
-
-	public AccountDAO getAccountDAO() {
-		return accountDAO;
-	}
-
-	public void setAccountDAO(AccountDAO accountDAO) {
-		this.accountDAO = accountDAO;
-	}
-
-	public WarehouseDAO getWarehouseDAO() {
-		return warehouseDAO;
-	}
-
-	public void setWarehouseDAO(WarehouseDAO warehouseDAO) {
-		this.warehouseDAO = warehouseDAO;
-	}
-
-	public PriceListDAO getPriceListDAO() {
-		return priceListDAO;
-	}
-
-	public void setPriceListDAO(PriceListDAO priceListDAO) {
-		this.priceListDAO = priceListDAO;
-	}
-
-	public PriceDAO getPriceDAO() {
-		return priceDAO;
-	}
-
-	public void setPriceDAO(PriceDAO priceDAO) {
-		this.priceDAO = priceDAO;
-	}
-
-	public OrderDAO getOrderDAO() {
-		return orderDAO;
-	}
-
-	public void setOrderDAO(OrderDAO orderDAO) {
-		this.orderDAO = orderDAO;
-	}
-
-	public MoneyMoveDAO getMoneyMoveDAO() {
-		return moneyMoveDAO;
-	}
-
-	public void setMoneyMoveDAO(MoneyMoveDAO moneyMoveDAO) {
-		this.moneyMoveDAO = moneyMoveDAO;
-	}
-
-	public ProductMoveDAO getProductMoveDAO() {
-		return productMoveDAO;
-	}
-
-	public void setProductMoveDAO(ProductMoveDAO productMoveDAO) {
-		this.productMoveDAO = productMoveDAO;
 	}
 }
