@@ -13,7 +13,7 @@ public class SvcHelper {
 		for (BusinessEntity e : entities) {
 			out.write(e.toXml());
 		}
-		out.write("\n<"+sectionId+">\n");
+		out.write("\n</"+sectionId+">\n");
 		out.flush();
 	}
 	
