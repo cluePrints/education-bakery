@@ -4,7 +4,7 @@
 	creationComplete="init()">
 	<mx:HTTPService id="mainSvc" 
 		useProxy="false"
-		method="POST"
+		method="GET"
 		url="{mainDataSvcUrl}"
 		result="httpResultHandler(event)"
 		fault="httpFaultHandler(event)"/>
@@ -67,7 +67,7 @@
 			}
 			function saveSelected():void{
 				formModel.mode="EDIT";
-				mainSvc.cancel();			
+				mainSvc.cancel();	
 				mainSvc.send(formModel);
 			}
 			function filterRefresh():void{
@@ -85,7 +85,7 @@
 			<id>{tiId.text}</id>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 				
-			<name>{tiName.text}</name>
+			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 		<mx:Label text="{mainDataUnitVisualName+&quot; management panel&quot;}"/>
