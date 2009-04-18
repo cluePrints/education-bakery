@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()">
-	<mx:HTTPService id="contragentSvc" 
-		useProxy="false"
-		method="POST"
-		url="{contragentDataSvcUrl}"
-		result="httpContragentResultHandler(event)"
-		fault="httpFaultHandler(event)"/>
-		
+	creationComplete="init()">		
 	<mx:HTTPService id="accountSvc" 
 		useProxy="false"
 		method="POST"
@@ -36,11 +29,9 @@
 			
 			public function init():void{
 				createNew();
-				contragentSvc.cancel();
 				accountSvc.cancel();
 				formModel.mode="FETCH";
 				formModel.contragent=0;
-				contragentSvc.send(formModel);
 				accountSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
@@ -49,10 +40,9 @@
 			private function httpaccountResultHandler(event:*):void{
 				accounts = event.result.mainData;
 				accounts["account"].filterFunction = mainFilterFunction;
-			} 
-			private function httpContragentResultHandler(event:*):void{
-				availableContragents = event.result.available;
-				contragents = event.result.mainData;
+				
+				availableContragents = event.result.contragentsAvailable;
+				contragents = event.result.contragents;
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;

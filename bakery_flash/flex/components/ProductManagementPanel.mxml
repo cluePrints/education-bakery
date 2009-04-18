@@ -2,12 +2,6 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	creationComplete="init()">
-	<mx:HTTPService id="unitSvc" 
-		useProxy="false"
-		method="POST"
-		url="{unitDataSvcUrl}"
-		result="httpUnitResultHandler(event)"
-		fault="httpFaultHandler(event)"/>
 		
 	<mx:HTTPService id="productTypeSvc" 
 		useProxy="false"
@@ -36,10 +30,8 @@
 			
 			public function init():void{
 				createNew();
-				unitSvc.cancel();
 				productTypeSvc.cancel();
 				formModel.mode="FETCH";
-				unitSvc.send(formModel);
 				productTypeSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
@@ -48,10 +40,12 @@
 			private function httpproducttypeResultHandler(event:*):void{
 				productTypes = event.result.mainData;
 				productTypes["producttype"].filterFunction = mainFilterFunction;
+				
+				availableUnits = event.result.unitsAvailable;
+				units = event.result.units;
 			} 
 			private function httpUnitResultHandler(event:*):void{
-				availableUnits = event.result.available;
-				units = event.result.mainData;
+				
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;

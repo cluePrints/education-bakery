@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()">
-	<mx:HTTPService id="addressSvc" 
-		useProxy="false"
-		method="POST"
-		url="{addressDataSvcUrl}"
-		result="httpAddressResultHandler(event)"
-		fault="httpFaultHandler(event)"/>
-		
+	creationComplete="init()">		
 	<mx:HTTPService id="contragentSvc" 
 		useProxy="false"
 		method="POST"
@@ -38,7 +31,6 @@
 				createNew();
 				formModel.mode="FETCH";
 				formModel.address=0;
-				addressSvc.send(formModel);
 				contragentSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
@@ -47,10 +39,9 @@
 			private function httpContragentResultHandler(event:*):void{
 				contragents = event.result.mainData;
 				contragents["contragent"].filterFunction = mainFilterFunction;
-			} 
-			private function httpAddressResultHandler(event:*):void{
-				availableAddresses = event.result.available;
-				addresses = event.result.mainData;
+				
+				availableAddresses = event.result.addressesAvailable;
+				addresses = event.result.addresses;
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;
