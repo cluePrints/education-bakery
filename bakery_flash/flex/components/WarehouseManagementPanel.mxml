@@ -184,7 +184,7 @@
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
-		<mx:Label text="Warehouse management panel"/>
+		<mx:Label text="Панель управления складами"/>
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="100%" width="100%" 
@@ -193,10 +193,10 @@
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Name" dataField="name"/>
-						<mx:DataGridColumn headerText="Owner" labelFunction="getWarehouseOwnerName"/>
-						<mx:DataGridColumn headerText="Address" labelFunction="getWarehouseAddressName"/>
-						<mx:DataGridColumn dataField="active" labelFunction="activeToString"/>
+						<mx:DataGridColumn headerText="Название" dataField="name"/>
+						<mx:DataGridColumn headerText="Владелец" labelFunction="getWarehouseOwnerName"/>
+						<mx:DataGridColumn headerText="Адресс" labelFunction="getWarehouseAddressName"/>
+						<mx:DataGridColumn headerText="Активность" dataField="active" labelFunction="activeToString"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
@@ -204,11 +204,11 @@
 				<mx:VBox horizontalAlign="left">	
 					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
 					<mx:TextInput id="tiId" visible="false" text=""/>
-					<mx:FormItem label="Name:" 
+					<mx:FormItem label="Название:" 
 						required="true">												
 						<mx:TextInput id="tiName"/>
 					</mx:FormItem>
-					<mx:FormItem label="Owner:" 
+					<mx:FormItem label="Владелец:" 
 						required="true">												
 						<mx:ComboBox id="cbOwners"
 							dataProvider="{availableOwners.contragent}"
@@ -216,7 +216,7 @@
 							change="{formModel.owner=availableOwners.contragent[cbOwners.selectedIndex].id}"
 							/>
 					</mx:FormItem>
-					<mx:FormItem label="Address:" 
+					<mx:FormItem label="Адресс:" 
 						required="true">												
 						<mx:ComboBox id="cbAddresses"
 							dataProvider="{availableAddresses.address}"
@@ -224,16 +224,16 @@
 							change="{formModel.address=availableAddresses.address[cbAddresses.selectedIndex].id}"
 							/>
 					</mx:FormItem>
-					<mx:FormItem label="Active">
+					<mx:FormItem label="Активность">
 						<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
 				</mx:VBox>
 				<mx:HBox horizontalAlign="center">
-					<mx:Button label="Save" click="saveSelected()"/>							
-					<mx:Button label="Cancel" click="cancel()"/>
+					<mx:Button label="Сохранить" click="saveSelected()"/>							
+					<mx:Button label="Отмена" click="cancel()"/>
 				</mx:HBox>
 				<mx:HBox horizontalAlign="center">
-					<mx:Button label="CreateNew" click="createNew()"/>							
+					<mx:Button label="Новый" click="createNew()"/>							
 				</mx:HBox>
 				<mx:VBox id="filterPanel">
 					<mx:Script>
@@ -248,11 +248,11 @@
 						</mx:FormItem>												
 					</mx:HBox>					
 					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
-						<mx:FormItem label="Show" horizontalAlign="left" width="100%">
-							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Active"/>
-							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Inactive"/>
+						<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
 						</mx:FormItem>
-						<mx:FormItem label="Name pattern:" >
+						<mx:FormItem label="Шаблон поиска по имени:" >
 							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
 						</mx:FormItem>	
 					</mx:VBox>					
