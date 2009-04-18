@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class Unit extends BusinessEntity implements NamedEntity{
+	private static final long serialVersionUID=1L;
 	private String name;
 
 	public Unit(String name) {

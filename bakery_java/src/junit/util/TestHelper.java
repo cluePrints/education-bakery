@@ -25,7 +25,7 @@ public class TestHelper {
 		"Sergiy", "Alexey", "Buddah"
 	};
 	public static String addTime(String source) {
-		String testTime = (new Date()).getHours()+":"+(new Date()).getMinutes()+(new Date()).getSeconds();
+		String testTime = new Date().getTime()+"";
 		testTime = ("["+testTime+"]"+source);
 		return testTime.substring(0, Math.min(testTime.length(), 30));
 	}

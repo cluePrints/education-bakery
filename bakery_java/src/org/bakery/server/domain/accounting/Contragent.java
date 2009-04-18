@@ -9,6 +9,7 @@ import org.bakery.server.domain.production.Warehouse;
 import org.springframework.validation.Errors;
 
 public class Contragent extends BusinessEntity {
+	private static final long serialVersionUID=1L;
 	private String name;
 	private Boolean child=false;
 	private Address address=new Address(); 

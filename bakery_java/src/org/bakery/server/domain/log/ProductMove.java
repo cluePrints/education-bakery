@@ -14,6 +14,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class ProductMove extends BusinessEntity {
+	private static final long serialVersionUID=1L;
 	private Warehouse sourceWarehouse=new Warehouse();
 	private Warehouse destinationWarehouse=new Warehouse();
 	private Date date=(Date) NULL_DATE.clone();

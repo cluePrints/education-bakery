@@ -19,6 +19,7 @@ import org.springframework.validation.Errors;
  *
  */
 public abstract class BusinessEntity implements Serializable {
+	private static final long serialVersionUID=1L;
 	private Long id=NOT_EXISTENT;	
 	private int active=1;
 	
@@ -38,6 +39,7 @@ public abstract class BusinessEntity implements Serializable {
 	}
 	
 	public static final Date NULL_DATE = new Date(0){	
+		private static final long serialVersionUID = 1L;
 		public boolean equals(Date d) {
 			if (d==null) return false;
 			return this.getTime() == d.getTime();
@@ -91,7 +93,5 @@ public abstract class BusinessEntity implements Serializable {
 	};
 	
 	private static final Long NOT_EXISTENT=null;
-	private static final int PRIME_NUMBER=31;
-	private static final int classHash = BusinessEntity.class.hashCode();	
 }
 

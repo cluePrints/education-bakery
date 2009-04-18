@@ -27,6 +27,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class Order extends BusinessEntity {
+	private static final long serialVersionUID=1L;
 	/**
 	 * Contragent that will ship all the items from order
 	 */

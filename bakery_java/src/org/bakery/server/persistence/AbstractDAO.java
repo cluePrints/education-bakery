@@ -16,12 +16,12 @@ public class AbstractDAO implements DAOInterface {
 	private String queryGetAvailable;
 	private String querySearchByName;
 	private String targetClassName;
-	private Class targetClass;
+	private Class<BusinessEntity> targetClass;
 	private String queryFetchById;
 	private String queryFetchByParent;
 	
-	public List getAvailable() throws Exception{
-		List result;
+	public List<BusinessEntity> getAvailable() throws Exception{
+		List<BusinessEntity> result;
 		Session session = getSessionFactory().openSession();
 		try {
 			Query query = session.createQuery(queryGetAvailable);
@@ -40,7 +40,7 @@ public class AbstractDAO implements DAOInterface {
 		this.queryGetAvailable = queryGetAvailable;
 	}
 	
-	public List searchByExample(Object exampleObj, Integer startFrom,
+	public List<BusinessEntity> searchByExample(Object exampleObj, Integer startFrom,
 			Integer maxResults) throws Exception {
 		Example sample = Example.create(exampleObj).ignoreCase()
 				.excludeZeroes().enableLike(MatchMode.ANYWHERE);
@@ -113,9 +113,9 @@ public class AbstractDAO implements DAOInterface {
 	 * @param maxResults
 	 * @return
 	 */
-	public List searchByName(String namePattern, Integer startFrom,
+	public List<BusinessEntity> searchByName(String namePattern, Integer startFrom,
 			Integer maxResults) throws Exception {
-		List result;
+		List<BusinessEntity> result;
 		Session session = sessionFactory.openSession();
 		try {
 			Query query = session.createQuery(querySearchByName);
@@ -174,11 +174,11 @@ public class AbstractDAO implements DAOInterface {
 		this.querySearchByName = querySearchByName;
 	}
 
-	public Class getTargetClass() {
+	public Class<BusinessEntity> getTargetClass() {
 		return targetClass;
 	}
 
-	public void setTargetClass(Class targetClass) {
+	public void setTargetClass(Class<BusinessEntity> targetClass) {
 		this.targetClass = targetClass;
 	}
 
@@ -188,7 +188,7 @@ public class AbstractDAO implements DAOInterface {
 
 	public void setTargetClassName(String targetClassName) throws Exception {
 		this.targetClassName = targetClassName;
-		this.targetClass = Class.forName(targetClassName);
+		this.targetClass = (Class<BusinessEntity>) Class.forName(targetClassName);
 	}
 	public String getQueryFetchById() {
 		return queryFetchById;

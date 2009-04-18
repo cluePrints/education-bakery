@@ -17,6 +17,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class ProductionPlan extends BusinessEntity {
+	private static final long serialVersionUID=1L;
 	private Order order;
 	
 	/**

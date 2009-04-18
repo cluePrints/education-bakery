@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class DeviceParameter extends BusinessEntity implements NamedEntity {
+	private static final long serialVersionUID=1L;
 	private String name;
 	private Unit unit;
 	private Device device;

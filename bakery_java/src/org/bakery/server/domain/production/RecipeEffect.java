@@ -10,6 +10,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class RecipeEffect extends BusinessEntity{
+	private static final long serialVersionUID=1L;
 	/**
 	 * Parent recipe
 	 */

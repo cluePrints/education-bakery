@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class Measure extends BusinessEntity {
+	private static final long serialVersionUID=1L;
 	/**
 	 * Value
 	 */

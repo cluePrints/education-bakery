@@ -19,7 +19,8 @@ import org.springframework.validation.Errors;
  * @author Ivan_Sobolev1
  *
  */
-public class MoneyMove extends BusinessEntity {	
+public class MoneyMove extends BusinessEntity {
+	private static final long serialVersionUID=1L;
 	private float amount;
 	private String desc;
 	private Date date=(Date) NULL_DATE.clone();

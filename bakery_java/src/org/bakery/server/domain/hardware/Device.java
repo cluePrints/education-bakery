@@ -11,7 +11,8 @@ import org.springframework.validation.Errors;
  * @author Ivan_Sobolev1
  *
  */
-public class Device extends BusinessEntity implements NamedEntity {	
+public class Device extends BusinessEntity implements NamedEntity {
+	private static final long serialVersionUID=1L;
 	private String name;
 	private String description;
 	

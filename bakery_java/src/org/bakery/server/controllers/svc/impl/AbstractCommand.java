@@ -17,7 +17,6 @@ import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.persistence.AbstractDAO;
 
 public abstract class AbstractCommand implements ControllerAwareCommand {
-	private static final String EMPTY_STRING = "";
 	private AbstractDAO mainDAO;
 	
 	/**

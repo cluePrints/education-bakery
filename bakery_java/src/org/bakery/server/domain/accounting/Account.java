@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class Account extends BusinessEntity implements NamedEntity{
+	private static final long serialVersionUID=1L;
 	@Override
 	public void validate(Errors errors) { 
 		if (CommonFormValidator.isEmptyEntity(owner))

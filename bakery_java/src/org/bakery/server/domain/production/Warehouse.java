@@ -8,6 +8,7 @@ import org.bakery.server.domain.accounting.Contragent;
 import org.springframework.validation.Errors;
 
 public class Warehouse extends BusinessEntity implements NamedEntity{
+	private static final long serialVersionUID=1L;
 	private String name;
 	private Contragent owner=new Contragent();
 	private Address address=new Address();

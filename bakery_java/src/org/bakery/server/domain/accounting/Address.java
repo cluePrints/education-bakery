@@ -17,6 +17,7 @@ import org.springframework.validation.Errors;
  *
  */
 public class Address extends BusinessEntity implements NamedEntity {
+	private static final long serialVersionUID=1L;
 	@Override
 	public void validate(Errors errors) {
 		

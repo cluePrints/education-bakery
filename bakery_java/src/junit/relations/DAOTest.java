@@ -41,14 +41,13 @@ public class DAOTest extends AbstractSpringTest{
 	}
 	
 	protected void testAvailable(AbstractDAO dao) throws Exception {
-		List<Address> allUnits = dao.searchByName("%", 0, 999);
 		BusinessEntity obj = (BusinessEntity) dao.getById(TestConst.TEST_OBJECT_ID);
 		obj.setActive(1);
 		dao.saveOrUpdate(obj);
-		List activeaddresss = dao.getAvailable();
+		List<BusinessEntity> activeaddresss = dao.getAvailable();
 		obj.setActive(0);
 		dao.saveOrUpdate(obj);
-		List activeaddresss2 = dao.getAvailable();
+		List<BusinessEntity> activeaddresss2 = dao.getAvailable();
 		if (activeaddresss.size() >0 
 				&& !dao.getTargetClass().equals(MoneyMove.class)
 				&& !dao.getTargetClass().equals(ProductMove.class)) 
@@ -87,7 +86,7 @@ public class DAOTest extends AbstractSpringTest{
 		assertTrue("DAO should return result of proper type", dao.getTargetClass().isInstance(obj));
 		obj = (BusinessEntity) dao.getById(TestConst.TEST_OBJECT_ID);
 		if (NamedEntity.class.isInstance(obj)){
-			List res = dao.searchByName("%", 0, 10);
+			List<BusinessEntity> res = dao.searchByName("%", 0, 10);
 			assertTrue("We must have instance", res.size()>0);
 			assertTrue("No more then 10 results", res.size()<=10);
 			assertTrue("DAO must return instances of proper type", dao.getTargetClass().isInstance(res.get(0)));

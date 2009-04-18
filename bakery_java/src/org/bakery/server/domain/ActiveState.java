@@ -10,6 +10,7 @@ import java.io.Serializable;
  *
  */
 public class ActiveState implements Serializable{
+	private static final long serialVersionUID=1L;
 	private Integer value=1;
 
 	private ActiveState() {
