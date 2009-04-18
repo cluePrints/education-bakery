@@ -19,12 +19,10 @@ public class SvcController extends AbstractController {
 		
 		String svcName = request.getParameter("svc");
 		// FIXME: it's dumb approach
-
+		response.getWriter().write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 		try {
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html;charset=UTF-8");
-			logger.info("\nRequest: "+request.getRequestURL()+"\n\n"+LoggingUtils.dumpStringMapIntoString(request
-					.getParameterMap()));
 			String svcClassName = svcName;
 			Class svcClass = Class.forName(svcClassName);
 			AbstractCommand command = (AbstractCommand) svcClass.newInstance();

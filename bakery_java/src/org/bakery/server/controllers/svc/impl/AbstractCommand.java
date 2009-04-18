@@ -44,7 +44,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		executeInternal(request, response, controller, mode);
 
 		PrintWriter out = response.getWriter();
-		out.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+		
 		SvcHelper.write(out, mainDAO, "mainData");				
 		SvcHelper.writeAvailable(out, mainDAO, "available");
 	}
