@@ -15,13 +15,15 @@ public class SvcController extends AbstractController {
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		
+		
 		String svcName = request.getParameter("svc");
 		// FIXME: it's dumb approach
 
 		try {
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html;charset=UTF-8");
-			logger.info(LoggingUtils.dumpStringMapIntoString(request
+			logger.info("\nRequest: "+request.getRequestURL()+"\n\n"+LoggingUtils.dumpStringMapIntoString(request
 					.getParameterMap()));
 			String svcClassName = svcName;
 			Class svcClass = Class.forName(svcClassName);

@@ -76,8 +76,7 @@ public abstract class BusinessEntity implements Serializable {
 				tmp.append(((BusinessEntity)result).getId());
 			} else if (result.getClass().isPrimitive()){				
 				tmp.append(result);
-			} else if (result instanceof String
-					|| result instanceof Integer
+			} else if (result instanceof Integer
 					|| result instanceof Short
 					|| result instanceof Byte
 					|| result instanceof Long
@@ -85,7 +84,9 @@ public abstract class BusinessEntity implements Serializable {
 					|| result instanceof Double
 					|| result instanceof Boolean){
 				tmp.append(result);
-			}			
+			} else if (result instanceof String){
+				tmp.append(replaceXMLDeclinedCharacters((String) result));
+			}
 			tmp.append(LE).append(propName).append(G);  //</paramName>			
 		}
 		tmp.append("\n").append(SHORT).append(LE).append(classInstanceName).append(G);
@@ -93,5 +94,10 @@ public abstract class BusinessEntity implements Serializable {
 	};
 	
 	private static final Long NOT_EXISTENT=null;
+	private String replaceXMLDeclinedCharacters(String input){
+		String result = 
+		"<![CDATA[" + input.replaceAll("]]>", "]]>]]><![CDATA[") + "]]>";
+		return result;
+	}
 }
 
