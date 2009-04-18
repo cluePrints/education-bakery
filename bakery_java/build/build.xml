@@ -1,7 +1,6 @@
 <project name="AdRegister" default="deployOnGlassfish" basedir=".">
 	<property name="src" value="../src" />
 	<property name="web" value="../WebContent" />
-	<property name="l10n" value="${web}/l10n" />
 	<property name="build" value="${web}/WEB-INF/classes" />
 	<property name="dist" value="../dist" />
 	<property name="lib" value="${web}/WEB-INF/lib" />
@@ -61,11 +60,6 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${build}" overwrite="true">
-			<fileset dir="${l10n}">
-				<include name="**/*.*"/>
-			</fileset>
-		</copy>		
 	</target>
 
 	<target name="dist" depends="clean">
