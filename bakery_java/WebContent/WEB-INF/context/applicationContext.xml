@@ -13,6 +13,12 @@
 		<property name="url" value="jdbc:mysql://localhost:3306/bakery" />
 		<property name="username" value="root" />
 		<property name="password" value="password" />
+		<property name="connectionProperties">
+			<props>
+				<prop key="useUnicode">true</prop>
+				<prop key="characterEncoding">UTF-8</prop>
+			</props>
+		</property>
 	</bean>
 
 	<bean id="DAOFacade" class="org.bakery.server.persistence.DAOFacade">

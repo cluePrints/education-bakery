@@ -19,6 +19,8 @@ public class SvcController extends AbstractController {
 		// FIXME: it's dumb approach
 
 		try {
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("text/html;charset=UTF-8");
 			logger.info(LoggingUtils.dumpStringMapIntoString(request
 					.getParameterMap()));
 			String svcClassName = svcName;
@@ -27,7 +29,7 @@ public class SvcController extends AbstractController {
 			command.init(this);
 			command.execute(request, response, this);
 
-		} catch (Exception ex) {
+		} catch (Exception ex) {			
 			response.setStatus(500);
 			response.flushBuffer();
 			throw ex;

@@ -4,7 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +17,7 @@ import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.persistence.AbstractDAO;
 
 public abstract class AbstractCommand implements ControllerAwareCommand {
+	private static final String EMPTY_STRING = "";
 	private AbstractDAO mainDAO;
 	
 	/**
@@ -42,11 +43,9 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		
 		// ancestors actions
 		executeInternal(request, response, controller, mode);
-		
-		// include mainDAO entities		
-		List<BusinessEntity> entities = mainDAO.searchByName("%", 1, 200);
 
 		PrintWriter out = response.getWriter();
+		out.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 		SvcHelper.write(out, mainDAO, "mainData");				
 		SvcHelper.writeAvailable(out, mainDAO, "available");
 	}
@@ -71,6 +70,10 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 			Class propType = prop.getPropertyType();
 			Object propValue = null;
 			String strVal = request.getParameter(prop.getName());
+			if (strVal==null)
+				continue;
+				
+			strVal = URLDecoder.decode(strVal, "utf-8");
 			if (strVal == null)
 				continue;
 			
