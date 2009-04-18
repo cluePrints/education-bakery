@@ -1,13 +1,9 @@
 package org.bakery.server.controllers.svc;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bakery.server.controllers.svc.impl.AbstractCommand;
-import org.bakery.server.persistence.AbstractDAO;
 import org.bakery.server.persistence.DAOFacade;
 import org.bakery.server.util.LoggingUtils;
 import org.springframework.web.servlet.ModelAndView;

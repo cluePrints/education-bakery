@@ -15,7 +15,7 @@
 			column="order_id"/>
 		<many-to-one
 			name="recipe"
-			column="recipe_id"/>
+			column="recip_id"/>
 		<property
 			name="startDate"
 			column="start_date"/>

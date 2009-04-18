@@ -13,12 +13,7 @@
 	            <prop key="/flow.htm">flowController</prop>
 	        </props>
 	    </property>-->
-	</bean> 
-	
-	<bean name="/flow.htm" id="flowController" class="org.springframework.webflow.executor.mvc.FlowController">
-		<property name="flowExecutor" ref="flowExecutor"/>
-		<property name="defaultFlowId" value="admin-flow"/>
-	</bean>	
+	</bean>
 	
 	<bean name="/svc.htm" id="svcController" class="org.bakery.server.controllers.svc.SvcController">
 		<property name="DAOFacade" ref="DAOFacade"/>

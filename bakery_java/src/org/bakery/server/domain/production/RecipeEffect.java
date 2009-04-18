@@ -1,7 +1,6 @@
 package org.bakery.server.domain.production;
 
 import org.bakery.server.domain.BusinessEntity;
-import org.bakery.server.domain.NamedEntity;
 import org.springframework.validation.Errors;
 /**
  * Represents effect, which is part of a recipe

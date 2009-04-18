@@ -1,16 +1,11 @@
 package org.bakery.server.controllers.svc.impl;
 
-import java.io.PrintWriter;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bakery.server.controllers.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.SvcController;
-import org.bakery.server.domain.BusinessEntity;
+import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.domain.hardware.Device;
-import org.bakery.server.domain.production.Unit;
 
 public class DeviceSvc extends AbstractCommand {
 

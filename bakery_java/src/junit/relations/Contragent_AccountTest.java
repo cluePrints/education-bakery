@@ -1,5 +1,4 @@
 package junit.relations;
-import static junit.framework.Assert.*;
 import junit.util.TestHelper;
 
 import org.bakery.server.domain.accounting.Account;

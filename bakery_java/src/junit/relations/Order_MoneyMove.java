@@ -1,6 +1,5 @@
 package junit.relations;
 
-import static junit.framework.Assert.*;
 import java.util.Date;
 
 import junit.util.TestHelper;

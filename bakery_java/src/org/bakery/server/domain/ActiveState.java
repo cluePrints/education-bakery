@@ -1,8 +1,6 @@
 package org.bakery.server.domain;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * State used to allow deactivate some business objects, but allow them to be 

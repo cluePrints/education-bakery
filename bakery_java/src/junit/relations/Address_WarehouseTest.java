@@ -1,6 +1,5 @@
 package junit.relations;
 import junit.util.TestHelper;
-import static junit.framework.Assert.*;
 
 import org.bakery.server.domain.accounting.Address;
 import org.bakery.server.domain.accounting.Contragent;
