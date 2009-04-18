@@ -135,7 +135,7 @@
 			<unit></unit>
 			<id>{tiId.text}</id>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
-			<name>{tiName.text}</name>
+			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Product types management panel"/>

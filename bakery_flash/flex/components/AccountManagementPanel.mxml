@@ -139,9 +139,9 @@
 			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
 			<owner>0</owner>
 			<id>{tiId.text}</id>	
-			<desc>{tiDesc.text}</desc>	
+			<desc>{encodeURI(tiDesc.text)}</desc>	
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
-			<name>{tiName.text}</name>
+			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Account management panel"/>

@@ -143,7 +143,7 @@
 			<id>{tiId.text}</id>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<child>{cbChild.selected == true ? "1" : "0"}</child>
-			<name>{tiName.text}</name>
+			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Contragents management panel"/>

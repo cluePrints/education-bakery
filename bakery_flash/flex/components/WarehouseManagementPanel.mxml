@@ -181,7 +181,7 @@
 			<address></address>
 			<id>{tiId.text}</id>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
-			<name>{tiName.text}</name>
+			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Warehouse management panel"/>
@@ -213,7 +213,7 @@
 						<mx:ComboBox id="cbOwners"
 							dataProvider="{availableOwners.contragent}"
 							labelField="name"
-							change="{formModel.owner=availableOwners.owner[cbOwners.selectedIndex].id}"
+							change="{formModel.owner=availableOwners.contragent[cbOwners.selectedIndex].id}"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Address:" 
