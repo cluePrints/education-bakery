@@ -90,10 +90,6 @@
 			function activeToString(item:Object, column:DataGridColumn):String{				
 				return (item.active>0 ? "active" : "not active"); 
 			}
-			function getUnitIdByProductTypeId(_id:int){
-				var a = availableUnits[id==_id.toString()].id;
-				return a;
-			}
 			function getProductTypeUnitPos(_unitId:int){
 				var result=0;
 				for each (var unit in availableUnits.unit){ 

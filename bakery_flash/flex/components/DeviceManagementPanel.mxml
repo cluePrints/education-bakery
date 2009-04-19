@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:comp="components.*"
+	creationComplete="init()" width="800">
+	<mx:Model id="formModel">		
+		<root>
+			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
+			
+			<id>{tiId.text}</id>		
+			<active>{cbActive.selected == true ? "1" : "0"}</active>
+				
+			<name>{encodeURI(tiName.text)}</name>
+		</root>		
+	</mx:Model>		
+	<mx:Model id="childModel">
+		<root>
+			<mode>EDIT</mode>
+			
+			<id></id>
+			<active>{cbChildActive.selected == true ? "1" : "0"}</active>
+			<fixed>{cbChildFixed.selected == true ? "1" : "0"}</fixed>
+			<minimized>{cbChildMinimized.selected == true ? "1" : "0"}</minimized>
+			
+			<device>{dgData.selectedItem.id}</device>
+			
+			<name>{encodeURI(tiChildName.text)}</name>
+			<bestValue>{encodeURI(tiChildBestValue.text)}</bestValue>
+			<unit>{cbChildUnit.selectedItem.id}</unit>
+		</root>					
+	</mx:Model>
+	<mx:HTTPService id="mainSvc" 
+		useProxy="false"
+		method="GET"
+		url="{mainDataSvcUrl}"
+		result="httpResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+	<mx:HTTPService id="childSvc" 
+		useProxy="false"
+		method="GET"
+		url="{childDataSvcUrl}"
+		fault="httpFaultHandler(event)"/>
+	<mx:VBox horizontalAlign="center">	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CollectionEvent;
+			import mx.automation.codec.ArrayPropertyCodec;
+			import mx.validators.RegExpValidator;
+			import mx.utils.StringUtil;
+			import mx.rpc.http.mxml.HTTPService;
+			import flash.sampler.getInvocationCount;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import components.Util;
+			public var mainDataSvcUrl:String;
+			public var childDataSvcUrl:String;
+			public var hideEffect:*;
+			[Bindable]
+            private var mainData:*;
+            [Bindable]
+            private var selectedDeviceParameters:ArrayCollection = new ArrayCollection();
+            
+            [Bindable]
+            private var units:*;            
+            [Bindable]
+            private var availableUnits:*;
+			
+			var deviceParameters:ArrayCollection;
+			// XXX: It's dumb, change it
+			var util:Util = new Util();
+			
+			function childBindSelected(){
+				var item = dgChildData.selectedItem;
+				childModel.id = item.id;			
+				tiChildName.text = item.name;	
+				tiChildBestValue.text = item.bestValue;
+				cbChildUnit.selectedIndex = util.getItemPos(availableUnits, 'unit', item.unit);
+				cbChildActive.selected = (item.active == 1);
+				cbChildFixed.selected = (item.fixed == 1);
+				cbChildMinimized.selected = (item.minimized == 1);
+			}				
+			function childSave(){
+				childSvc.cancel();
+				childSvc.send(childModel);
+			}
+			
+			function getParameterUnitName(item:Object, column:DataGridColumn):String{				
+				var tmp = util.getItemById(units, 'unit', item.unit);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+			
+            
+			public function init():void{
+				createNew();				
+				mainSvc.cancel();
+				formModel.mode="FETCH";
+				mainSvc.send(formModel);				
+			}
+			private function httpFaultHandler(event:Event):void{
+				Alert.show("HTTP error");
+			} 
+			private function httpResultHandler(event:*):void{
+				mainData = event.result.mainData;
+				deviceParameters = event.result.deviceParameters.deviceparameter;
+				availableUnits = event.result.unitsAvailable;
+				units = event.result.units;
+				mainData["device"].filterFunction = mainFilterFunction;
+			} 
+			private function mainFilterFunction(item:*){
+				var result:Boolean=true;
+				if (!cbShowNonActive.selected && item.active<=0)
+					return false;
+				if (!cbShowActive.selected && item.active>0)
+					return false;					
+				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
+					if (!new RegExp(edFilter.text).test(item.name))
+						return false;
+				}
+				return result;
+			} 
+			private var previousSelected:int=-104;
+			
+			function bindSelected():void{				
+				if ((dgData.selectedIndex >= 0) && (previousSelected != dgData.selectedIndex)) {
+					previousSelected = dgData.selectedIndex;
+					cbActive.selected = (dgData.selectedItem.active == 1);
+					tiId.text=dgData.selectedItem.id;
+					tiName.text=dgData.selectedItem.name;										
+					selectedDeviceParameters.removeAll();				
+					for each (var deviceParameter in deviceParameters){
+						if (deviceParameter.device == dgData.selectedItem.id){
+							selectedDeviceParameters.addItem(deviceParameter);
+						}
+					}
+					selectedDeviceParameters.refresh();
+				}													
+			}
+			function createNew():void{
+				tiId.text="";
+				cbActive.selected=true;
+				formModel.mode="NEW";
+				tiName.text="<undefined>";			
+			}
+			function childCreateNew():void{
+				childModel.id="";
+				cbChildActive.selected=true;
+				cbChildMinimized.selected=true;
+				cbChildFixed.selected=false;
+				tiChildBestValue.text = "";				
+				tiChildName.text="<undefined>";			
+			}
+			function cancel():void{
+				bindSelected();
+			}
+			function saveSelected():void{
+				formModel.mode="EDIT";
+				mainSvc.cancel();	
+				mainSvc.send(formModel);
+			}
+			function filterRefresh():void{
+				mainData["device"].refresh();
+			}
+
+		]]>
+	</mx:Script>				
+		<mx:Label text="Панель управления устройствами"/>
+		<mx:HBox x="0" y="0">
+			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
+				<mx:DataGrid height="100" width="100%" 
+					id="dgData" 
+					dataProvider="{mainData['device']}"
+					itemClick="bindSelected()">
+					<mx:columns>
+						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
+						<mx:DataGridColumn dataField="Активность" labelFunction="util.activeToString"/>
+					</mx:columns>
+				</mx:DataGrid>
+			</mx:VBox>			
+			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
+				<mx:VBox horizontalAlign="left" height="100">	
+					<mx:FormItem label="Наименование:" 
+						required="true">												
+						<mx:TextInput id="tiName"/>
+					</mx:FormItem>
+					<mx:FormItem label="Активно:">
+						<mx:CheckBox id="cbActive"/>
+					</mx:FormItem>
+					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+					<mx:TextInput id="tiId" visible="false" text=""/>
+				</mx:VBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="Сохранить" click="saveSelected()"/>							
+					<mx:Button label="Отмена" click="cancel()"/>
+					<mx:Button label="Создать" click="createNew()"/>
+				</mx:HBox>
+				<mx:VBox id="filterPanel">
+					<mx:Script>
+						<![CDATA[
+							[Bindable]
+							public var filterPanelMinimized:Boolean=true;							
+						]]>
+					</mx:Script>
+					<mx:HBox horizontalAlign="right" width="100%">
+						<mx:FormItem label="Фильтр:">
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+						</mx:FormItem>												
+					</mx:HBox>					
+					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
+						<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
+						</mx:FormItem>
+						<mx:FormItem label="Шаблон имени:" >
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+						</mx:FormItem>	
+					</mx:VBox>					
+				</mx:VBox>
+			</mx:VBox>
+		</mx:HBox>
+	</mx:VBox>
+	<mx:HBox width="100%">		
+		<mx:VBox height="100%" width="70%" horizontalAlign="center" >
+				<mx:DataGrid height="100" width="100%" 
+					id="dgChildData" 
+					dataProvider="{selectedDeviceParameters}"
+					itemClick="childBindSelected()">
+					<mx:columns>
+						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
+						<mx:DataGridColumn headerText="Активность" labelFunction="util.activeToString"/>
+						<mx:DataGridColumn headerText="Ед.изм" labelFunction="getParameterUnitName"/>
+						<mx:DataGridColumn headerText="Fixed" labelFunction="util.fixedToString"/>
+						<mx:DataGridColumn headerText="Рекомендуемое значение" dataField="bestValue"/>
+						<mx:DataGridColumn headerText="Минимизируемый" labelFunction="util.minimizedToString"/>
+					</mx:columns>
+				</mx:DataGrid>				
+		</mx:VBox>
+		<mx:VBox>
+			<mx:FormItem label="Наименование:">
+				<mx:TextInput id="tiChildName"/>				
+			</mx:FormItem>
+			<mx:FormItem label="Рек. зн:">
+				<mx:TextInput id="tiChildBestValue"/>				
+			</mx:FormItem>
+			<mx:FormItem label="Ед.изм:">
+				<mx:ComboBox id="cbChildUnit" labelField="name" dataProvider="{availableUnits.unit}"/>								
+			</mx:FormItem>
+			<mx:FormItem label="Активность:">
+				<mx:CheckBox id="cbChildActive"/>				
+			</mx:FormItem>
+			<mx:FormItem label="Fixed:">
+				<mx:CheckBox id="cbChildFixed"/>				
+			</mx:FormItem>
+			<mx:FormItem label="Минимизируемый:">
+				<mx:CheckBox id="cbChildMinimized"/>				
+			</mx:FormItem>
+			<mx:HBox>
+				<mx:Button label="Новый" click="childCreateNew()"/>
+				<mx:Button label="Сохранить" click="childSave()"/>
+				<mx:Button label="Отмена" click="childBindSelected()"/>				
+			</mx:HBox>			
+		</mx:VBox>			
+	</mx:HBox>
+</mx:VBox>

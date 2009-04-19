@@ -17,21 +17,29 @@
 		]]>
 	</mx:Script>
 	<mx:TabNavigator width="800" height="500">
-		<mx:Canvas label="Units" width="100%" height="100%"
+		<mx:Canvas label="Устр-ва" width="100%" height="100%"
+			show="manageDevices.init()">
+		<comp:DeviceManagementPanel
+				id="manageDevices"
+				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.DeviceSvc"
+				childDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.DeviceParameterSvc"
+				/>			
+		</mx:Canvas>
+		<mx:Canvas label="Ед.изм." width="100%" height="100%"
 			show="manageUnits.init()">
 			<comp:SimpleManagementPanel
 				id="manageUnits"
 				mainDataUnitName="unit"
-				mainDataUnitVisualName="Unit"
+				mainDataUnitVisualName="единицами измерения"
 				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.UnitSvc"
 				/>			
 		</mx:Canvas>
-		<mx:Canvas label="Addresses" width="100%" height="100%"
+		<mx:Canvas label="Адресса" width="100%" height="100%"
 			show="manageAddresses.init()">
 			<comp:SimpleManagementPanel
 				id="manageAddresses"
 				mainDataUnitName="address"
-				mainDataUnitVisualName="Address"
+				mainDataUnitVisualName="адресами"
 				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AddressSvc"
 				/>			
 		</mx:Canvas>
