@@ -225,6 +225,22 @@
 				</property>
 			</bean>
 		</property>
+		<property name="deviceParameterDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.hardware.DeviceParameter" />
+				<property name="querySearchByName">
+					<value>
+						from DeviceParameter dp where dp.name like :searchName order by dp.active, dp.name
+					</value>
+				</property>
+				<property name="queryGetAvailable">
+					<value>
+						from DeviceParameter dp where dp.active>0 order by dp.active, dp.name
+					</value>
+				</property>
+			</bean>
+		</property>
 	</bean>
 	<bean id="abstractDAO"
 		class="org.bakery.server.persistence.AbstractDAO" abstract="true">

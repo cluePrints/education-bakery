@@ -13,6 +13,7 @@ public class DAOFacade {
 	private AbstractDAO productTypeDAO;
 	private AbstractDAO unitDAO;
 	private AbstractDAO warehouseDAO;
+	private AbstractDAO deviceParameterDAO;
 	public AbstractDAO getAddressDAO() {
 		return addressDAO;
 	}
@@ -84,5 +85,11 @@ public class DAOFacade {
 	}
 	public void setDeviceDAO(AbstractDAO deviceDAO) {
 		this.deviceDAO = deviceDAO;
+	}
+	public AbstractDAO getDeviceParameterDAO() {
+		return deviceParameterDAO;
+	}
+	public void setDeviceParameterDAO(AbstractDAO deviceParameterDAO) {
+		this.deviceParameterDAO = deviceParameterDAO;
 	}
 }

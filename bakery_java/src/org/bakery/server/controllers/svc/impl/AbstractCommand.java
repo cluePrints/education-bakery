@@ -99,6 +99,10 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 			if (propType.isAssignableFrom(Boolean.class) || propType.equals(java.lang.Boolean.TYPE))
 				propValue = "1".equals(strVal);
 			
+			/* Float */
+			if (propType.isAssignableFrom(Float.class) || propType.equals(java.lang.Float.TYPE))
+				propValue = Float.parseFloat(strVal);
+			
 			Method writeMethod = prop.getWriteMethod();
 			writeMethod.invoke(command, propValue);
 		}
