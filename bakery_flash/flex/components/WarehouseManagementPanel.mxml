@@ -51,8 +51,9 @@
 				
 				availableOwners = event.result.availableContragents;
 				owners = event.result.contragents;
-				
-				warehouses["warehouse"].filterFunction = mainFilterFunction;
+				if (warehouses != null) {
+					warehouses["warehouse"].filterFunction = mainFilterFunction;
+				}
 			} 
  
 			private function mainFilterFunction(item:*){

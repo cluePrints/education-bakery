@@ -39,7 +39,9 @@
 			} 
 			private function httpproducttypeResultHandler(event:*):void{
 				productTypes = event.result.mainData;
-				productTypes["producttype"].filterFunction = mainFilterFunction;
+				if (productTypes != null) {
+					productTypes["producttype"].filterFunction = mainFilterFunction;
+				}
 				
 				availableUnits = event.result.unitsAvailable;
 				units = event.result.units;

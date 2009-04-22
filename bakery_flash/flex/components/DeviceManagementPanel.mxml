@@ -105,10 +105,12 @@
 			} 
 			private function httpResultHandler(event:*):void{
 				mainData = event.result.mainData;
-				deviceParameters = event.result.deviceParameters.deviceparameter;
+				deviceParameters = event.result.deviceParameters;
 				availableUnits = event.result.unitsAvailable;
 				units = event.result.units;
-				mainData["device"].filterFunction = mainFilterFunction;
+				if (mainData != null) {
+					mainData["device"].filterFunction = mainFilterFunction;
+				}
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;
@@ -131,7 +133,7 @@
 					tiId.text=dgData.selectedItem.id;
 					tiName.text=dgData.selectedItem.name;										
 					selectedDeviceParameters.removeAll();				
-					for each (var deviceParameter in deviceParameters){
+					for each (var deviceParameter in deviceParameters['deviceparameter']){
 						if (deviceParameter.device == dgData.selectedItem.id){
 							selectedDeviceParameters.addItem(deviceParameter);
 						}

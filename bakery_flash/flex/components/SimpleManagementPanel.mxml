@@ -35,7 +35,9 @@
 			} 
 			private function httpResultHandler(event:*):void{
 				mainData = event.result.mainData;
-				mainData[mainDataUnitName].filterFunction = mainFilterFunction;
+				if (mainData != null) {
+					mainData[mainDataUnitName].filterFunction = mainFilterFunction;
+				}
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;

@@ -40,7 +40,9 @@
 			private function httpaccountResultHandler(event:*):void{
 
 				accounts = event.result.mainData;
-				accounts["account"].filterFunction = mainFilterFunction;
+				if (accounts != null) {
+					accounts["account"].filterFunction = mainFilterFunction;
+				}
 				
 				availableContragents = event.result.contragentsAvailable;
 				contragents = event.result.contragents;

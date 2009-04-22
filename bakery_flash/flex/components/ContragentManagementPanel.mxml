@@ -38,7 +38,9 @@
 			} 
 			private function httpContragentResultHandler(event:*):void{
 				contragents = event.result.mainData;
-				contragents["contragent"].filterFunction = mainFilterFunction;
+				if (contragents != null) {
+					contragents["contragent"].filterFunction = mainFilterFunction;
+				}
 				
 				availableAddresses = event.result.addressesAvailable;
 				addresses = event.result.addresses;
