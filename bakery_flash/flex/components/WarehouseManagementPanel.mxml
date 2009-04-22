@@ -233,7 +233,7 @@
 					<mx:Button label="Отмена" click="cancel()"/>
 				</mx:HBox>
 				<mx:HBox horizontalAlign="center">
-					<mx:Button label="Новый" click="createNew()"/>							
+					<mx:Button label="Создать" click="createNew()"/>							
 				</mx:HBox>
 				<mx:VBox id="filterPanel">
 					<mx:Script>
@@ -243,7 +243,7 @@
 						]]>
 					</mx:Script>
 					<mx:HBox horizontalAlign="right" width="100%">
-						<mx:FormItem label="Filter items">
+						<mx:FormItem label="Фильтр">
 							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
 						</mx:FormItem>												
 					</mx:HBox>					

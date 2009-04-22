@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()">		
+	creationComplete="init()" width="798" height="574">		
 	<mx:HTTPService id="contragentSvc" 
 		useProxy="false"
 		method="POST"
@@ -137,7 +137,7 @@
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
-		<mx:Label text="Contragents management panel"/>
+		<mx:Label text="Панель работы с контрагентами"/>
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="100%" width="100%" 
@@ -146,10 +146,10 @@
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Name" dataField="name"/>
-						<mx:DataGridColumn headerText="Address" labelFunction="getContragentAddressName"/>
+						<mx:DataGridColumn headerText="Имя" dataField="name"/>
+						<mx:DataGridColumn headerText="Адресс" labelFunction="getContragentAddressName"/>
 						<mx:DataGridColumn headerText="Child" labelFunction="childToString"/>
-						<mx:DataGridColumn dataField="active" labelFunction="activeToString"/>
+						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
@@ -157,11 +157,11 @@
 				<mx:VBox horizontalAlign="left">	
 					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
 					<mx:TextInput id="tiId" visible="false" text=""/>
-					<mx:FormItem label="Name:" 
+					<mx:FormItem label="Имя:" 
 						required="true">												
 						<mx:TextInput id="tiName"/>
 					</mx:FormItem>
-					<mx:FormItem label="Address:" 
+					<mx:FormItem label="Адресс:" 
 						required="true">												
 						<mx:ComboBox id="cbAddresses"
 							dataProvider="{availableAddresses.address}"
@@ -172,16 +172,16 @@
 					<mx:FormItem label="Child">
 						<mx:CheckBox id="cbChild"/>
 					</mx:FormItem>
-					<mx:FormItem label="Active">
+					<mx:FormItem label="Активный">
 						<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
 				</mx:VBox>
 				<mx:HBox horizontalAlign="center">
-					<mx:Button label="Save" click="saveSelected()"/>							
-					<mx:Button label="Cancel" click="cancel()"/>
+					<mx:Button label="Сохранить" click="saveSelected()"/>							
+					<mx:Button label="Отмена" click="cancel()"/>
 				</mx:HBox>
 				<mx:HBox horizontalAlign="center">
-					<mx:Button label="CreateNew" click="createNew()"/>							
+					<mx:Button label="Создать" click="createNew()"/>							
 				</mx:HBox>
 				<mx:VBox id="filterPanel">
 					<mx:Script>
@@ -191,16 +191,16 @@
 						]]>
 					</mx:Script>
 					<mx:HBox horizontalAlign="right" width="100%">
-						<mx:FormItem label="Filter items">
+						<mx:FormItem label="Фильтр">
 							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
 						</mx:FormItem>												
 					</mx:HBox>					
 					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
-						<mx:FormItem label="Show" horizontalAlign="left" width="100%">
-							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Active"/>
-							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Inactive"/>
+						<mx:FormItem label="Показывать" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активный"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивный"/>
 						</mx:FormItem>
-						<mx:FormItem label="Name pattern:" >
+						<mx:FormItem label="Шаблон имени:" >
 							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
 						</mx:FormItem>	
 					</mx:VBox>					
