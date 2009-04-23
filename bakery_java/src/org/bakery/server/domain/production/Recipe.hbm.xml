@@ -12,7 +12,7 @@
 		</id>
 		<property name="active"
 			  type="integer"
-			  column="recipe_active"/>
+			  column="recip_active"/>
 		<property
 			name="name"
 			column="recip_name"/>
@@ -21,19 +21,19 @@
 			column="recip_formula"/>		
 		<property
 			name="time"
-			column="recip_time"/>
+			column="recipe_time"/>
 		<set name="effects"
 			inverse="true"
 			cascade="save-update"
 			outer-join="true">
-			<key column="recipe_effect_recipe"/>
+			<key column="recip_effect_recip"/>
 			<one-to-many class="org.bakery.server.domain.production.RecipeEffect"/> 
 		</set>
 		<set name="parameters"
 			cascade="save-update"
 			outer-join="true"
-			table="recipe_parameters">
-				<key column="recipe_id"/>
+			table="recip_parameters">
+				<key column="recip_id"/>
             <many-to-many column="device_parameter_id"
                 class="org.bakery.server.domain.hardware.DeviceParameter"/>			
 		</set>

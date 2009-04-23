@@ -29,7 +29,7 @@
 			column="recip_effect_recip"/>
 		<property
 			name="consumed"
-			column="recip_effect_isconsumed"/>
+			column="recip_effect_is_consumed"/>
 
 			
 	</class>

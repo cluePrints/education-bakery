@@ -99,7 +99,7 @@
 			</bean>
 		</property>
 		<property name="priceListDAO">
-			<bean id="priceListDAO" parent="abstractDAO">
+			<bean parent="abstractDAO">
 				<property name="targetClassName"
 					value="org.bakery.server.domain.pricing.PriceList" />
 				<property name="querySearchByName"
@@ -108,8 +108,8 @@
 					value="from PriceList p left join fetch p.owner own where p.active>0 order by p.comment asc" />
 			</bean>
 		</property>
-		<property name="priceDAO">
-			<bean id="priceDAO" parent="abstractDAO">
+		<property name="priceListItemDAO">
+			<bean parent="abstractDAO">
 				<property name="targetClassName"
 					value="org.bakery.server.domain.pricing.PriceListItem" />
 				<property name="querySearchByName"
@@ -241,6 +241,39 @@
 				</property>
 			</bean>
 		</property>
+		<property name="recipeDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.production.Recipe" />
+				<property name="querySearchByName">
+					<value>
+						from Recipe dp where dp.name like :searchName order by dp.active, dp.name
+					</value>
+				</property>
+				<property name="queryGetAvailable">
+					<value>
+						from Recipe dp where dp.active>0 order by dp.active, dp.name
+					</value>
+				</property>
+			</bean>
+		</property>
+		<property name="recipeEffectDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.production.RecipeEffect" />
+				<property name="querySearchByName">
+					<value>
+						from RecipeEffect dp order by dp.active
+					</value>
+				</property>
+				<property name="queryGetAvailable">
+					<value>
+						from RecipeEffect dp where dp.active>0 order by dp.active
+					</value>
+				</property>
+			</bean>
+		</property>
+		
 	</bean>
 	<bean id="abstractDAO"
 		class="org.bakery.server.persistence.AbstractDAO" abstract="true">

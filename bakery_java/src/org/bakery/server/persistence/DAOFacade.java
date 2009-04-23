@@ -7,13 +7,15 @@ public class DAOFacade {
 	private AbstractDAO contragentDAO;
 	private AbstractDAO moneyMoveDAO;
 	private AbstractDAO orderDAO;
-	private AbstractDAO priceDAO;
+	private AbstractDAO priceListItemDAO;
 	private AbstractDAO priceListDAO;
 	private AbstractDAO productMoveDAO;
 	private AbstractDAO productTypeDAO;
 	private AbstractDAO unitDAO;
 	private AbstractDAO warehouseDAO;
 	private AbstractDAO deviceParameterDAO;
+	private AbstractDAO recipeDAO;
+	private AbstractDAO recipeEffectDAO;
 	public AbstractDAO getAddressDAO() {
 		return addressDAO;
 	}
@@ -44,11 +46,11 @@ public class DAOFacade {
 	public void setOrderDAO(AbstractDAO orderDAO) {
 		this.orderDAO = orderDAO;
 	}
-	public AbstractDAO getPriceDAO() {
-		return priceDAO;
+	public AbstractDAO getPriceListItemDAO() {
+		return priceListItemDAO;
 	}
-	public void setPriceDAO(AbstractDAO priceDAO) {
-		this.priceDAO = priceDAO;
+	public void setPriceListItemDAO(AbstractDAO priceDAO) {
+		this.priceListItemDAO = priceDAO;
 	}
 	public AbstractDAO getPriceListDAO() {
 		return priceListDAO;
@@ -91,5 +93,17 @@ public class DAOFacade {
 	}
 	public void setDeviceParameterDAO(AbstractDAO deviceParameterDAO) {
 		this.deviceParameterDAO = deviceParameterDAO;
+	}
+	public AbstractDAO getRecipeDAO() {
+		return recipeDAO;
+	}
+	public void setRecipeDAO(AbstractDAO recipeDAO) {
+		this.recipeDAO = recipeDAO;
+	}
+	public AbstractDAO getRecipeEffectDAO() {
+		return recipeEffectDAO;
+	}
+	public void setRecipeEffectDAO(AbstractDAO recipeEffectDAO) {
+		this.recipeEffectDAO = recipeEffectDAO;
 	}
 }
