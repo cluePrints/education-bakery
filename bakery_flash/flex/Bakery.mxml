@@ -16,14 +16,14 @@
 			}
 		]]>
 	</mx:Script>
-	<mx:TabNavigator width="929" height="553">
+	<mx:TabNavigator width="954" height="573">
 		<mx:Canvas label="Устр-ва" width="100%" height="100%"
 			show="manageDevices.init()">
 		<comp:DeviceManagementPanel
 				id="manageDevices"
 				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.DeviceSvc"
 				childDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.DeviceParameterSvc"
-				 width="890" height="510"/>			
+				 width="890" height="510" x="10"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Ед.изм." width="100%" height="100%"
 			show="manageUnits.init()">

@@ -2,7 +2,7 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:comp="components.*"
-	creationComplete="init()" width="800">
+	creationComplete="init()" width="916" height="507">
 	<mx:Model id="formModel">		
 		<root>
 			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
@@ -169,9 +169,9 @@
 
 		]]>
 	</mx:Script>				
-		<mx:Label text="Панель управления устройствами"/>
-		<mx:HBox x="0" y="0">
-			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
+		<mx:Label text="Панель управления устройствами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+		<mx:HBox width="859" height="237">
+			<mx:VBox height="228" width="378" horizontalAlign="center" >
 				<mx:DataGrid height="100" width="100%" 
 					id="dgData" 
 					dataProvider="{mainData['device']}"
@@ -182,9 +182,7 @@
 						<mx:DataGridColumn dataField="Активность" labelFunction="util.activeToString"/>
 					</mx:columns>
 				</mx:DataGrid>
-			</mx:VBox>			
-			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
-				<mx:VBox horizontalAlign="left" height="100">	
+								<mx:VBox horizontalAlign="left" height="52" width="356">	
 					<mx:FormItem label="Наименование:" 
 						required="true">												
 						<mx:TextInput id="tiName"/>
@@ -192,14 +190,17 @@
 					<mx:FormItem label="Активно:">
 						<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
-					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
-					<mx:TextInput id="tiId" visible="false" text=""/>
+					
 				</mx:VBox>
-				<mx:HBox horizontalAlign="center">
+				<mx:HBox horizontalAlign="center" height="30">
 					<mx:Button label="Сохранить" click="saveSelected()"/>							
 					<mx:Button label="Отмена" click="cancel()"/>
 					<mx:Button label="Создать" click="createNew()"/>
 				</mx:HBox>
+			</mx:VBox>			
+			<mx:VBox height="206" horizontalAlign="center" verticalAlign="center" width="367">				
+
+				
 				<mx:VBox id="filterPanel">
 					<mx:Script>
 						<![CDATA[
@@ -210,24 +211,30 @@
 					<mx:HBox horizontalAlign="right" width="100%">
 						<mx:FormItem label="Фильтр:">
 							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+							
+							<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">
+							<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%" cornerRadius="0" borderStyle="none" borderThickness="0">
+								<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
+								<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
+							</mx:FormItem>	
+							<mx:FormItem label="Шаблон имени:" >
+					<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+				</mx:FormItem>
+															</mx:VBox>
+																
+
 						</mx:FormItem>												
 					</mx:HBox>					
-					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
-						<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%">
-							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
-							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
-						</mx:FormItem>
-						<mx:FormItem label="Шаблон имени:" >
-							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
-						</mx:FormItem>	
-					</mx:VBox>					
 				</mx:VBox>
+				
+				<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+					<mx:TextInput id="tiId" visible="false" text=""/>
 			</mx:VBox>
 		</mx:HBox>
 	</mx:VBox>
-	<mx:HBox width="100%">		
-		<mx:VBox height="100%" width="70%" horizontalAlign="center" >
-				<mx:DataGrid height="100" width="100%" 
+	<mx:HBox width="850" height="174">		
+		<mx:VBox height="100%" width="571" horizontalAlign="center" >
+				<mx:DataGrid height="137" width="566" 
 					id="dgChildData" 
 					dataProvider="{selectedDeviceParameters}"
 					itemClick="childBindSelected()">
@@ -242,7 +249,7 @@
 					</mx:columns>
 				</mx:DataGrid>				
 		</mx:VBox>
-		<mx:VBox>
+		<mx:VBox height="166">
 			<mx:FormItem label="Наименование:">
 				<mx:TextInput id="tiChildName"/>				
 			</mx:FormItem>
@@ -255,17 +262,21 @@
 			<mx:FormItem label="Активность:">
 				<mx:CheckBox id="cbChildActive"/>				
 			</mx:FormItem>
-			<mx:FormItem label="Fixed:">
+			<mx:HBox width="234">
+				<mx:FormItem label="Fixed:">
 				<mx:CheckBox id="cbChildFixed"/>				
 			</mx:FormItem>
 			<mx:FormItem label="Минимизируемый:">
 				<mx:CheckBox id="cbChildMinimized"/>				
 			</mx:FormItem>
+			</mx:HBox>
+		
 			<mx:HBox>
 				<mx:Button label="Новый" click="childCreateNew()"/>
 				<mx:Button label="Сохранить" click="childSave()"/>
 				<mx:Button label="Отмена" click="childBindSelected()"/>				
-			</mx:HBox>			
-		</mx:VBox>			
+			</mx:HBox>		
+		</mx:VBox>	
+					
 	</mx:HBox>
 </mx:VBox>

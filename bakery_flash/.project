@@ -19,7 +19,7 @@
 		<link>
 			<name>bin-debug</name>
 			<type>2</type>
-			<location>D:/Install/glassfish/domains/domain1/applications/j2ee-modules/blazeds/Bakery</location>
+			<location>C:/glassfish/domains/domain1/applications/j2ee-modules/blazeds/Bakery</location>
 		</link>
 	</linkedResources>
 </projectDescription>

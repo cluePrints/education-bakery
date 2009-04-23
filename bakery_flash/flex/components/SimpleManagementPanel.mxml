@@ -90,7 +90,7 @@
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
-		<mx:Label text="{&quot;Панель управления &quot;+ mainDataUnitVisualName}"/>
+		<mx:Label text="{&quot;Панель управления &quot;+ mainDataUnitVisualName}" fontWeight="bold" fontSize="14"/>
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="100%" width="100%" 
@@ -99,7 +99,7 @@
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
+						<mx:DataGridColumn headerText="Название" dataField="name"/>
 						<mx:DataGridColumn dataField="Активность" labelFunction="activeToString"/>
 					</mx:columns>
 				</mx:DataGrid>

@@ -139,7 +139,7 @@
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
-		<mx:Label text="Панель работы с контрагентами"/>
+		<mx:Label text="Панель работы с контрагентами" fontWeight="bold" fontSize="14"/>
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="100%" width="100%" 
