@@ -130,7 +130,7 @@
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
-		<mx:Label text="Панель управления типом продуктов" fontWeight="bold" fontSize="14"/>
+		<mx:Label text="Панель управления типами продуктов" fontWeight="bold" fontSize="14"/>
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="100%" width="100%" 
@@ -157,7 +157,7 @@
 						required="true">												
 						<mx:ComboBox id="cbUnits"
 							dataProvider="{availableUnits.unit}"
-							labelField="Название"
+							labelField="name"
 							change="{formModel.unit=availableUnits.unit[cbUnits.selectedIndex].id}"
 							/>
 					</mx:FormItem>
