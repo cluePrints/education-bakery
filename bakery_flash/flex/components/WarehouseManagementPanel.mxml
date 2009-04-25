@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="770" height="544">
+	creationComplete="init()" width="960" height="544">
 
 	<mx:HTTPService id="warehouseSvc" 
 		useProxy="false"
@@ -193,11 +193,11 @@
 					dataProvider="{warehouses['warehouse']}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Название" dataField="name"/>
-						<mx:DataGridColumn headerText="Владелец" labelFunction="getWarehouseOwnerName"/>
-						<mx:DataGridColumn headerText="Адресс" labelFunction="getWarehouseAddressName"/>
-						<mx:DataGridColumn headerText="Активность" dataField="active" labelFunction="activeToString"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
+						<mx:DataGridColumn headerText="Владелец" labelFunction="getWarehouseOwnerName" width="150"/>
+						<mx:DataGridColumn headerText="Адресс" labelFunction="getWarehouseAddressName" width="150"/>
+						<mx:DataGridColumn headerText="Активность" dataField="active" labelFunction="activeToString" width="80"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
@@ -214,7 +214,7 @@
 						<mx:ComboBox id="cbOwners"
 							dataProvider="{availableOwners.contragent}"
 							labelField="name"
-							change="{formModel.owner=availableOwners.contragent[cbOwners.selectedIndex].id}"
+							change="{formModel.owner=availableOwners.contragent[cbOwners.selectedIndex].id}" width="150"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Адресс:" 
@@ -223,6 +223,7 @@
 							dataProvider="{availableAddresses.address}"
 							labelField="name"
 							change="{formModel.address=availableAddresses.address[cbAddresses.selectedIndex].id}"
+							width="150"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Активность">

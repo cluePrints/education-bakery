@@ -2,7 +2,7 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:comp="components.*"
-	creationComplete="init()" width="916" height="507">
+	creationComplete="init()" width="978" height="551">
 	<mx:Model id="formModel">		
 		<root>
 			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
@@ -181,9 +181,9 @@
 					dataProvider="{mainData['device']}"
 					itemClick="bindSelected(false)">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="ID" dataField="id" width="50"/>
 						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
-						<mx:DataGridColumn dataField="Активность" labelFunction="util.activeToString"/>
+						<mx:DataGridColumn dataField="Активн." labelFunction="util.activeToString" width="70"/>
 					</mx:columns>
 				</mx:DataGrid>
 								<mx:VBox horizontalAlign="left" height="52" width="356">	
@@ -236,24 +236,24 @@
 			</mx:VBox>
 		</mx:HBox>
 	</mx:VBox>
-	<mx:HBox width="850" height="174">		
+	<mx:HBox width="932" height="218">		
 		<mx:VBox height="100%" width="571" horizontalAlign="center" >
 				<mx:DataGrid height="137" width="566" 
 					id="dgChildData" 
 					dataProvider="{selectedDeviceParameters}"
 					itemClick="childBindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
-						<mx:DataGridColumn headerText="Активность" labelFunction="util.activeToString"/>
-						<mx:DataGridColumn headerText="Ед.изм" labelFunction="getParameterUnitName"/>
-						<mx:DataGridColumn headerText="Фиксирован" labelFunction="util.fixedToString"/>
-						<mx:DataGridColumn headerText="Рекомендуемое значение" dataField="bestValue"/>
-						<mx:DataGridColumn headerText="Минимизируемый" labelFunction="util.minimizedToString"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="50"/>
+						<mx:DataGridColumn headerText="Наименование" dataField="name" width="120"/>
+						<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="30"/>
+						<mx:DataGridColumn headerText="Ед.изм" labelFunction="getParameterUnitName" width="50"/>
+						<mx:DataGridColumn headerText="Фикс" labelFunction="util.fixedToString" width="30"/>
+						<mx:DataGridColumn headerText="Рекомендуемое зн-е" dataField="bestValue" width="70"/>
+						<mx:DataGridColumn headerText="Мин-ем" labelFunction="util.minimizedToString" width="35"/>
 					</mx:columns>
 				</mx:DataGrid>				
 		</mx:VBox>
-		<mx:VBox height="166">
+		<mx:VBox height="199" width="286">
 			<mx:FormItem label="Наименование:">
 				<mx:TextInput id="tiChildName"/>				
 			</mx:FormItem>
@@ -263,18 +263,20 @@
 			<mx:FormItem label="Ед.изм:">
 				<mx:ComboBox id="cbChildUnit" labelField="name" dataProvider="{availableUnits}"/>								
 			</mx:FormItem>
-			<mx:FormItem label="Активность:">
-				<mx:CheckBox id="cbChildActive"/>				
-			</mx:FormItem>
-			<mx:HBox width="234">
-				<mx:FormItem label="Фиксирован:">
+			<mx:HBox width="272" height="24">
+				<mx:FormItem label="Фиксирован:" visible="true">
 				<mx:CheckBox id="cbChildFixed"/>				
 			</mx:FormItem>
-			<mx:FormItem label="Минимизируемый:">
+			<mx:FormItem label="Минимизируемый:" visible="true">
 				<mx:CheckBox id="cbChildMinimized"/>				
 			</mx:FormItem>
 			</mx:HBox>
-		
+			<mx:VBox height="22" cornerRadius="10" alpha="1.0" borderStyle="solid" borderThickness="0" borderColor="#5A0B15">
+			<mx:FormItem label="Активность:">
+				<mx:CheckBox id="cbChildActive"/>				
+			</mx:FormItem>
+			
+		</mx:VBox>
 			<mx:HBox>
 				<mx:Button label="Новый" click="childCreateNew()"/>
 				<mx:Button label="Сохранить" click="childSave()"/>

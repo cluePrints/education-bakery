@@ -16,14 +16,14 @@
 			}
 		]]>
 	</mx:Script>
-	<mx:TabNavigator width="992" height="610">
+	<mx:TabNavigator width="1023" height="662">
 		<mx:Canvas label="Прайсы" width="100%" height="100%"
 			show="managePriceLists.init()">
 		<comp:PriceListManagementPanel
 				id="managePriceLists"
 				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.PriceListSvc"
 				childDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.PriceListItemSvc"
-				 width="890" height="510" x="10"/>			
+				 width="991" height="597" x="10"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Устр-ва" width="100%" height="100%"
 			show="manageDevices.init()">
@@ -31,7 +31,7 @@
 				id="manageDevices"
 				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.DeviceSvc"
 				childDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.DeviceParameterSvc"
-				 width="890" height="510" x="10"/>			
+				 width="1001" height="533" x="10"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Ед.изм." width="100%" height="100%"
 			show="manageUnits.init()">
@@ -57,7 +57,7 @@
 				id="manageProducts"
 				unitDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.UnitSvc"
 				productTypeDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductTypeSvc"
-				 width="740" height="404"/>
+				 width="867" height="446"/>
 		</mx:Canvas>
 		<mx:Canvas label="Контрагенты" width="100%" height="100%"
 			show="manageContragents.init()">
@@ -73,20 +73,20 @@
 				id="manageAccounts"
 				contragentDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ContragentSvc"
 				accountDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AccountSvc"
-				 width="798" height="411"/>			
+				 width="933" height="442"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Склад" width="100%" height="100%"
 			show="manageWarehouses.init()">
 			<comp:WarehouseManagementPanel
 				id="manageWarehouses"				
 				warehouseDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.WarehouseSvc"
-				 width="823" height="454" x="10"/>			
+				 width="965" height="456" x="10"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Рецепты" width="100%" height="100%"
 			>
 			<comp:ReciptManagmentPanel
 				id="manageRecipt"
-				 width="980" height="562"/>			
+				 width="1012" height="599"/>			
 		</mx:Canvas>
 	</mx:TabNavigator>			
 </mx:Application>

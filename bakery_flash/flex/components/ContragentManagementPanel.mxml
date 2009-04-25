@@ -146,11 +146,11 @@
 					dataProvider="{contragents['contragent']}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Имя" dataField="name"/>
-						<mx:DataGridColumn headerText="Адресс" labelFunction="getContragentAddressName"/>
-						<mx:DataGridColumn headerText="Child" labelFunction="childToString"/>
-						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
+						<mx:DataGridColumn headerText="Имя" dataField="name" width="150"/>
+						<mx:DataGridColumn headerText="Адресс" labelFunction="getContragentAddressName" width="150"/>
+						<mx:DataGridColumn headerText="Child" labelFunction="childToString" width="50"/>
+						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString" width="80"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
@@ -166,7 +166,7 @@
 						required="true">												
 						<mx:ComboBox id="cbAddresses"
 							dataProvider="{availableAddresses.address}"
-							labelField="name"
+							labelField="name" width="160"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Child">

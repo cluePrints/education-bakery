@@ -93,14 +93,14 @@
 		<mx:Label text="{&quot;Панель управления &quot;+ mainDataUnitVisualName}" fontWeight="bold" fontSize="14"/>
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
-				<mx:DataGrid height="100%" width="100%" 
+				<mx:DataGrid height="216" width="282" 
 					id="dgData" 
 					dataProvider="{mainData[mainDataUnitName]}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Название" dataField="name"/>
-						<mx:DataGridColumn dataField="Активность" labelFunction="activeToString"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="80"/>
+						<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
+						<mx:DataGridColumn dataField="Активность" labelFunction="activeToString" width="85"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>			

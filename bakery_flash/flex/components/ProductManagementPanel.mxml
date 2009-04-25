@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()">
+	creationComplete="init()" width="588" height="416">
 		
 	<mx:HTTPService id="productTypeSvc" 
 		useProxy="false"
@@ -127,17 +127,17 @@
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Панель управления типами продуктов" fontWeight="bold" fontSize="14"/>
-		<mx:HBox x="0" y="0">
+		<mx:HBox x="0" y="0" width="751" height="336">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
-				<mx:DataGrid height="100%" width="100%" 
+				<mx:DataGrid height="312" width="436" 
 					id="dgData" 
 					dataProvider="{productTypes['producttype']}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Название" dataField="name"/>
-						<mx:DataGridColumn headerText="ед.измерения" labelFunction="getProductTypeUnitName"/>
-						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="80"/>
+						<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
+						<mx:DataGridColumn headerText="ед.измерения" labelFunction="getProductTypeUnitName" width="150"/>
+						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString" width="80"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
@@ -153,7 +153,7 @@
 						required="true">												
 						<mx:ComboBox id="cbUnits"
 							dataProvider="{availableUnits}"
-							labelField="name"/>							
+							labelField="name" width="120"/>							
 					</mx:FormItem>
 					<mx:FormItem label="Активная">
 						<mx:CheckBox id="cbActive"/>
@@ -175,16 +175,16 @@
 					</mx:Script>
 					<mx:HBox horizontalAlign="right" width="100%">
 						<mx:FormItem label="Фильтр">
-							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized" width="126"/>
 						</mx:FormItem>												
 					</mx:HBox>					
 					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
-						<mx:FormItem label="Показывать" horizontalAlign="left" width="100%">
+						<mx:FormItem label="Показывать" horizontalAlign="left" width="277">
 							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активный"/>
 							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивный"/>
 						</mx:FormItem>
 						<mx:FormItem label="Шаблон названия:" >
-							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()" width="157"/>									
 						</mx:FormItem>	
 					</mx:VBox>					
 				</mx:VBox>

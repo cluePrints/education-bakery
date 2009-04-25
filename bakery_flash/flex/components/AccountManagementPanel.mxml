@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="708" height="540">		
+	creationComplete="init()" width="924" height="648">		
 	<mx:HTTPService id="accountSvc" 
 		useProxy="false"
 		method="POST"
@@ -138,18 +138,18 @@
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Панель управления счетами" fontWeight="bold" fontSize="14"/>
-		<mx:HBox x="0" y="0">
+		<mx:HBox x="0" y="0" width="882" height="345">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="100%" width="100%" 
 					id="dgData" 
 					dataProvider="{accounts['account']}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Название" dataField="name"/>
-						<mx:DataGridColumn headerText="Контрагент" labelFunction="getAccountContragentName"/>
-						<mx:DataGridColumn headerText="Описание" dataField="desc"/>
-						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
+						<mx:DataGridColumn headerText="Контрагент" labelFunction="getAccountContragentName" width="150"/>
+						<mx:DataGridColumn headerText="Описание" dataField="desc" width="150"/>
+						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString" width="70"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
@@ -168,8 +168,8 @@
 						<mx:ComboBox id="cbContragents"
 							dataProvider="{availableContragents.contragent}"
 							labelField="name"
-							change="{formModel.owner=availableContragents.contragent[cbContragents.selectedIndex].id}"
-							/>
+							change="{formModel.owner=availableContragents.contragent[cbContragents.selectedIndex].id}" 
+							width="150"/>
 					</mx:FormItem>
 					<mx:FormItem label="Активный">
 						<mx:CheckBox id="cbActive"/>
