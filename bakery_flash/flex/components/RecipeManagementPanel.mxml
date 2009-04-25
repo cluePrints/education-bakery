@@ -43,6 +43,7 @@
 	<mx:VBox horizontalAlign="center" width="99%">	
 	<mx:Script>
 		<![CDATA[
+			import flash.sampler.NewObjectSample;
 			import mx.events.CollectionEvent;
 			import mx.automation.codec.ArrayPropertyCodec;
 			import mx.validators.RegExpValidator;
@@ -56,13 +57,16 @@
 			public var childDataSvcUrl:String;
 			public var hideEffect:*;
 			[Bindable]
-            private var mainData:*;
-            
-            [Bindable] private var units:ArrayCollection;            
-            [Bindable] private var availableUnits:ArrayCollection;                      
+            private var mainData:*;                  
 
-			[Bindable] private var productTypes:ArrayCollection;            
+			[Bindable] private var devices:ArrayCollection;
+			[Bindable] private var availableParameters:ArrayCollection;
+			[Bindable] private var parameters:ArrayCollection;
+			[Bindable] private var selectedParameters:ArrayCollection = new ArrayCollection();
+            
+   			[Bindable] private var productTypes:ArrayCollection;            
             [Bindable] private var availableProductTypes:ArrayCollection;
+
             
 			[Bindable] private var recipeEffects:ArrayCollection;
 			[Bindable] private var selectedRecipeEffects:ArrayCollection = new ArrayCollection();            
@@ -104,13 +108,20 @@
 			private function httpResultHandler(event:*):void{
 				productTypes = util.extractItemCollection(event.result.productTypes, 'producttype');
 				recipeEffects = util.extractItemCollection(event.result.recipeEffects, 'recipeeffect');
+				parameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
+				devices = util.extractItemCollection(event.result.devices, 'device');
 				            	            
 				availableProductTypes = util.getActiveItems(productTypes);
+				availableParameters = util.getActiveItems(parameters);				
 								            
 				mainData = event.result.mainData;
+				
+				for each (var param in availableParameters){
+					param.devicename = util.getItemById(devices, param.device).name;	
+				}
 			} 
 			private function httpChildResultHandler(event:*):void{
-				recipeEffects = util.extractItemCollection(event.result.mainData, 'recipeffect');
+				recipeEffects = util.extractItemCollection(event.result.mainData, 'recipeffect');				
 				bindSelected(true);
 			} 
 			private var previousSelected:int=-104;
@@ -124,6 +135,35 @@
 					tiName.text=dgData.selectedItem.name;
 					tiTime.text=dgData.selectedItem.time;
 					tiFormula.text=dgData.selectedItem.formula;
+					
+					selectedParameters.removeAll();				
+					if ((dgData.selectedItem.parameters != null) && (dgData.selectedItem.parameters.parameter!=null)){
+						if (dgData.selectedItem.parameters.parameter instanceof ArrayCollection){
+							for each (var p in dgData.selectedItem.parameters.parameter) {
+								var item = new Object();
+								var param = util.getItemById(parameters, p.id);
+								var device = util.getItemById(devices, param.device);
+								item.parameter = param;
+								item.device = device;
+								item.paramname = param.name;
+								item.devicename = device.name;
+								selectedParameters.addItem(item);
+							}
+						} else {
+							var item = new Object();
+							var p = dgData.selectedItem.parameters.parameter;
+							var param = util.getItemById(parameters, p.id);
+							var device = util.getItemById(devices, param.device);
+							item.parameter = param;
+							item.device = device;
+							item.paramname = param.name;
+							item.devicename = device.name;
+							selectedParameters.addItem(item);
+						}
+						
+					}
+					selectedParameters.refresh();	
+					
 					selectedRecipeEffects.removeAll();
 					formModel.id = dgData.selectedItem.id;
 					childModel.recipe = formModel.id;				
@@ -154,6 +194,18 @@
 				formModel.mode="EDIT";
 				mainSvc.cancel();	
 				mainSvc.send(formModel);
+			}
+			function addDeviceParameter():void{
+				formModel.mode="SPECIAL_ADD";
+				formModel.id = dgAvailableParameters.selectedItem.id;
+				mainSvc.cancel();
+				mainSvc.send(formModel);			
+			}
+			function removeDeviceParameter():void{
+				formModel.id = dgCurrentParameters.selectedItem.parameter.id;
+				formModel.mode="SPECIAL_REMOVE";
+				mainSvc.cancel();
+				mainSvc.send(formModel);							
 			}
 		]]>
 	</mx:Script>				
@@ -200,24 +252,27 @@
 			<mx:HBox width="100%" height="268">
 				<mx:VBox width="45%" height="100%" horizontalAlign="center">
 					<mx:Label text="Параметры, касающиеся рецепта"/>
-					<mx:DataGrid width="100%" height="212">
+					<mx:DataGrid width="100%" height="212"
+						dataProvider="{selectedParameters}"
+						id="dgCurrentParameters">
 						<mx:columns>
-							<mx:DataGridColumn headerText="Устройство" dataField=""/>
-							<mx:DataGridColumn headerText="Параметр" dataField=""/>
+							<mx:DataGridColumn headerText="Устройство" dataField="devicename"/>
+							<mx:DataGridColumn headerText="Параметр" dataField="paramname"/>
 						</mx:columns>
 					</mx:DataGrid>
 				</mx:VBox>
 				<mx:VBox width="10%" height="100%" verticalAlign="center">													
-					<mx:Button label="&lt;"/>
-					<mx:Button label="&gt;"/>
-					<mx:Button label="&gt;&gt;"/>					
+					<mx:Button label="&lt;" click="addDeviceParameter()"/>
+					<mx:Button label="&gt;" click="removeDeviceParameter()"/>
 				</mx:VBox>
 				<mx:VBox width="45%" height="100%" horizontalAlign="center">
 					<mx:Label text="Все актуальные параметры"/>
-					<mx:DataGrid width="100%" height="212">
+					<mx:DataGrid width="100%" height="212" 
+						dataProvider="{availableParameters}"
+						id="dgAvailableParameters">
 						<mx:columns>
-							<mx:DataGridColumn headerText="Устройство" dataField=""/>
-							<mx:DataGridColumn headerText="Параметр" dataField=""/>
+							<mx:DataGridColumn headerText="Устройство" dataField="devicename"/>
+							<mx:DataGridColumn headerText="Параметр" dataField="name"/>
 						</mx:columns>
 					</mx:DataGrid>
 				</mx:VBox>

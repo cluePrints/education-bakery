@@ -48,6 +48,8 @@ public class Util{
 	 **/
 	public function getItemById(items:*, _id:*):*{
 		var result=null;
+		if (items == null)
+			return null;
 		for each (var unit in items){ 
 			if (unit.id == _id) {
 				result = unit;
