@@ -256,7 +256,7 @@
 				<mx:TextInput id="tiChildBestValue"/>				
 			</mx:FormItem>
 			<mx:FormItem label="Ед.изм:">
-				<mx:ComboBox id="cbChildUnit" labelField="name" dataProvider="{availableUnits.unit}"/>								
+				<mx:ComboBox id="cbChildUnit" labelField="name" dataProvider="{availableUnits}"/>								
 			</mx:FormItem>
 			<mx:FormItem label="Активность:">
 				<mx:CheckBox id="cbChildActive"/>				
