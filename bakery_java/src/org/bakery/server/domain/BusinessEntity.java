@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.springframework.validation.Errors;
 
 /**
@@ -86,6 +87,8 @@ public abstract class BusinessEntity implements Serializable {
 				tmp.append(result);
 			} else if (result instanceof String){
 				tmp.append(replaceXMLDeclinedCharacters((String) result));
+			} else if (result instanceof Date){
+				tmp.append(SvcHelper.dateToString((Date) result));
 			}
 			tmp.append(LE).append(propName).append(G);  //</paramName>			
 		}

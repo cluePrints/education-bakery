@@ -16,7 +16,7 @@ public class Measure extends BusinessEntity {
 	/**
 	 * Value
 	 */
-	private Float value;
+	private double value;
 	
 	/**
 	 * Measured parameter
@@ -32,10 +32,10 @@ public class Measure extends BusinessEntity {
 		// TODO Auto-generated method stub
 		
 	}
-	public float getValue() {
+	public double getValue() {
 		return value;
 	}
-	public void setValue(float value) {
+	public void setValue(double value) {
 		this.value = value;
 	}
 	public DeviceParameter getParameter() {

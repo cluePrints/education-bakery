@@ -14,7 +14,7 @@ import org.springframework.validation.Errors;
 public class PriceListItem extends BusinessEntity {
 	private static final long serialVersionUID=1L;
 	private PriceList parent=new PriceList();
-	private float price;
+	private double price;
 	private ProductType product=new ProductType();
 	
 	
@@ -38,10 +38,10 @@ public class PriceListItem extends BusinessEntity {
 	public void setParent(PriceList parent) {
 		this.parent = parent;
 	}
-	public float getPrice() {
+	public double getPrice() {
 		return price;
 	}
-	public void setPrice(float price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 	public ProductType getProduct() {

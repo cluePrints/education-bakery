@@ -14,7 +14,7 @@ public class PriceListSvc extends AbstractCommand {
 
 	@Override
 	public void init(SvcController controller) throws Exception {
-		setMainDAO(controller.getDAOFacade().getPriceListItemDAO());
+		setMainDAO(controller.getDAOFacade().getPriceListDAO());
 		setCommand(new PriceList());
 	}
 	@Override
@@ -24,11 +24,8 @@ public class PriceListSvc extends AbstractCommand {
 		PrintWriter out = response.getWriter();
 		SvcHelper.write(out, controller.getDAOFacade().getAddressDAO(), "addresses");
 		SvcHelper.write(out, controller.getDAOFacade().getContragentDAO(), "contragents");
-		SvcHelper.write(out, controller.getDAOFacade().getPriceListDAO(), "priceListItems");
+		SvcHelper.write(out, controller.getDAOFacade().getPriceListItemDAO(), "priceListItems");
 		SvcHelper.write(out, controller.getDAOFacade().getProductTypeDAO(), "productTypes");
 		SvcHelper.write(out, controller.getDAOFacade().getUnitDAO(), "units");
 	}
-
-
-
 }

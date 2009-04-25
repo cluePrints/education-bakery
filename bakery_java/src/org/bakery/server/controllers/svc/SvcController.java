@@ -19,6 +19,7 @@ public class SvcController extends AbstractController {
 		
 		String svcName = request.getParameter("svc");
 		// FIXME: it's dumb approach
+		logger.info(LoggingUtils.dumpStringMapIntoString(request.getParameterMap()));
 		try {
 			response.setCharacterEncoding("utf-8");
 			response.setContentType("text/html;charset=UTF-8");

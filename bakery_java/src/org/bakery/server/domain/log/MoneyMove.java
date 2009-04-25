@@ -21,7 +21,7 @@ import org.springframework.validation.Errors;
  */
 public class MoneyMove extends BusinessEntity {
 	private static final long serialVersionUID=1L;
-	private float amount;
+	private double amount;
 	private String desc;
 	private Date date=(Date) NULL_DATE.clone();
 	private Account destinationAccount=new Account();
@@ -71,10 +71,10 @@ public class MoneyMove extends BusinessEntity {
 		return (NULL_DATE.equals(this.date) || date == null) ? 1 : 0;
 	}
 	
-	public float getAmount() {
+	public double getAmount() {
 		return amount;
 	}
-	public void setAmount(float amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 	public String getDesc() {

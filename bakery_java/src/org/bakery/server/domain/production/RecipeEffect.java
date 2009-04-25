@@ -36,7 +36,7 @@ public class RecipeEffect extends BusinessEntity{
 	/**
 	 * Amount used/produced
 	 */
-	private float amount;
+	private double amount;
 	@Override
 	public void validate(Errors errors) {
 		// TODO Auto-generated method stub
@@ -66,10 +66,10 @@ public class RecipeEffect extends BusinessEntity{
 	public void setProductType(ProductType productType) {
 		this.productType = productType;
 	}
-	public float getAmount() {
+	public double getAmount() {
 		return amount;
 	}
-	public void setAmount(float amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 

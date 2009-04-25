@@ -17,7 +17,7 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	private Device device;
 	private int changable;
 	private int minimize;
-	private float bestValue;
+	private double bestValue;
 	@Override
 	public void validate(Errors errors) {
 		// TODO Auto-generated method stub
@@ -53,10 +53,10 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	public void setMinimize(int minimize) {
 		this.minimize = minimize;
 	}
-	public float getBestValue() {
+	public double getBestValue() {
 		return bestValue;
 	}
-	public void setBestValue(float bestValue) {
+	public void setBestValue(double bestValue) {
 		this.bestValue = bestValue;
 	}
 }

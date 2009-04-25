@@ -5,6 +5,11 @@ import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,7 +80,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 			strVal = URLDecoder.decode(strVal, "utf-8");
 			if (strVal == null)
 				continue;
-			
+			try{
 			/* BusinessEntity - just try to bind id*/			
 			if (BusinessEntity.class.isAssignableFrom(propType)){				
 				propValue = propType.newInstance();
@@ -103,8 +108,20 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 			if (propType.isAssignableFrom(Float.class) || propType.equals(java.lang.Float.TYPE))
 				propValue = Float.parseFloat(strVal);
 			
+			/* Double */
+			if (propType.isAssignableFrom(Double.class) || propType.equals(java.lang.Double.TYPE))
+				propValue = Float.parseFloat(strVal);
+			
+			/* Date */
+			if (propType.isAssignableFrom(Date.class)){
+				propValue = SvcHelper.parseDate(strVal);
+			}
+							
 			Method writeMethod = prop.getWriteMethod();
 			writeMethod.invoke(command, propValue);
+			} catch (Exception e) {
+				// validation will be later
+			}
 		}
 	}
 	protected abstract void executeInternal(HttpServletRequest request,
