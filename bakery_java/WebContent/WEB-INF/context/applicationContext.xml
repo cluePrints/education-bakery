@@ -247,12 +247,14 @@
 					value="org.bakery.server.domain.production.Recipe" />
 				<property name="querySearchByName">
 					<value>
-						from Recipe dp where dp.name like :searchName order by dp.active, dp.name
+						from Recipe dp left outer join fetch dp.parameters
+							where dp.name like :searchName order by dp.name							
 					</value>
 				</property>
 				<property name="queryGetAvailable">
 					<value>
-						from Recipe dp where dp.active>0 order by dp.active, dp.name
+						from Recipe dp left outer join fetch dp.parameters
+							where dp.active>0 order by dp.name	
 					</value>
 				</property>
 			</bean>
@@ -263,12 +265,12 @@
 					value="org.bakery.server.domain.production.RecipeEffect" />
 				<property name="querySearchByName">
 					<value>
-						from RecipeEffect dp order by dp.active
+						from RecipeEffect dp where :searchName like resultFormula
 					</value>
 				</property>
 				<property name="queryGetAvailable">
 					<value>
-						from RecipeEffect dp where dp.active>0 order by dp.active
+						from RecipeEffect dp
 					</value>
 				</property>
 			</bean>
@@ -351,6 +353,7 @@
 				<prop key="hibernate.dialect">
 					org.hibernate.dialect.MySQL5Dialect
 				</prop>
+				<prop key="hibernate.max_fetch_depth">2</prop>
 			</props>
 		</property>
 	</bean>

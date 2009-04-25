@@ -24,7 +24,7 @@ public class RecipeEffect extends BusinessEntity{
 	/**
 	 * Expression to calculate amount, dependent on parameters
 	 * 
-	 * for example "2*{1} + 4*{19}", 1 & 19 are id's of dependent parameters
+	 * for example "2*{P1} + 4*{E19}", 1 & 19 are id's of dependent parameters and effects
 	 */
 	private String resultFormula;
 	
@@ -33,10 +33,6 @@ public class RecipeEffect extends BusinessEntity{
 	 */
 	private ProductType productType;
 	
-	/**
-	 * Amount used/produced
-	 */
-	private double amount;
 	@Override
 	public void validate(Errors errors) {
 		// TODO Auto-generated method stub
@@ -66,11 +62,4 @@ public class RecipeEffect extends BusinessEntity{
 	public void setProductType(ProductType productType) {
 		this.productType = productType;
 	}
-	public double getAmount() {
-		return amount;
-	}
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
-
 }

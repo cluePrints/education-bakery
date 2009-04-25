@@ -5,5 +5,7 @@ public enum AbstractFormMode {
 	NEW,
 	EDIT,
 	DELETE,
-	RESTORE
+	RESTORE,
+	SPECIAL_ADD,
+	SPECIAL_REMOVE
 }

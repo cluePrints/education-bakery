@@ -10,12 +10,6 @@
 			column="recip_effect_id">
 			<generator class="increment"/>
 		</id>
-		<!-- property name="active"
-			  type="integer"
-			  column="recipe_effect_active" -->
-		<property
-			name="amount"
-			column="recip_effect_product_amount"/>
 		<many-to-one
 			outer-join="true"
 			name="productType"
@@ -29,8 +23,6 @@
 			column="recip_effect_recip"/>
 		<property
 			name="consumed"
-			column="recip_effect_is_consumed"/>
-
-			
+			column="recip_effect_is_consumed"/>			
 	</class>
 </hibernate-mapping>

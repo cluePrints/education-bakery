@@ -9,9 +9,10 @@ import junit.util.TestConst;
 
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
-import org.bakery.server.domain.accounting.Address;
+import org.bakery.server.domain.hardware.DeviceParameter;
 import org.bakery.server.domain.log.MoneyMove;
 import org.bakery.server.domain.log.ProductMove;
+import org.bakery.server.domain.production.Recipe;
 import org.bakery.server.domain.production.Warehouse;
 import org.bakery.server.persistence.AbstractDAO;
 import org.bakery.server.persistence.DAOFacade;
@@ -21,12 +22,22 @@ public class DAOTest extends AbstractSpringTest{
 
 	public void testDAOs() throws Exception {
 		
+		List r =  DAOFacade.getRecipeDAO().searchByName("%", 0, 100);
+		int n=0;
+		for (Object rec : r){
+			System.out.println(((Recipe) rec).toXml());
+			Recipe recipe = ((Recipe) rec);
+			DeviceParameter param = (DeviceParameter) DAOFacade.getDeviceParameterDAO().getById(1L);
+			recipe.getParameters().add(param);
+			DAOFacade.getRecipeDAO().saveOrUpdate(recipe);
+		}
+		
+		throw new RuntimeException("Done");
 		/* Lazy init tests*/
-		assertNotNull(DAOFacade);
+		/*assertNotNull(DAOFacade);
 		assertNotNull(DAOFacade.getWarehouseDAO());
 		assertNotNull(((Warehouse) DAOFacade.getWarehouseDAO().getAvailable().get(0)));
-		assertNotNull(((Warehouse) DAOFacade.getWarehouseDAO().getAvailable().get(0)).getOwner().getName());
-		assertNotNull(((MoneyMove) DAOFacade.getMoneyMoveDAO().getAvailable().get(1)).getSourceAccount().getOwner().getName());
+		assertNotNull(((Warehouse) DAOFacade.getWarehouseDAO().getAvailable().get(0)).getOwner().getName());		
 		
 		BeanInfo info = Introspector.getBeanInfo(DAOFacade.getClass(), Object.class);
 		PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
@@ -37,7 +48,7 @@ public class DAOTest extends AbstractSpringTest{
 				testSingleDAO(dao);
 			}
 		}
-		
+		*/
 	}
 	
 	protected void testAvailable(AbstractDAO dao) throws Exception {

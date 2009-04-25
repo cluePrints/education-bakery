@@ -1,6 +1,5 @@
 package org.bakery.server.domain.production;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,14 +27,26 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	private String formula;
 	
 	/**
-	 * Time, consumed by process
+	 * Time in milliseconds, consumed by process
 	 */
-	private Date time;
+	private long time;
 	
 	private Set<DeviceParameter> parameters = new HashSet<DeviceParameter>();
 	
 	private Set<RecipeEffect> effects = new HashSet<RecipeEffect>();
-	
+		
+	@Override
+	protected String generateAdditionalXML() {
+		String tmp ="";
+		tmp += "<parameters>";
+		for (DeviceParameter param : parameters){
+			tmp+= "<parameter>";
+			tmp+= "<id>"+param.getId()+"</id>";
+			tmp+= "</parameter>";
+		}
+		tmp += "</parameters>";
+		return tmp;
+	}
 	@Override
 	public void validate(Errors errors) {
 		// TODO Auto-generated method stub
@@ -53,10 +64,10 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	public void setFormula(String formula) {
 		this.formula = formula;
 	}
-	public Date getTime() {
+	public long getTime() {
 		return time;
 	}
-	public void setTime(Date time) {
+	public void setTime(long time) {
 		this.time = time;
 	}
 	public Set<RecipeEffect> getEffects() {
@@ -71,4 +82,5 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	public void setParameters(Set<DeviceParameter> parameters) {
 		this.parameters = parameters;
 	}
+	
 }

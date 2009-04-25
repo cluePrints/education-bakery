@@ -21,21 +21,23 @@
 			column="recip_formula"/>		
 		<property
 			name="time"
-			column="recipe_time"/>
+			column="recip_time"/>
 		<set name="effects"
 			inverse="true"
-			cascade="save-update"
-			outer-join="true">
+			cascade="save-update">
 			<key column="recip_effect_recip"/>
 			<one-to-many class="org.bakery.server.domain.production.RecipeEffect"/> 
 		</set>
 		<set name="parameters"
+			fetch="join"
 			cascade="save-update"
 			outer-join="true"
 			table="recip_parameters">
 				<key column="recip_id"/>
-            <many-to-many column="device_parameter_id"
-                class="org.bakery.server.domain.hardware.DeviceParameter"/>			
+            	<many-to-many column="device_parameter_id"
+            		fetch="join"
+            		outer-join="true"
+                	class="org.bakery.server.domain.hardware.DeviceParameter"/>			
 		</set>
 	</class>
 </hibernate-mapping>

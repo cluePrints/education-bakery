@@ -18,5 +18,6 @@ public class DeviceParameterSvc extends AbstractCommand {
 
 	protected void executeInternal(HttpServletRequest request,
 			HttpServletResponse response, SvcController controller, AbstractFormMode mode) throws Exception {
+	
 	}
 }
