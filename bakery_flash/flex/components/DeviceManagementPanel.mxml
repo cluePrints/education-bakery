@@ -101,7 +101,7 @@
 				mainSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP error");
+				Alert.show("HTTP Ошибка!!!");
 			} 
 			private function httpResultHandler(event:*):void{
 				mainData = event.result.mainData;
@@ -239,11 +239,11 @@
 					dataProvider="{selectedDeviceParameters}"
 					itemClick="childBindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
 						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
 						<mx:DataGridColumn headerText="Активность" labelFunction="util.activeToString"/>
 						<mx:DataGridColumn headerText="Ед.изм" labelFunction="getParameterUnitName"/>
-						<mx:DataGridColumn headerText="Fixed" labelFunction="util.fixedToString"/>
+						<mx:DataGridColumn headerText="Фиксирован" labelFunction="util.fixedToString"/>
 						<mx:DataGridColumn headerText="Рекомендуемое значение" dataField="bestValue"/>
 						<mx:DataGridColumn headerText="Минимизируемый" labelFunction="util.minimizedToString"/>
 					</mx:columns>
@@ -263,7 +263,7 @@
 				<mx:CheckBox id="cbChildActive"/>				
 			</mx:FormItem>
 			<mx:HBox width="234">
-				<mx:FormItem label="Fixed:">
+				<mx:FormItem label="Фиксирован:">
 				<mx:CheckBox id="cbChildFixed"/>				
 			</mx:FormItem>
 			<mx:FormItem label="Минимизируемый:">

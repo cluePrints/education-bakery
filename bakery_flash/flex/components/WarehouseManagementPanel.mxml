@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()">
+	creationComplete="init()" width="770" height="544">
 
 	<mx:HTTPService id="warehouseSvc" 
 		useProxy="false"
@@ -41,7 +41,7 @@
 				//addressSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP error");
+				Alert.show("HTTP Ошибка!!");
 			} 
 			private function httpwarehouseResultHandler(event:*):void{
 				warehouses = event.result.mainData;
@@ -193,7 +193,7 @@
 					dataProvider="{warehouses['warehouse']}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
 						<mx:DataGridColumn headerText="Название" dataField="name"/>
 						<mx:DataGridColumn headerText="Владелец" labelFunction="getWarehouseOwnerName"/>
 						<mx:DataGridColumn headerText="Адресс" labelFunction="getWarehouseAddressName"/>

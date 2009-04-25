@@ -35,7 +35,7 @@
 				productTypeSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP error");
+				Alert.show("HTTP Ошибка!!");
 			} 
 			private function httpproducttypeResultHandler(event:*):void{
 				productTypes = event.result.mainData;
@@ -138,7 +138,7 @@
 					dataProvider="{productTypes['producttype']}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
 						<mx:DataGridColumn headerText="Название" dataField="name"/>
 						<mx:DataGridColumn headerText="ед.измерения" labelFunction="getProductTypeUnitName"/>
 						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString"/>

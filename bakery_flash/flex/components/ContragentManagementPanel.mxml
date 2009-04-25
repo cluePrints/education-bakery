@@ -34,7 +34,7 @@
 				contragentSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP error");
+				Alert.show("HTTP Ошибка!!!");
 			} 
 			private function httpContragentResultHandler(event:*):void{
 				contragents = event.result.mainData;
@@ -147,7 +147,7 @@
 					dataProvider="{contragents['contragent']}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
 						<mx:DataGridColumn headerText="Имя" dataField="name"/>
 						<mx:DataGridColumn headerText="Адресс" labelFunction="getContragentAddressName"/>
 						<mx:DataGridColumn headerText="Child" labelFunction="childToString"/>

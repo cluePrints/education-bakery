@@ -35,7 +35,7 @@
 				accountSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP error");
+				Alert.show("HTTP ОШибка!!!");
 			} 
 			private function httpaccountResultHandler(event:*):void{
 
@@ -145,7 +145,7 @@
 					dataProvider="{accounts['account']}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
 						<mx:DataGridColumn headerText="Название" dataField="name"/>
 						<mx:DataGridColumn headerText="Контрагент" labelFunction="getAccountContragentName"/>
 						<mx:DataGridColumn headerText="Описание" dataField="desc"/>
