@@ -228,7 +228,7 @@
 						required="true">												
 						<mx:DateField id="dfDate"
 							text=""
-							formatString="DD/MM/YYYY"/>
+							formatString="DD/MM/YY"/>
 					</mx:FormItem>
 					</mx:VBox>
 					<mx:FormItem label="Комментарий:">												
