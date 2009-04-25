@@ -77,10 +77,12 @@
 			
 			function childBindSelected(){
 				var item = dgChildData.selectedItem;
-				cbChildActive.selected = (item.active == 1);
-				childModel.id = item.id;
-				cbChildProductType.selectedIndex = util.getItemPos(availableProductTypes, item.product);
-				tiChildPrice.text = item.price;
+				if (item != null){
+					cbChildActive.selected = (item.active == 1);
+					childModel.id = item.id;
+					cbChildProductType.selectedIndex = util.getItemPos(availableProductTypes, item.product);
+					tiChildPrice.text = item.price;
+				}
 			}				
 			function childSave(){
 				childSvc.cancel();

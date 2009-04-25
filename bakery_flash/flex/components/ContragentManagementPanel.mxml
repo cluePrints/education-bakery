@@ -30,7 +30,6 @@
 			public function init():void{
 				createNew();
 				formModel.mode="FETCH";
-				formModel.address=0;
 				contragentSvc.send(formModel);				
 			}
 			private function httpFaultHandler(event:Event):void{
@@ -132,7 +131,7 @@
 	<mx:Model id="formModel">		
 		<root>
 			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
-			<address></address>
+			<address>{cbAddresses.selectedItem.id}</address>
 			<id>{tiId.text}</id>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<child>{cbChild.selected == true ? "1" : "0"}</child>
@@ -168,7 +167,6 @@
 						<mx:ComboBox id="cbAddresses"
 							dataProvider="{availableAddresses.address}"
 							labelField="name"
-							change="{formModel.address=availableAddresses.address[cbAddresses.selectedIndex].id}"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Child">

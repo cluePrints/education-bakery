@@ -36,9 +36,6 @@
 			}
 
 			var util:Util = new Util();
-			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP Ошибка!!");
-			} 
 			private function httpproducttypeResultHandler(event:*):void{
 				productTypes = event.result.mainData;
 				if (productTypes != null) {
@@ -66,8 +63,7 @@
 					cbActive.selected = (dgData.selectedItem.active == 1);
 					tiId.text=dgData.selectedItem.id;
 					tiName.text=dgData.selectedItem.name;	
-					cbUnits.selectedIndex=getProductTypeUnitPos(dgData.selectedItem.unit);
-					formModel.unit=dgData.selectedItem.unit;				
+					cbUnits.selectedIndex=getProductTypeUnitPos(dgData.selectedItem.unit);			
 				}													
 			}
 			function createNew():void{
@@ -124,7 +120,7 @@
 	<mx:Model id="formModel">		
 		<root>
 			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
-			<unit></unit>
+			<unit>{cbUnits.selectedItem.id}</unit>
 			<id>{tiId.text}</id>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<name>{encodeURI(tiName.text)}</name>
