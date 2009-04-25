@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="916" height="570">
+<mx:HTTPService id="contragentSvc" 
+		useProxy="false"
+		method="POST"
+		/>
+		<mx:Script>
+			<![CDATA[
+				import mx.collections.ArrayCollection;
+				private var ingrArray:ArrayCollection;
+				private var paramArray:ArrayCollection;
+				
+		// for ingrid		
+		function initIngrArray(){
+			ingrArray = new ArrayCollection();
+			ingrGrid.dataProvider = ingrArray;
+		}
+		function ingrAddData(){
+			if(ingrInput.text != '')
+			{
+			ingrArray.addItem({name:ingrComboBox.selectedLabel, numb:ingrInput.text});
+			}else{
+			mx.controls.Alert.show("Ваедите количество!");
+			}		
+		}
+		function ingrDelData(){
+			if(ingrGrid.selectedIndex!= -1){
+			ingrArray.removeItemAt(ingrGrid.selectedIndex);
+			}
+		}
+		// for param
+		function initParamArray(){
+			paramArray = new ArrayCollection();
+			paramGrid.dataProvider = paramArray;
+		}
+		function paramAddData(){
+			if(paramInput.text != '')
+			{
+			paramArray.addItem({name:paramComboBox.selectedLabel, numb:paramInput.text});
+			}else{
+			mx.controls.Alert.show("Ваедите значение параметра!");
+			}		
+		}
+		function paramDelData(){
+			if(paramGrid.selectedIndex != -1){
+			paramArray.removeItemAt(paramGrid.selectedIndex);
+			}
+		}
+			]]>
+		</mx:Script>
+		
+		<mx:Model id="formModel">		
+		<root>
+			<id></id>	
+			<name>{reciptName.text}</name>	
+			<formula></formula>
+			<active>{reciptActive.selected == true ? "1" : "0"}</active>
+			
+		</root>		
+	</mx:Model>		
+	<mx:Label y="10" text="Панель управления рецептами" width="262" fontWeight="bold" fontSize="14" horizontalCenter="6"/>
+	<mx:HBox x="10" y="52" width="863" height="477">
+	<mx:VBox>
+		<mx:DataGrid height="248" id="gdData">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Идентиф.Номер" dataField="grId"/>
+				<mx:DataGridColumn headerText="Название" dataField="grName"/>
+				<mx:DataGridColumn headerText="Формула рецепта" dataField="grFormula"/>
+				<mx:DataGridColumn headerText="Активный" dataField="grActive"/>
+			</mx:columns>
+		</mx:DataGrid>
+		
+	<mx:HBox width="325" height="45">
+		<mx:Button label="Создать" id="reciprNew"  width="76" height="29"/>
+		<mx:Button label="Сохранить" id="reciptSave"  height="28"/>
+		<mx:Button label="Отмена" id="reciptCencel" width="72" height="28"/>
+	</mx:HBox>
+	</mx:VBox>
+		<mx:VBox height="100%" width="428">
+		<mx:FormItem label="Идентиф.Номер:">
+		<mx:Label id="reciptId" text="" width="115">
+		</mx:Label>
+		</mx:FormItem>
+		<mx:HBox width="413">
+		<mx:FormItem label="Название:" required="true">
+			<mx:TextInput id="reciptName">
+			</mx:TextInput>
+		</mx:FormItem>
+		<mx:FormItem label="Активный" width="113">
+			<mx:CheckBox id="reciptActive"/>
+		</mx:FormItem>
+		</mx:HBox>
+		<mx:VBox width="417" height="160">
+		<mx:Label text="             Состав рецепта" fontSize="12" width="194"/>
+		<mx:DataGrid height="72" width="355" id="ingrGrid" creationComplete="{initIngrArray()}" >
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ингридиент" dataField="name" />
+				<mx:DataGridColumn headerText="Количество" dataField="numb" />
+			</mx:columns>
+		</mx:DataGrid>
+		
+		<mx:HBox>
+		<mx:FormItem label="Ингридиент:" >
+			<mx:ComboBox id="ingrComboBox" width="139" labelField="name">
+			<mx:dataProvider>
+			<mx:Object name="milk" />	
+			<mx:Object name="tttt" />
+			<mx:Object name="rrrr" />
+			<mx:Object name="ooooo" />
+				</mx:dataProvider>
+			</mx:ComboBox>
+		</mx:FormItem>
+		<mx:FormItem label="Количество :"  width="144" >
+			<mx:TextInput width="50" id="ingrInput">
+			
+			</mx:TextInput>
+		</mx:FormItem>
+		</mx:HBox>
+		<mx:HBox>
+		<mx:Button label="Добавить" width="168" click="ingrAddData()"/>
+		<mx:Button label="Удалить" width="168" click="ingrDelData()"/>
+		</mx:HBox>
+		
+		</mx:VBox>
+		
+		<mx:VBox width="416" height="176">
+		<mx:Label text="             Параметры рецепта"  fontSize="12" width="251"/>
+		<mx:DataGrid height="72" width="357" id="paramGrid" creationComplete="{initParamArray()}" >
+			<mx:columns>
+				<mx:DataGridColumn headerText="Параметр" dataField="name"/>
+				<mx:DataGridColumn headerText="Значение" dataField="numb"/>
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:HBox>
+		<mx:FormItem label="Параметр:">
+			<mx:ComboBox id="paramComboBox" width="144" labelField="name">
+				<mx:dataProvider>
+			<mx:Object name="param1" />	
+			<mx:Object name="param2" />
+			<mx:Object name="param3" />
+				</mx:dataProvider>
+			</mx:ComboBox>
+		</mx:FormItem>
+		<mx:FormItem label="Значение:">
+			<mx:TextInput width="46" id="paramInput">
+			</mx:TextInput>
+		</mx:FormItem>
+		
+		</mx:HBox>
+		<mx:HBox>
+		<mx:Button label="Добавить" width="168" click="paramAddData()"/>
+		<mx:Button label="Удалить" width="168" click="paramDelData()"/>
+		</mx:HBox>
+		
+		</mx:VBox>
+		
+	
+					
+		</mx:VBox>
+	</mx:HBox>
+	
+</mx:Canvas>
