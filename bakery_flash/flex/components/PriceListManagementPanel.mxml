@@ -38,6 +38,7 @@
 		useProxy="false"
 		method="GET"
 		url="{childDataSvcUrl}"
+		result="httpChildResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:VBox horizontalAlign="center">	
 	<mx:Script>
@@ -96,7 +97,7 @@
 			}
 		
 			function getProductTypeName(item:Object, column:DataGridColumn):String{				
-				var tmp = util.getItemById(productTypes, item.productType);
+				var tmp = util.getItemById(productTypes, item.product);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -128,6 +129,10 @@
 					mainData["pricelist"].filterFunction = mainFilterFunction;
 				}
 			} 
+			private function httpChildResultHandler(event:*):void{
+				priceListItems = util.extractItemCollection(event.result.mainData, 'pricelistitem');
+				bindSelected(true);
+			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;
 				if (!cbShowNonActive.selected && item.active<=0)
@@ -142,8 +147,8 @@
 			} 
 			private var previousSelected:int=-104;
 			
-			function bindSelected():void{				
-				if ((dgData.selectedIndex >= 0) && (previousSelected != dgData.selectedIndex)) {
+			function bindSelected(refreshAnyWay:Boolean):void{				
+				if ((refreshAnyWay) || (dgData.selectedIndex >= 0) && (previousSelected != dgData.selectedIndex)) {
 					previousSelected = dgData.selectedIndex;
 					cbActive.selected = (dgData.selectedItem.active == 1);
 					if (dgData.selectedItem.date != null) {
@@ -155,7 +160,7 @@
 					selectedPriceListItems.removeAll();
 					formModel.id = dgData.selectedItem.id;
 					childModel.parent = formModel.id;				
-					for each (var priceListItem in selectedPriceListItems){
+					for each (var priceListItem in priceListItems){
 						if (priceListItem.parent == dgData.selectedItem.id){
 							selectedPriceListItems.addItem(priceListItem);
 						}
@@ -177,7 +182,7 @@
 				tiChildPrice.text = "";
 			}
 			function cancel():void{
-				bindSelected();
+				bindSelected(false);
 			}
 			function saveSelected():void{
 				formModel.mode="EDIT";
@@ -196,7 +201,7 @@
 				<mx:DataGrid height="100" width="100%" 
 					id="dgData" 
 					dataProvider="{mainData['pricelist']}"
-					itemClick="bindSelected()">
+					itemClick="bindSelected(false)">
 					<mx:columns>
 						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
 						<mx:DataGridColumn dataField="Контрагент" labelFunction="getContragentName"/>

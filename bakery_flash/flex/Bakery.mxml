@@ -17,6 +17,14 @@
 		]]>
 	</mx:Script>
 	<mx:TabNavigator width="992" height="610">
+		<mx:Canvas label="Прайсы" width="100%" height="100%"
+			show="managePriceLists.init()">
+		<comp:PriceListManagementPanel
+				id="managePriceLists"
+				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.PriceListSvc"
+				childDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.PriceListItemSvc"
+				 width="890" height="510" x="10"/>			
+		</mx:Canvas>
 		<mx:Canvas label="Устр-ва" width="100%" height="100%"
 			show="manageDevices.init()">
 		<comp:DeviceManagementPanel
