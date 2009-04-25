@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="916" height="570">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="976" height="584">
 <mx:HTTPService id="contragentSvc" 
 		useProxy="false"
 		method="POST"
@@ -46,6 +46,19 @@
 			paramArray.removeItemAt(paramGrid.selectedIndex);
 			}
 		}
+		
+		// main part 
+		
+		function cencelAll(){
+			reciptId.text = "";
+			reciptName.text = "";
+			paramArray.removeAll();
+			ingrArray.removeAll();
+			paramInput.text = "";
+			ingrInput.text = "";
+			
+			
+		}
 			]]>
 		</mx:Script>
 		
@@ -59,13 +72,14 @@
 		</root>		
 	</mx:Model>		
 	<mx:Label y="10" text="Панель управления рецептами" width="262" fontWeight="bold" fontSize="14" horizontalCenter="6"/>
-	<mx:HBox x="10" y="52" width="863" height="477">
+	<mx:HBox x="10" y="41" width="921" height="533">
 	<mx:VBox>
 		<mx:DataGrid height="248" id="gdData">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Идентиф.Номер" dataField="grId"/>
 				<mx:DataGridColumn headerText="Название" dataField="grName"/>
-				<mx:DataGridColumn headerText="Формула рецепта" dataField="grFormula"/>
+				<mx:DataGridColumn headerText="Эфекты" dataField="grEfect"/>
+				<mx:DataGridColumn headerText="Параметры" dataField="grParams"/>
 				<mx:DataGridColumn headerText="Активный" dataField="grActive"/>
 			</mx:columns>
 		</mx:DataGrid>
@@ -73,15 +87,15 @@
 	<mx:HBox width="325" height="45">
 		<mx:Button label="Создать" id="reciprNew"  width="76" height="29"/>
 		<mx:Button label="Сохранить" id="reciptSave"  height="28"/>
-		<mx:Button label="Отмена" id="reciptCencel" width="72" height="28"/>
+		<mx:Button label="Отмена" id="reciptCencel" width="72" height="28" click="cencelAll()"/>
 	</mx:HBox>
 	</mx:VBox>
-		<mx:VBox height="100%" width="428">
+		<mx:VBox height="495" width="393">
 		<mx:FormItem label="Идентиф.Номер:">
 		<mx:Label id="reciptId" text="" width="115">
 		</mx:Label>
 		</mx:FormItem>
-		<mx:HBox width="413">
+		<mx:HBox width="364">
 		<mx:FormItem label="Название:" required="true">
 			<mx:TextInput id="reciptName">
 			</mx:TextInput>
@@ -90,17 +104,17 @@
 			<mx:CheckBox id="reciptActive"/>
 		</mx:FormItem>
 		</mx:HBox>
-		<mx:VBox width="417" height="160">
+		<mx:VBox width="360" height="160">
 		<mx:Label text="             Состав рецепта" fontSize="12" width="194"/>
 		<mx:DataGrid height="72" width="355" id="ingrGrid" creationComplete="{initIngrArray()}" >
 			<mx:columns>
-				<mx:DataGridColumn headerText="Ингридиент" dataField="name" />
+				<mx:DataGridColumn headerText="Эфект" dataField="name" />
 				<mx:DataGridColumn headerText="Количество" dataField="numb" />
 			</mx:columns>
 		</mx:DataGrid>
 		
 		<mx:HBox>
-		<mx:FormItem label="Ингридиент:" >
+		<mx:FormItem label="Эфект:" >
 			<mx:ComboBox id="ingrComboBox" width="139" labelField="name">
 			<mx:dataProvider>
 			<mx:Object name="milk" />	
@@ -123,7 +137,7 @@
 		
 		</mx:VBox>
 		
-		<mx:VBox width="416" height="176">
+		<mx:VBox width="359" height="176">
 		<mx:Label text="             Параметры рецепта"  fontSize="12" width="251"/>
 		<mx:DataGrid height="72" width="357" id="paramGrid" creationComplete="{initParamArray()}" >
 			<mx:columns>
