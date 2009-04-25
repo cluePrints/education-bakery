@@ -8,7 +8,7 @@
 		method="POST"
 		url="{productTypeDataSvcUrl}"
 		result="httpproducttypeResultHandler(event)"
-		fault="httpFaultHandler(event)"/>
+		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
 		<![CDATA[
 			import mx.validators.RegExpValidator;
@@ -24,9 +24,9 @@
 			[Bindable]
             private var productTypes:*;
             [Bindable]
-            private var availableUnits:*;
+            private var availableUnits:ArrayCollection;
 			[Bindable]
-            private var units:*;
+            private var units:ArrayCollection;
 			
 			public function init():void{
 				createNew();
@@ -34,6 +34,8 @@
 				formModel.mode="FETCH";
 				productTypeSvc.send(formModel);				
 			}
+
+			var util:Util = new Util();
 			private function httpFaultHandler(event:Event):void{
 				Alert.show("HTTP Ошибка!!");
 			} 
@@ -43,10 +45,8 @@
 					productTypes["producttype"].filterFunction = mainFilterFunction;
 				}
 				
-				availableUnits = event.result.unitsAvailable;
-				units = event.result.units;
-			} 
-			private function httpUnitResultHandler(event:*):void{
+				units = util.extractItemCollection(event.result.units, 'unit');
+				availableUnits = util.getActiveItems(units);
 				
 			} 
 			private function mainFilterFunction(item:*){
@@ -94,7 +94,7 @@
 			}
 			function getProductTypeUnitPos(_unitId:int){
 				var result=0;
-				for each (var unit in availableUnits.unit){ 
+				for each (var unit in availableUnits){ 
 					if (unit.id == _unitId) {
 						return result;
 					}
@@ -104,7 +104,7 @@
 			}
 			function getProductTypeUnit(_id:int){
 				var result=null;
-				for each (var unit in units.unit){ 
+				for each (var unit in units){ 
 					if (unit.id == _id) {
 						result = unit;
 					}
@@ -156,10 +156,8 @@
 					<mx:FormItem label="ед. измерения:" 
 						required="true">												
 						<mx:ComboBox id="cbUnits"
-							dataProvider="{availableUnits.unit}"
-							labelField="name"
-							change="{formModel.unit=availableUnits.unit[cbUnits.selectedIndex].id}"
-							/>
+							dataProvider="{availableUnits}"
+							labelField="name"/>							
 					</mx:FormItem>
 					<mx:FormItem label="Активная">
 						<mx:CheckBox id="cbActive"/>

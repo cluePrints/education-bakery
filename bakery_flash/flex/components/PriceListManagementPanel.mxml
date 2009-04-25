@@ -3,30 +3,29 @@
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:comp="components.*"
 	creationComplete="init()" width="916" height="507">
+	<!-- represents selected main item: PriceList -->
 	<mx:Model id="formModel">		
 		<root>
-			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
-			
-			<id>{tiId.text}</id>		
+			<mode>EDIT</mode>			
+			<id></id>
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
-				
-			<name>{encodeURI(tiName.text)}</name>
+			<date>{dfDate.text}</date>
+			<owner>{cbOwner.selectedItem.id}</owner>			
+			<comment>{encodeURI(tiComment.text)}</comment>				
 		</root>		
 	</mx:Model>		
+	<!-- represents selected subItem: PriceListItem -->
 	<mx:Model id="childModel">
 		<root>
 			<mode>EDIT</mode>
 			
 			<id></id>
 			<active>{cbChildActive.selected == true ? "1" : "0"}</active>
-			<fixed>{cbChildFixed.selected == true ? "1" : "0"}</fixed>
-			<minimized>{cbChildMinimized.selected == true ? "1" : "0"}</minimized>
 			
-			<device>{dgData.selectedItem.id}</device>
+			<parent></parent>
 			
-			<name>{encodeURI(tiChildName.text)}</name>
-			<bestValue>{encodeURI(tiChildBestValue.text)}</bestValue>
-			<unit>{cbChildUnit.selectedItem.id}</unit>
+			<price>{encodeURI(tiChildPrice.text)}</price>
+			<product>{cbChildProductType.selectedItem.id}</product>
 		</root>					
 	</mx:Model>
 	<mx:HTTPService id="mainSvc" 
@@ -57,35 +56,47 @@
 			public var hideEffect:*;
 			[Bindable]
             private var mainData:*;
-            [Bindable]
-            private var selectedDeviceParameters:ArrayCollection = new ArrayCollection();
             
-            [Bindable]
-            private var units:ArrayCollection;            
-            [Bindable]
-            private var availableUnits:ArrayCollection;
+            [Bindable] private var units:ArrayCollection;            
+            [Bindable] private var availableUnits:ArrayCollection;
+            
+            [Bindable] private var contragents:ArrayCollection;            
+            [Bindable] private var availableContragents:ArrayCollection;
+
+            [Bindable] private var addresses:ArrayCollection;            
+
+			[Bindable] private var productTypes:ArrayCollection;            
+            [Bindable] private var availableProductTypes:ArrayCollection;
+            
+			[Bindable] private var priceListItems:ArrayCollection;
+			[Bindable] private var selectedPriceListItems:ArrayCollection = new ArrayCollection();            
 			
-			var deviceParameters:ArrayCollection;
 			// XXX: It's dumb, change it
 			var util:Util = new Util();
 			
 			function childBindSelected(){
 				var item = dgChildData.selectedItem;
-				childModel.id = item.id;			
-				tiChildName.text = item.name;	
-				tiChildBestValue.text = item.bestValue;
-				cbChildUnit.selectedIndex = util.getItemPos(availableUnits, item.unit);
 				cbChildActive.selected = (item.active == 1);
-				cbChildFixed.selected = (item.fixed == 1);
-				cbChildMinimized.selected = (item.minimized == 1);
+				childModel.id = item.id;
+				cbChildProductType.selectedIndex = util.getItemPos(availableProductTypes, item.product);
+				tiChildPrice.text = item.price;
 			}				
 			function childSave(){
 				childSvc.cancel();
 				childSvc.send(childModel);
 			}
 			
-			function getParameterUnitName(item:Object, column:DataGridColumn):String{				
-				var tmp = util.getItemById(units, item.unit);
+			function getContragentName(item:Object, column:DataGridColumn):String{				
+				var tmp = util.getItemById(contragents, item.owner);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+		
+			function getProductTypeName(item:Object, column:DataGridColumn):String{				
+				var tmp = util.getItemById(productTypes, item.productType);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -93,21 +104,28 @@
 				}					
 			}
 			
-            
 			public function init():void{
 				createNew();				
 				mainSvc.cancel();
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);				
 			}
+
 			private function httpResultHandler(event:*):void{
-				mainData = event.result.mainData;
-				deviceParameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
 				units = util.extractItemCollection(event.result.units, 'unit');
+				contragents = util.extractItemCollection(event.result.contragents, 'contragent');
+				addresses = util.extractItemCollection(event.result.addresses, 'address');
+				productTypes = util.extractItemCollection(event.result.productTypes, 'producttype');
+				priceListItems = util.extractItemCollection(event.result.priceListItems, 'pricelistitem');
+				            
 				availableUnits = util.getActiveItems(units);
+				availableContragents = util.getActiveItems(contragents);			            
+				availableProductTypes = util.getActiveItems(productTypes);
 				
+				            
+				mainData = event.result.mainData;
 				if (mainData != null) {
-					mainData["device"].filterFunction = mainFilterFunction;
+					mainData["pricelist"].filterFunction = mainFilterFunction;
 				}
 			} 
 			private function mainFilterFunction(item:*){
@@ -128,31 +146,35 @@
 				if ((dgData.selectedIndex >= 0) && (previousSelected != dgData.selectedIndex)) {
 					previousSelected = dgData.selectedIndex;
 					cbActive.selected = (dgData.selectedItem.active == 1);
-					tiId.text=dgData.selectedItem.id;
-					tiName.text=dgData.selectedItem.name;										
-					selectedDeviceParameters.removeAll();			
-					if (deviceParameters == null) {return;}	
-					for each (var deviceParameter in deviceParameters){
-						if (deviceParameter.device == dgData.selectedItem.id){
-							selectedDeviceParameters.addItem(deviceParameter);
+					if (dgData.selectedItem.date != null) {
+						dfDate.text=dgData.selectedItem.date;
+					} else {
+						dfDate.text="";
+					}															
+					tiComment.text=dgData.selectedItem.comment;
+					selectedPriceListItems.removeAll();
+					formModel.id = dgData.selectedItem.id;
+					childModel.parent = formModel.id;				
+					for each (var priceListItem in selectedPriceListItems){
+						if (priceListItem.parent == dgData.selectedItem.id){
+							selectedPriceListItems.addItem(priceListItem);
 						}
 					}
-					selectedDeviceParameters.refresh();
+					selectedPriceListItems.refresh();
 				}													
 			}
 			function createNew():void{
-				tiId.text="";
+				formModel.id="";
 				cbActive.selected=true;
-				formModel.mode="NEW";
-				tiName.text="<undefined>";			
+				formModel.mode="NEW";			
+				tiComment.text="";
+				cbOwner.selectedIndex = -1;
 			}
 			function childCreateNew():void{
 				childModel.id="";
-				cbChildActive.selected=true;
-				cbChildMinimized.selected=true;
-				cbChildFixed.selected=false;
-				tiChildBestValue.text = "";				
-				tiChildName.text="<undefined>";			
+				cbChildActive.selected = true;
+				cbChildProductType.selectedIndex = -1;
+				tiChildPrice.text = "";
 			}
 			function cancel():void{
 				bindSelected();
@@ -163,7 +185,7 @@
 				mainSvc.send(formModel);
 			}
 			function filterRefresh():void{
-				mainData["device"].refresh();
+				mainData["pricelist"].refresh();
 			}
 
 		]]>
@@ -173,21 +195,35 @@
 			<mx:VBox height="228" width="378" horizontalAlign="center" >
 				<mx:DataGrid height="100" width="100%" 
 					id="dgData" 
-					dataProvider="{mainData['device']}"
+					dataProvider="{mainData['pricelist']}"
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
-						<mx:DataGridColumn dataField="Активность" labelFunction="util.activeToString"/>
+						<mx:DataGridColumn dataField="Контрагент" labelFunction="getContragentName"/>
+						<mx:DataGridColumn headerText="Дата" dataField="date"/>
+						<mx:DataGridColumn headerText="Комментарий" dataField="comment"/>
+						<mx:DataGridColumn dataField="Активность" labelFunction="util.activeToString"/>						
 					</mx:columns>
 				</mx:DataGrid>
-								<mx:VBox horizontalAlign="left" height="52" width="356">	
-					<mx:FormItem label="Наименование:" 
+				<mx:VBox horizontalAlign="left" height="80" width="356">
+					<mx:FormItem label="Контрагент:" 
 						required="true">												
-						<mx:TextInput id="tiName"/>
-					</mx:FormItem>
-					<mx:FormItem label="Активно:">
+						<mx:ComboBox id="cbOwner"
+							dataProvider="{availableContragents}"
+							labelField="name"/>
+					</mx:FormItem>	
+					<mx:FormItem label="Активно:"
+						required="true">
 						<mx:CheckBox id="cbActive"/>
+					</mx:FormItem>
+					<mx:FormItem label="Дата:" 
+						required="true">												
+						<mx:DateField id="dfDate"
+							text=""
+							formatString="DD/MM/YYYY"/>
+					</mx:FormItem>
+					<mx:FormItem label="Комментарий:">												
+						<mx:TextInput id="tiComment"/>
 					</mx:FormItem>
 					
 				</mx:VBox>
@@ -225,9 +261,6 @@
 						</mx:FormItem>												
 					</mx:HBox>					
 				</mx:VBox>
-				
-				<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
-					<mx:TextInput id="tiId" visible="false" text=""/>
 			</mx:VBox>
 		</mx:HBox>
 	</mx:VBox>
@@ -235,41 +268,28 @@
 		<mx:VBox height="100%" width="571" horizontalAlign="center" >
 				<mx:DataGrid height="137" width="566" 
 					id="dgChildData" 
-					dataProvider="{selectedDeviceParameters}"
+					dataProvider="{selectedPriceListItems}"
 					itemClick="childBindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="Идентиф.Номер" dataField="id" width="70"/>
-						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
+						<mx:DataGridColumn headerText="ID" dataField="id" width="70"/>
+						<mx:DataGridColumn headerText="Продукт" labelFunction="getProductTypeName"/>
 						<mx:DataGridColumn headerText="Активность" labelFunction="util.activeToString"/>
-						<mx:DataGridColumn headerText="Ед.изм" labelFunction="getParameterUnitName"/>
-						<mx:DataGridColumn headerText="Фиксирован" labelFunction="util.fixedToString"/>
-						<mx:DataGridColumn headerText="Рекомендуемое значение" dataField="bestValue"/>
-						<mx:DataGridColumn headerText="Минимизируемый" labelFunction="util.minimizedToString"/>
+						<mx:DataGridColumn headerText="Цена" dataField="price"/>
 					</mx:columns>
 				</mx:DataGrid>				
 		</mx:VBox>
 		<mx:VBox height="166">
-			<mx:FormItem label="Наименование:">
-				<mx:TextInput id="tiChildName"/>				
+			<mx:FormItem label="Продукт:">
+				<mx:ComboBox id="cbChildProductType"
+					dataProvider="{availableProductTypes}"
+					labelField="name"/>				
 			</mx:FormItem>
-			<mx:FormItem label="Рек. зн:">
-				<mx:TextInput id="tiChildBestValue"/>				
-			</mx:FormItem>
-			<mx:FormItem label="Ед.изм:">
-				<mx:ComboBox id="cbChildUnit" labelField="name" dataProvider="{availableUnits.unit}"/>								
+			<mx:FormItem label="Цена:">
+				<mx:TextInput id="tiChildPrice"/>				
 			</mx:FormItem>
 			<mx:FormItem label="Активность:">
 				<mx:CheckBox id="cbChildActive"/>				
-			</mx:FormItem>
-			<mx:HBox width="234">
-				<mx:FormItem label="Фиксирован:">
-				<mx:CheckBox id="cbChildFixed"/>				
-			</mx:FormItem>
-			<mx:FormItem label="Минимизируемый:">
-				<mx:CheckBox id="cbChildMinimized"/>				
-			</mx:FormItem>
-			</mx:HBox>
-		
+			</mx:FormItem>	
 			<mx:HBox>
 				<mx:Button label="Новый" click="childCreateNew()"/>
 				<mx:Button label="Сохранить" click="childSave()"/>
