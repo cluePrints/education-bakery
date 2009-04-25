@@ -63,10 +63,13 @@ public class Util{
 		return (item.active>0 ? "+" : "-"); 
 	}
 	public function minimizedToString(item:Object, column:DataGridColumn):String{				
-		return (item.active>0 ? "мин." : "макс"); 
+		return (item.minimize>0 ? "мин." : "макс"); 
+	}
+	public function consumedToString(item:Object, column:DataGridColumn):String{				
+		return (item.consumed>0 ? "in" : "out"); 
 	}
 	public function fixedToString(item:Object, column:DataGridColumn):String{				
-		return (item.active>0 ? "конст." : "перем."); 
+		return (item.changable >0 ? "перем." : "конст."); 
 	}
 	public function extractItemCollection(proxy:*, collectionName:String):ArrayCollection{
 		var result:ArrayCollection = null;

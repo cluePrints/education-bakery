@@ -197,7 +197,7 @@
 
 		]]>
 	</mx:Script>				
-		<mx:Label text="Панель управления прайсами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+		<mx:Label text="Панель управления устройствами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
 		<mx:HBox width="877" height="274">
 			<mx:VBox height="267" width="416" horizontalAlign="center" >
 				<mx:DataGrid height="99" width="408" 
@@ -206,10 +206,10 @@
 					itemClick="bindSelected(false)">
 					<mx:columns>
 						<mx:DataGridColumn headerText="ID" dataField="id" width="50"/>
-						<mx:DataGridColumn dataField="Контрагент" labelFunction="getContragentName" width="100"/>
-						<mx:DataGridColumn headerText="Дата" dataField="date" width="90"/>
+						<mx:DataGridColumn headerText="Контрагент" labelFunction="getContragentName" width="150"/>
+						<mx:DataGridColumn headerText="Дата" dataField="date" width="50"/>
 						<mx:DataGridColumn headerText="Комментарий" dataField="comment"/>
-						<mx:DataGridColumn dataField="Активн." labelFunction="util.activeToString" width="50"/>						
+						<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="50"/>						
 					</mx:columns>
 				</mx:DataGrid>
 				<mx:HBox width="381" height="117">
@@ -291,7 +291,7 @@
 			<mx:FormItem label="Продукт:" width="218">
 				<mx:ComboBox id="cbChildProductType"
 					dataProvider="{availableProductTypes}"
-					labelField="name" width="140"/>				
+					labelField="name" width="150"/>				
 			</mx:FormItem>
 			<mx:FormItem label="Цена:">
 				<mx:TextInput id="tiChildPrice"/>				
