@@ -265,7 +265,7 @@
 					value="org.bakery.server.domain.production.RecipeEffect" />
 				<property name="querySearchByName">
 					<value>
-						from RecipeEffect dp where :searchName like resultFormula
+						from RecipeEffect dp where resultFormula like :searchName 
 					</value>
 				</property>
 				<property name="queryGetAvailable">
@@ -275,7 +275,22 @@
 				</property>
 			</bean>
 		</property>
-		
+			<property name="productionPlanDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.accounting.ProductionPlan" />
+				<property name="querySearchByName">
+					<value>
+						from ProductionPlan dp where :searchName like resultFormula
+					</value>
+				</property>
+				<property name="queryGetAvailable">
+					<value>
+						from ProductionPlan dp where dp.active>0
+					</value>
+				</property>
+			</bean>
+		</property>
 	</bean>
 	<bean id="abstractDAO"
 		class="org.bakery.server.persistence.AbstractDAO" abstract="true">

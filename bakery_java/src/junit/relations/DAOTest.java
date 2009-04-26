@@ -32,9 +32,8 @@ public class DAOTest extends AbstractSpringTest{
 			DAOFacade.getRecipeDAO().saveOrUpdate(recipe);
 		}
 		
-		throw new RuntimeException("Done");
-		/* Lazy init tests*/
-		/*assertNotNull(DAOFacade);
+
+		assertNotNull(DAOFacade);
 		assertNotNull(DAOFacade.getWarehouseDAO());
 		assertNotNull(((Warehouse) DAOFacade.getWarehouseDAO().getAvailable().get(0)));
 		assertNotNull(((Warehouse) DAOFacade.getWarehouseDAO().getAvailable().get(0)).getOwner().getName());		
@@ -48,7 +47,6 @@ public class DAOTest extends AbstractSpringTest{
 				testSingleDAO(dao);
 			}
 		}
-		*/
 	}
 	
 	protected void testAvailable(AbstractDAO dao) throws Exception {
