@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="712" height="424">
+	creationComplete="init()" width="914" height="522">
 	<mx:HTTPService id="mainSvc" 
 		useProxy="false"
 		method="GET"
@@ -91,38 +91,44 @@
 		</root>		
 	</mx:Model>		
 		<mx:Label text="{&quot;Панель управления &quot;+ mainDataUnitVisualName}" fontWeight="bold" fontSize="14"/>
-		<mx:HBox x="0" y="0">
-			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
-				<mx:DataGrid height="216" width="282" 
+		<mx:HBox x="0" y="0" width="876" height="403">
+			<mx:VBox height="368" width="70%" horizontalAlign="center" >
+			
+				<mx:DataGrid height="278" width="594" 
 					id="dgData" 
 					dataProvider="{mainData[mainDataUnitName]}"
 					itemClick="bindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="80"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="50"/>
 						<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
-						<mx:DataGridColumn dataField="Активность" labelFunction="activeToString" width="85"/>
+						<mx:DataGridColumn dataField="Активность" labelFunction="activeToString" width="55"/>
 					</mx:columns>
 				</mx:DataGrid>
-			</mx:VBox>			
-			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
-				<mx:VBox horizontalAlign="left">	
-					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
-					<mx:TextInput id="tiId" visible="false" text=""/>
-					<mx:FormItem label="Наименование:" 
-						required="true">												
+				<mx:VBox width="504" height="67">
+				<mx:HBox width="490" height="24">
+				<mx:FormItem label="Наименование:" 
+						required="true" width="293">												
 						<mx:TextInput id="tiName"/>
 					</mx:FormItem>
-					<mx:FormItem label="Активно:">
+					<mx:FormItem label="Активно:" width="111">
 						<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
-				</mx:VBox>
-				<mx:HBox horizontalAlign="center">
+					</mx:HBox>
+					<mx:HBox horizontalAlign="center" width="496" height="32">
 					<mx:Button label="Сохранить" click="saveSelected()"/>							
 					<mx:Button label="Отмена" click="cancel()"/>
-				</mx:HBox>
-				<mx:HBox horizontalAlign="center">
 					<mx:Button label="Создать" click="createNew()"/>							
 				</mx:HBox>
+				</mx:VBox>
+			</mx:VBox>			
+			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
+				<mx:VBox horizontalAlign="left" height="17" width="232">	
+					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+					<mx:TextInput id="tiId" visible="false" text=""/>
+					
+					
+				</mx:VBox>
+				
 				<mx:VBox id="filterPanel">
 					<mx:Script>
 						<![CDATA[
@@ -131,8 +137,8 @@
 						]]>
 					</mx:Script>
 					<mx:HBox horizontalAlign="right" width="100%">
-						<mx:FormItem label="Фильтр:">
-							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+						<mx:FormItem label="Фильтр:" width="267">
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized" width="96"/>
 						</mx:FormItem>												
 					</mx:HBox>					
 					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
