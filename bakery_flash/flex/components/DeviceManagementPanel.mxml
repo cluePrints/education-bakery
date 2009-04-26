@@ -174,29 +174,30 @@
 		]]>
 	</mx:Script>				
 		<mx:Label text="Панель управления устройствами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
-		<mx:HBox width="859" height="237">
-			<mx:VBox height="228" width="378" horizontalAlign="center" >
-				<mx:DataGrid height="100" width="100%" 
+		<mx:HBox width="925" height="214">
+			<mx:VBox height="212" width="527" horizontalAlign="center" >
+			<mx:Label text="Устройства"  fontWeight="bold"/>
+				<mx:DataGrid height="114" width="501" 
 					id="dgData" 
 					dataProvider="{mainData['device']}"
 					itemClick="bindSelected(false)">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="50"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="70"/>
 						<mx:DataGridColumn headerText="Наименование" dataField="name"/>
 						<mx:DataGridColumn dataField="Активн." labelFunction="util.activeToString" width="70"/>
 					</mx:columns>
 				</mx:DataGrid>
-								<mx:VBox horizontalAlign="left" height="52" width="356">	
+								<mx:HBox horizontalAlign="left" height="28" width="494">	
 					<mx:FormItem label="Наименование:" 
-						required="true">												
+						required="true" width="309">												
 						<mx:TextInput id="tiName"/>
 					</mx:FormItem>
 					<mx:FormItem label="Активно:">
 						<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
 					
-				</mx:VBox>
-				<mx:HBox horizontalAlign="center" height="30">
+				</mx:HBox>
+				<mx:HBox horizontalAlign="center" height="27">
 					<mx:Button label="Сохранить" click="saveSelected()"/>							
 					<mx:Button label="Отмена" click="cancel()"/>
 					<mx:Button label="Создать" click="createNew()"/>
@@ -213,7 +214,7 @@
 						]]>
 					</mx:Script>
 					<mx:HBox horizontalAlign="right" width="100%">
-						<mx:FormItem label="Фильтр:">
+						<mx:FormItem label="Фильтр:" width="334">
 							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
 							
 							<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">
@@ -237,18 +238,19 @@
 		</mx:HBox>
 	</mx:VBox>
 	<mx:HBox width="932" height="218">		
-		<mx:VBox height="100%" width="571" horizontalAlign="center" >
-				<mx:DataGrid height="137" width="566" 
+		<mx:VBox height="100%" width="613" horizontalAlign="center" >
+		<mx:Label text="Параметры устройств"  fontWeight="bold"/>
+				<mx:DataGrid height="185" width="608" 
 					id="dgChildData" 
 					dataProvider="{selectedDeviceParameters}"
 					itemClick="childBindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="50"/>
 						<mx:DataGridColumn headerText="Наименование" dataField="name" width="120"/>
-						<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="30"/>
+						<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="35"/>
 						<mx:DataGridColumn headerText="Ед.изм" labelFunction="getParameterUnitName" width="50"/>
 						<mx:DataGridColumn headerText="Фикс" labelFunction="util.fixedToString" width="30"/>
-						<mx:DataGridColumn headerText="Рекомендуемое зн-е" dataField="bestValue" width="70"/>
+						<mx:DataGridColumn headerText="Рекоменд. зн-е" dataField="bestValue" width="70"/>
 						<mx:DataGridColumn headerText="Мин-ем" labelFunction="util.minimizedToString" width="35"/>
 					</mx:columns>
 				</mx:DataGrid>				
