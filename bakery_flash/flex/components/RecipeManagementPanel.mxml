@@ -40,7 +40,7 @@
 		url="{childDataSvcUrl}"
 		result="httpChildResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
-	<mx:VBox horizontalAlign="center" width="99%">	
+	<mx:VBox horizontalAlign="center" width="956">	
 	<mx:Script>
 		<![CDATA[
 			import flash.sampler.NewObjectSample;
@@ -209,50 +209,52 @@
 			}
 		]]>
 	</mx:Script>				
-		<mx:Label text="Панель управления устройствами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
-		<mx:HBox width="100%" height="274">
-			<mx:VBox height="267" width="416" horizontalAlign="left" >
-					<mx:DataGrid height="99" width="408" 
+		<mx:Label text="Панель управления рецептами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+		<mx:HBox width="956" height="245">
+			<mx:VBox height="236" width="462" horizontalAlign="left" >
+					<mx:DataGrid height="99" width="456" 
 						id="dgData" 
 						dataProvider="{mainData['recipe']}"
 						itemClick="bindSelected(false)">
 						<mx:columns>
-							<mx:DataGridColumn headerText="ID" dataField="id" width="50"/>
+							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
 							<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
-							<mx:DataGridColumn headerText="Время создания" dataField="time" width="50"/>
-							<mx:DataGridColumn headerText="Формула" dataField="formula"/>
-							<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="50"/>
+							<mx:DataGridColumn headerText="Вр.созд." dataField="time" width="60"/>
+							<mx:DataGridColumn headerText="Формула" dataField="formula" width="100"/>
+							<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="55"/>
 						</mx:columns>
 					</mx:DataGrid>
 					<mx:HBox width="411">
-					<mx:VBox horizontalAlign="left" height="132" width="313">
+					<mx:VBox horizontalAlign="left" height="123" width="398">
+					<mx:HBox width="386">
 						<mx:FormItem label="Активно:"
-							required="true">
+							required="true" width="110">
 							<mx:CheckBox id="cbActive"/>
 						</mx:FormItem>
 						<mx:FormItem label="Время:" 
-							required="true">
+							required="true" width="262">
 							<mx:TextInput id="tiTime"/>
 						</mx:FormItem>
-						
-						<mx:FormItem label="Название:">												
+						</mx:HBox>
+						<mx:FormItem label="Название:" width="241">												
 							<mx:TextInput id="tiName" width="142" height="25"/>
 						</mx:FormItem>
-						<mx:FormItem label="Формула:" width="299">												
+						<mx:FormItem label="Формула:" width="311">												
 							<mx:TextInput id="tiFormula" width="222" height="25"/>
 						</mx:FormItem>
-						</mx:VBox>				
-					<mx:VBox horizontalAlign="center" height="93">
+						<mx:HBox width="260">
 						<mx:Button label="Сохранить" click="saveSelected()"/>							
 						<mx:Button label="Отмена" click="cancel()"/>
 						<mx:Button label="Создать" click="createNew()"/>
-					</mx:VBox>
+						</mx:HBox>
+						</mx:VBox>				
+					
 				</mx:HBox>
 			</mx:VBox>			
-			<mx:HBox width="100%" height="268">
-				<mx:VBox width="45%" height="100%" horizontalAlign="center">
+			<mx:HBox width="477" height="240">
+				<mx:VBox width="204" height="234" horizontalAlign="center">
 					<mx:Label text="Параметры, касающиеся рецепта"/>
-					<mx:DataGrid width="100%" height="212"
+					<mx:DataGrid width="182" height="206"
 						dataProvider="{selectedParameters}"
 						id="dgCurrentParameters">
 						<mx:columns>
@@ -261,13 +263,13 @@
 						</mx:columns>
 					</mx:DataGrid>
 				</mx:VBox>
-				<mx:VBox width="10%" height="100%" verticalAlign="center">													
+				<mx:VBox width="47" height="223" verticalAlign="center">													
 					<mx:Button label="&lt;" click="addDeviceParameter()"/>
 					<mx:Button label="&gt;" click="removeDeviceParameter()"/>
 				</mx:VBox>
-				<mx:VBox width="45%" height="100%" horizontalAlign="center">
+				<mx:VBox width="203" height="236" horizontalAlign="center">
 					<mx:Label text="Все актуальные параметры"/>
-					<mx:DataGrid width="100%" height="212" 
+					<mx:DataGrid width="185" height="206" 
 						dataProvider="{availableParameters}"
 						id="dgAvailableParameters">
 						<mx:columns>
@@ -279,16 +281,16 @@
 			</mx:HBox>
 		</mx:HBox>
 	</mx:VBox>
-	<mx:HBox width="99%" height="100%">		
-				<mx:DataGrid height="99%" width="99%" 
+	<mx:HBox width="948" height="257">		
+				<mx:DataGrid height="240" width="99%" 
 					id="dgChildData"
 					dataProvider="{selectedRecipeEffects}"
 					itemClick="childBindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="30"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="40"/>
 						<mx:DataGridColumn headerText="Продукт" labelFunction="getProductTypeName" width="150"/>
 						<mx:DataGridColumn headerText="Потребляемый" labelFunction="util.consumedToString" width="150"/>
-						<mx:DataGridColumn headerText="Формула результата" dataField="resultFormula" width="50"/>
+						<mx:DataGridColumn headerText="Формула рез-та" dataField="resultFormula" width="65"/>
 					</mx:columns>
 				</mx:DataGrid>				
 		<mx:VBox height="104" width="297">
