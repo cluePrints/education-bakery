@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="588" height="416">
+	creationComplete="init()" width="900" height="454">
 		
 	<mx:HTTPService id="productTypeSvc" 
 		useProxy="false"
@@ -127,9 +127,9 @@
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Панель управления типами продуктов" fontWeight="bold" fontSize="14"/>
-		<mx:HBox x="0" y="0" width="751" height="336">
+		<mx:HBox x="0" y="0" width="891" height="412">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
-				<mx:DataGrid height="312" width="436" 
+				<mx:DataGrid height="388" width="592" 
 					id="dgData" 
 					dataProvider="{productTypes['producttype']}"
 					itemClick="bindSelected()">
@@ -142,7 +142,7 @@
 				</mx:DataGrid>
 			</mx:VBox>
 			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
-				<mx:VBox horizontalAlign="left">	
+				<mx:VBox horizontalAlign="left" height="147">	
 					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
 					<mx:TextInput id="tiId" visible="false" text=""/>
 					<mx:FormItem label="Название:" 
@@ -173,7 +173,7 @@
 							public var filterPanelMinimized:Boolean=true;							
 						]]>
 					</mx:Script>
-					<mx:HBox horizontalAlign="right" width="100%">
+					<mx:HBox horizontalAlign="right" width="100%" height="26">
 						<mx:FormItem label="Фильтр">
 							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized" width="126"/>
 						</mx:FormItem>												
