@@ -197,39 +197,44 @@
 
 		]]>
 	</mx:Script>				
-		<mx:Label text="Панель управления устройствами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
-		<mx:HBox width="877" height="274">
-			<mx:VBox height="267" width="416" horizontalAlign="center" >
-				<mx:DataGrid height="99" width="408" 
+		<mx:Label text="Панель управления прайсами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+		<mx:HBox width="895" height="273">
+			<mx:VBox height="254" width="516" horizontalAlign="center" >
+			<mx:Label  text=" Заголовки прайсов " fontWeight="bold"/>
+				<mx:DataGrid height="126" width="514" 
 					id="dgData" 
 					dataProvider="{mainData['pricelist']}"
 					itemClick="bindSelected(false)">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="50"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
 						<mx:DataGridColumn headerText="Контрагент" labelFunction="getContragentName" width="150"/>
-						<mx:DataGridColumn headerText="Дата" dataField="date" width="50"/>
+						<mx:DataGridColumn headerText="Дата" dataField="date" width="80"/>
 						<mx:DataGridColumn headerText="Комментарий" dataField="comment"/>
-						<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="50"/>						
+						<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="55"/>						
 					</mx:columns>
 				</mx:DataGrid>
-				<mx:HBox width="381" height="117">
-				<mx:VBox horizontalAlign="left" height="108" width="170">
-					<mx:FormItem label="Контрагент:" 
+				<mx:HBox width="507" height="57">
+				<mx:VBox horizontalAlign="left" height="54" width="283">
+					
+				<mx:FormItem label="Контрагент:" 
 						required="true">												
 						<mx:ComboBox id="cbOwner"
 							dataProvider="{availableContragents}"
-							labelField="name" width="80"/>
+							labelField="name" width="180"/>
 					</mx:FormItem>	
+					<mx:HBox width="260">
 					<mx:FormItem label="Активно:"
 						required="true">
 						<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
+					
 					<mx:FormItem label="Дата:" 
 						required="true">												
 						<mx:DateField id="dfDate"
 							text=""
 							formatString="DD/MM/YY"/>
 					</mx:FormItem>
+					</mx:HBox>
 					</mx:VBox>
 					<mx:FormItem label="Комментарий:">												
 						<mx:TextInput id="tiComment" width="94" height="25"/>
@@ -242,7 +247,7 @@
 					<mx:Button label="Создать" click="createNew()"/>
 				</mx:HBox>
 			</mx:VBox>			
-			<mx:VBox height="206" horizontalAlign="center" verticalAlign="center" width="367">				
+			<mx:VBox height="206" horizontalAlign="center" verticalAlign="center" width="357">				
 
 				
 				<mx:VBox id="filterPanel">
@@ -265,8 +270,7 @@
 					<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
 				</mx:FormItem>
 															</mx:VBox>
-																
-
+		
 						</mx:FormItem>												
 					</mx:HBox>					
 				</mx:VBox>
@@ -275,12 +279,12 @@
 	</mx:VBox>
 	<mx:HBox width="882" height="205">		
 		<mx:VBox height="100%" width="571" horizontalAlign="center" >
-				<mx:DataGrid height="129" width="564" 
-					id="dgChildData" 
+			<mx:Label  text="Прайс" fontWeight="bold"/>
+				<mx:DataGrid height="172" width="564" 	id="dgChildData" 
 					dataProvider="{selectedPriceListItems}"
 					itemClick="childBindSelected()">
 					<mx:columns>
-						<mx:DataGridColumn headerText="ID" dataField="id" width="30"/>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="35"/>
 						<mx:DataGridColumn headerText="Продукт" labelFunction="getProductTypeName" width="150"/>
 						<mx:DataGridColumn headerText="Активность" labelFunction="util.activeToString" width="40"/>
 						<mx:DataGridColumn headerText="Цена" dataField="price" width="50"/>
@@ -291,7 +295,7 @@
 			<mx:FormItem label="Продукт:" width="218">
 				<mx:ComboBox id="cbChildProductType"
 					dataProvider="{availableProductTypes}"
-					labelField="name" width="150"/>				
+					labelField="name" width="140"/>				
 			</mx:FormItem>
 			<mx:FormItem label="Цена:">
 				<mx:TextInput id="tiChildPrice"/>				
