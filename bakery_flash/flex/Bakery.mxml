@@ -17,6 +17,13 @@
 		]]>
 	</mx:Script>
 	<mx:TabNavigator width="1023" height="607">
+	<mx:Canvas label="Заказы" width="100%" height="100%"
+			show = "manageOrders.init()">
+			<comp:OrderManagementPanel
+				id="manageOrders"
+				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.OrderSvc"
+				width="969" height="525" x="10"/>			
+		</mx:Canvas>
 		<mx:Canvas label="Рецепты" width="100%" height="100%"
 			show="manageRecipes.init()">
 			<comp:RecipeManagementPanel
