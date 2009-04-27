@@ -12,7 +12,7 @@
 		<mx:HTTPService id="mainSvc" 
 		useProxy="false"
 		method="GET"
-		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.OrderSvc"
+		url="{mainDataSvcUrl}"
 		result="httpResultHandler(event)"
 		fault="httpFaultHandler(event)"/>
 		
@@ -20,7 +20,7 @@
 		<root>
 			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
 			<provider>{cbProvider.selectedItem.id}</provider>
-			<consumer>{cbCustomer.selectedItem.id}</consumer>
+			<consumer>{cbConsumer.selectedItem.id}</consumer>
 			<id>{tiId.text}</id>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>	
 			<creationDate>{dfCreationDate.text}</creationDate>
@@ -77,7 +77,7 @@
 			private function httpResultHandler(event:*):void{	
 				mainData = event.result.mainData;
 				if (mainData != null ) {
-					//mainData['order'].filterFunction = mainFilterFunction;
+					mainData['order'].filterFunction = mainFilterFunction;
 					
 				}
 			} 
@@ -97,7 +97,7 @@
 				if (dgData.selectedIndex>=0){
 					cbActive.selected = (dgData.selectedItem.active == 1);
 					tiId.text=dgData.selectedItem.id;
-					
+	
 				}													
 			}
 			function createNew():void{
@@ -114,6 +114,7 @@
 				formModel.mode="EDIT";
 				mainSvc.cancel();	
 				mainSvc.send(formModel);
+				
 			}
 			function filterRefresh():void{
 				mainData['order'].refresh();
@@ -122,6 +123,23 @@
 				return (item.active>0 ? "active" : "not active"); 
 				
 				
+			}
+			function getProviderName(item:Object, column:DataGridColumn):String{	
+							
+				var tmp = util.getItemById(contragents['contragent'], item.provider);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+			function getConsumerName(item:Object, column:DataGridColumn):String{				
+				var tmp = util.getItemById(contragents['contragent'], item.consumer);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
 			}
 		]]>
 	</mx:Script>			
@@ -136,8 +154,8 @@
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="50"/>
-						<mx:DataGridColumn headerText="Владелец" dataField="provider" width="100"/>
-						<mx:DataGridColumn headerText="Контрагент"  dataField="customer" width="100"/>
+						<mx:DataGridColumn headerText="Владелец" dataField="provider" labelFunction="getProviderName"  width="100"/>
+						<mx:DataGridColumn headerText="Контрагент"  dataField="consumer" labelFunction="getConsumerName" width="100"/>
 						<mx:DataGridColumn headerText="Дата заказа" dataField="creationDate" width="60"/>
 						<mx:DataGridColumn headerText="Дата вып-ния" dataField="doneDate" width="70"/>
 						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="40"/>
@@ -154,22 +172,22 @@
 					</mx:FormItem>
 						<mx:FormItem label="Контрагент:" 
 						required="true">												
-						<mx:ComboBox id="cbCustomer"
+						<mx:ComboBox id="cbConsumer"
 							dataProvider="{availableContragents}"
 							labelField="name" 
 							width="150"/>
 					</mx:FormItem>
 					</mx:VBox>
 					<mx:VBox height="81" width="210">
-						<mx:FormItem label="Дата выполнения:" 
-						required="true">												
-						<mx:DateField id="dfDoneDate"
-							text=""
-							formatString="DD/MM/YY"/>
-					</mx:FormItem>
 						<mx:FormItem label="Дата заказа:" 
 						required="true">												
 						<mx:DateField id="dfCreationDate"
+							text=""
+							formatString="DD/MM/YY"/>
+						</mx:FormItem>
+						<mx:FormItem label="Дата выполнения:" 
+						required="true">												
+						<mx:DateField id="dfDoneDate"
 							text=""
 							formatString="DD/MM/YY"/>
 						</mx:FormItem>
@@ -185,11 +203,7 @@
 					<mx:Button label="Сохранить" click="saveSelected()"/>							
 					<mx:Button label="Отмена" click="cancel()"/>
 					<mx:Button label="Создать" click="createNew()"/>	
-				</mx:HBox>
-				
-
-		
-				
+				</mx:HBox>	
 			</mx:VBox>			
 			<mx:VBox height="232" horizontalAlign="center" verticalAlign="center" width="278">				
 				<mx:VBox horizontalAlign="left" height="17" width="232">	
