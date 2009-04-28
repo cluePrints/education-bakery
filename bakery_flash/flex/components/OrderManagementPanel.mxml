@@ -2,12 +2,7 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	creationComplete="init()" width="914" height="522">
-	<mx:HTTPService id="contragentSvc" 
-		useProxy="false"
-		method="GET"
-		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ContragentSvc"
-		result="httpContrResultHandler(event)"
-		fault="httpFaultHandler(event)"/>
+
 		
 		<mx:HTTPService id="mainSvc" 
 		useProxy="false"
@@ -28,16 +23,7 @@
 			
 		</root>		
 	</mx:Model>	
-	<mx:Model id="formModelContr">		
-		<root>
-			<mode>{"FETCH"}</mode>
-			<address></address>
-			<id></id>		
-			<active></active>
-			<child></child>
-			<name></name>
-		</root>		
-	</mx:Model>			
+		
 	<mx:Script>
 		<![CDATA[
 			import mx.events.CollectionEvent;
@@ -60,25 +46,23 @@
 			public function init():void{
 				createNew();				
 				mainSvc.cancel();
-				contragentSvc.cancel();
+				
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);
-				contragentSvc.send(formModelContr);				
+					
 			}
 			
 			private function httpFaultHandler(event:Event):void{
 					 mx.controls.Alert.show(event.toString())	;
 				
 			} 
-			private function httpContrResultHandler(event:*):void{
-				contragents = event.result.mainData;
-				availableContragents = util.getActiveItems(contragents['contragent']);
-			} 
+			 
 			private function httpResultHandler(event:*):void{	
+					contragents = util.extractItemCollection(event.result.contragents, 'contragent');
+					availableContragents = util.getActiveItems(contragents);
 				mainData = event.result.mainData;
 				if (mainData != null ) {
 					mainData['order'].filterFunction = mainFilterFunction;
-					
 				}
 			} 
 			private function mainFilterFunction(item:*){
@@ -88,7 +72,7 @@
 				if (!cbShowActive.selected && item.active>0)
 					return false;					
 				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
-					if (!new RegExp(edFilter.text).test(item.name))
+					if (!new RegExp(edFilter.text).test(item.provider))
 						return false;
 				}
 				return result;
@@ -97,6 +81,8 @@
 				if (dgData.selectedIndex>=0){
 					cbActive.selected = (dgData.selectedItem.active == 1);
 					tiId.text=dgData.selectedItem.id;
+					dfCreationDate.text = dgData.selectedItem.creationDate;
+					dfDoneDate.text = dgData.selectedItem.doneDate;
 	
 				}													
 			}
@@ -104,6 +90,8 @@
 				tiId.text="";
 				cbActive.selected=true;
 				formModel.mode="NEW";
+				dfCreationDate.text ="" ;
+				dfDoneDate.text = "";
 						
 			}
 			function cancel():void{
@@ -125,8 +113,7 @@
 				
 			}
 			function getProviderName(item:Object, column:DataGridColumn):String{	
-							
-				var tmp = util.getItemById(contragents['contragent'], item.provider);
+				var tmp = util.getItemById(contragents, item.provider);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -134,7 +121,7 @@
 				}					
 			}
 			function getConsumerName(item:Object, column:DataGridColumn):String{				
-				var tmp = util.getItemById(contragents['contragent'], item.consumer);
+				var tmp = util.getItemById(contragents, item.consumer);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -158,7 +145,7 @@
 						<mx:DataGridColumn headerText="Контрагент"  dataField="consumer" labelFunction="getConsumerName" width="100"/>
 						<mx:DataGridColumn headerText="Дата заказа" dataField="creationDate" width="60"/>
 						<mx:DataGridColumn headerText="Дата вып-ния" dataField="doneDate" width="70"/>
-						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="40"/>
+						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="45"/>
 					</mx:columns>
 				</mx:DataGrid>
 				<mx:HBox width="100%" height="87">
@@ -229,6 +216,10 @@
 						<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%">
 							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
 							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
+						</mx:FormItem>
+						<mx:FormItem label="Выбирать по имени:">
+							<mx:CheckBox id="cbShowProvider"   click="filterRefresh()" selected="true" label="Владельца"/>
+							<mx:CheckBox id="cbShowComsumer" click="filterRefresh()" selected="false" label="Контрагента"/>
 						</mx:FormItem>
 						<mx:FormItem label="Шаблон имени:" >
 							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
