@@ -149,7 +149,8 @@
 			} 
 			private var previousSelected:int=-104;
 			
-			function bindSelected(refreshAnyWay:Boolean):void{				
+			function bindSelected(refreshAnyWay:Boolean):void{	
+				var item = dgData.selectedItem;			
 				if ((refreshAnyWay) || (dgData.selectedIndex >= 0) && (previousSelected != dgData.selectedIndex)) {
 					previousSelected = dgData.selectedIndex;
 					cbActive.selected = (dgData.selectedItem.active == 1);
@@ -157,7 +158,8 @@
 						dfDate.text=dgData.selectedItem.date;
 					} else {
 						dfDate.text="";
-					}															
+					}	
+					cbOwner.selectedIndex = util.getItemPos(availableContragents, item.owner);														
 					tiComment.text=dgData.selectedItem.comment;
 					selectedPriceListItems.removeAll();
 					formModel.id = dgData.selectedItem.id;

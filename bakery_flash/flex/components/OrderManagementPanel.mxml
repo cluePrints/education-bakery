@@ -78,11 +78,14 @@
 				return result;
 			} 
 			function bindSelected():void{
+					var item = dgData.selectedItem;
 				if (dgData.selectedIndex>=0){
 					cbActive.selected = (dgData.selectedItem.active == 1);
 					tiId.text=dgData.selectedItem.id;
 					dfCreationDate.text = dgData.selectedItem.creationDate;
 					dfDoneDate.text = dgData.selectedItem.doneDate;
+					cbProvider.selectedIndex = util.getItemPos(availableContragents, item.provider);
+					cbConsumer.selectedIndex = util.getItemPos(availableContragents, item.consumer);
 	
 				}													
 			}
