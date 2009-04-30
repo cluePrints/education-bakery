@@ -5,11 +5,8 @@ import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,8 +39,12 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		// fill command according to request
 		bindCommand(request);	
 		
-		// run edit/remove/restore/get
-		runCommonMode(mode);
+		Map<String, String> beanValidationErrors = command.validate();
+		
+		if (beanValidationErrors.isEmpty() && (!AbstractFormMode.FETCH.equals(mode))){
+			// run edit/remove/restore/get
+			runCommonMode(mode);
+		}
 		
 		// ancestors actions
 		executeInternal(request, response, controller, mode);
@@ -52,6 +53,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		
 		SvcHelper.write(out, mainDAO, "mainData");				
 		SvcHelper.writeAvailable(out, mainDAO, "available");
+		SvcHelper.writeErrors(out, beanValidationErrors);			
 	}
 	private void runCommonMode(AbstractFormMode mode) throws Exception {
 		/* Run default action*/

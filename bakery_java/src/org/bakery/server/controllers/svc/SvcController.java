@@ -1,5 +1,7 @@
 package org.bakery.server.controllers.svc;
 
+import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,13 +32,19 @@ public class SvcController extends AbstractController {
 			command.execute(request, response, this);
 
 		} catch (Exception ex) {			
-			response.setStatus(500);
+			signalInternalError(response.getWriter(), ex);
 			response.flushBuffer();
 			throw ex;
 		}
 		return null;
 	}
-
+	private void signalInternalError(PrintWriter out, Exception e){
+		out.write("<internalServerError>");
+		out.write("  <exception>");
+		e.printStackTrace(out);
+		out.write("  </exception>");
+		out.write("</internalServerError>");
+	}
 	public DAOFacade getDAOFacade() {
 		return DAOFacade;
 	}

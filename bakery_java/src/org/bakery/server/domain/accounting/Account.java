@@ -3,6 +3,8 @@ package org.bakery.server.domain.accounting;
 import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 import org.springframework.validation.Errors;
 /**
  * Represents Account entity
@@ -12,12 +14,7 @@ import org.springframework.validation.Errors;
  */
 public class Account extends BusinessEntity implements NamedEntity{
 	private static final long serialVersionUID=1L;
-	@Override
-	public void validate(Errors errors) { 
-		if (CommonFormValidator.isEmptyEntity(owner))
-			errors.reject(null, "account.owner.empty");
-	}
-	
+
 	private String name;
 	private String desc;
 	private Contragent owner = new Contragent();
@@ -35,6 +32,8 @@ public class Account extends BusinessEntity implements NamedEntity{
 		return owner.getName()+"."+name;
 	}
 	
+	@CouldNotBeEmpty()
+	@FieldName(name="имя")
 	public String getName() {
 		return name;
 	}
@@ -47,6 +46,9 @@ public class Account extends BusinessEntity implements NamedEntity{
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="владелец")
 	public Contragent getOwner() {
 		return owner;
 	}

@@ -8,6 +8,8 @@ import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.accounting.Contragent;
 import org.bakery.server.domain.accounting.ProductionPlan;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 import org.springframework.validation.Errors;
 
 /**
@@ -55,23 +57,6 @@ public class Order extends BusinessEntity {
 	private Set<MoneyMove> moneyMoves = new HashSet<MoneyMove>();
 	
 	private Set<ProductionPlan> productionPlans = new HashSet<ProductionPlan>();
-	
-	
-	
-	@Override
-	public void validate(Errors errors) {
-		if (CommonFormValidator.isEmptyEntity(provider))
-			errors.reject(null, "order.provider.empty");
-		if (CommonFormValidator.isEmptyEntity(consumer))
-			errors.reject(null, "order.consumer.empty");
-		if (CommonFormValidator.isEmptyEntity(creationDate)) {
-			errors.reject(null, "order.creationDate.empty");
-		} else {
-			if (doneDate != null && !doneDate.equals(NULL_DATE) && creationDate.after(doneDate)) {
-				errors.reject(null, "order.doneDate.wrong");
-			}
-		}
-	}
 
 	@Override
 	public String toString() {
@@ -96,18 +81,26 @@ public class Order extends BusinessEntity {
 	public Order() {
 		super();
 	}
+	@CouldNotBeEmpty()
+	@FieldName(name="поставщик")
 	public Contragent getProvider() {
 		return provider;
 	}
 	public void setProvider(Contragent provider) {
 		this.provider = provider;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="потребитель")	
 	public Contragent getConsumer() {
 		return consumer;
 	}
 	public void setConsumer(Contragent consumer) {
 		this.consumer = consumer;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="дата создания")
 	public Date getCreationDate() {
 		return creationDate;
 	}

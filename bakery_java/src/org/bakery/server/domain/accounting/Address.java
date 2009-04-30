@@ -6,7 +6,8 @@ import java.util.Set;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.production.Warehouse;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 
 /**
  * Address representation and linked concerns, like 
@@ -18,10 +19,6 @@ import org.springframework.validation.Errors;
  */
 public class Address extends BusinessEntity implements NamedEntity {
 	private static final long serialVersionUID=1L;
-	@Override
-	public void validate(Errors errors) {
-		
-	}
 
 	/**
 	 * Address string, for example, 'One tree hill str., 3'
@@ -120,7 +117,9 @@ public class Address extends BusinessEntity implements NamedEntity {
 	public void setWarehouses(Set<Warehouse> warehouses) {
 		this.warehouses = warehouses;
 	}
-
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="адресс")
 	public String getName() {
 		return name;
 	}

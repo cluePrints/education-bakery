@@ -4,11 +4,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.accounting.Account;
 import org.bakery.server.domain.pricing.PriceListItem;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 /**
  * Abstractes money move between two accounts. Is result of 
  * 	Order processing.
@@ -21,7 +21,7 @@ import org.springframework.validation.Errors;
  */
 public class MoneyMove extends BusinessEntity {
 	private static final long serialVersionUID=1L;
-	private double amount;
+	private Double amount;
 	private String desc;
 	private Date date=(Date) NULL_DATE.clone();
 	private Account destinationAccount=new Account();
@@ -35,19 +35,6 @@ public class MoneyMove extends BusinessEntity {
 	private Set<ProductMove> productMoves=new HashSet<ProductMove>();	
 	
 	
-	
-	@Override
-	public void validate(Errors errors) {
-		if (CommonFormValidator.isEmptyEntity(sourceAccount))
-			errors.reject(null, "moneyMove.sourceAccount.empty");
-		if (CommonFormValidator.isEmptyEntity(destinationAccount))
-			errors.reject(null, "moneyMove.destinationAccount.empty");
-		if (CommonFormValidator.isEmptyEntity(order))
-			errors.reject(null, "moneyMove.order.empty");
-		if (CommonFormValidator.isEmptyEntity(price))
-			errors.reject(null, "moneyMove.price.empty");
-	}
-
 	@Override
 	public String toString() {		
 		String result = order.toString() + ", "  + price.getProduct().getName()
@@ -89,18 +76,25 @@ public class MoneyMove extends BusinessEntity {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	@CouldNotBeEmpty()
+	@FieldName(name="денежный счет назначения")
 	public Account getDestinationAccount() {
 		return destinationAccount;
 	}
 	public void setDestinationAccount(Account destinationAccount) {
 		this.destinationAccount = destinationAccount;
 	}
+	@CouldNotBeEmpty()
+	@FieldName(name="денежный счет источник")
 	public Account getSourceAccount() {
 		return sourceAccount;
 	}
 	public void setSourceAccount(Account sourceAccount) {
 		this.sourceAccount = sourceAccount;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="заказ")
 	public Order getOrder() {
 		return order;
 	}
@@ -110,6 +104,9 @@ public class MoneyMove extends BusinessEntity {
 	public MoneyMove() {
 		super();
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="прайс-лист")
 	public PriceListItem getPrice() {
 		return price;
 	}

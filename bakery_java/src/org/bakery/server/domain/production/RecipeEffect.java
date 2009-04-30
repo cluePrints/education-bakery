@@ -1,7 +1,8 @@
 package org.bakery.server.domain.production;
 
 import org.bakery.server.domain.BusinessEntity;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 /**
  * Represents effect, which is part of a recipe
  * 
@@ -19,7 +20,7 @@ public class RecipeEffect extends BusinessEntity{
 	/**
 	 * Is it consumed, or generated effect
 	 */
-	private int consumed;
+	private int consumed=0;
 	
 	/**
 	 * Expression to calculate amount, dependent on parameters
@@ -33,11 +34,8 @@ public class RecipeEffect extends BusinessEntity{
 	 */
 	private ProductType productType;
 	
-	@Override
-	public void validate(Errors errors) {
-		// TODO Auto-generated method stub
-		
-	}
+	@CouldNotBeEmpty()
+	@FieldName(name="рецепт, к которому относится этот эффект")
 	public Recipe getRecipe() {
 		return recipe;
 	}
@@ -50,12 +48,18 @@ public class RecipeEffect extends BusinessEntity{
 	public void setConsumed(int consumed) {
 		this.consumed = consumed;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="формула вычисления результата")
 	public String getResultFormula() {
 		return resultFormula;
 	}
 	public void setResultFormula(String resultFormula) {
 		this.resultFormula = resultFormula;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="тип продукта")
 	public ProductType getProductType() {
 		return productType;
 	}

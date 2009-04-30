@@ -2,10 +2,10 @@ package org.bakery.server.domain.log;
 
 import java.util.Date;
 
-import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.production.Warehouse;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 /**
  * Is representation of move between two warehouses. 
  * Product is moved as a reaction on some money move.
@@ -19,17 +19,6 @@ public class ProductMove extends BusinessEntity {
 	private Warehouse destinationWarehouse=new Warehouse();
 	private Date date=(Date) NULL_DATE.clone();
 	private MoneyMove moneyMove=new MoneyMove();
-	
-	@Override
-	public void validate(Errors errors) {
-		if (CommonFormValidator.isEmptyEntity(sourceWarehouse))
-			errors.reject(null, "productMove.sourceWarehouse.empty");
-		if (CommonFormValidator.isEmptyEntity(destinationWarehouse))
-			errors.reject(null, "productMove.destinationWarehouse.empty");
-		if (CommonFormValidator.isEmptyEntity(moneyMove))
-			errors.reject(null, "productMove.moneyMove.empty");
-	}
-
 	@Override
 	public String toString() {
 		return moneyMove.toString()+sourceWarehouse+"->"+destinationWarehouse;
@@ -67,6 +56,8 @@ public class ProductMove extends BusinessEntity {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	@CouldNotBeEmpty()
+	@FieldName(name="движение денег, предваряющее перевод товара")
 	public MoneyMove getMoneyMove() {
 		return moneyMove;
 	}

@@ -3,7 +3,8 @@ package org.bakery.server.domain.hardware;
 import java.util.Date;
 
 import org.bakery.server.domain.BusinessEntity;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 /**
  * Represent value of specific parameter at specific time.
  * 
@@ -16,7 +17,7 @@ public class Measure extends BusinessEntity {
 	/**
 	 * Value
 	 */
-	private double value;
+	private Double value;
 	
 	/**
 	 * Measured parameter
@@ -27,23 +28,27 @@ public class Measure extends BusinessEntity {
 	 * Date & Time of a measure
 	 */
 	private Date time=(Date) NULL_DATE.clone();
-	@Override
-	public void validate(Errors errors) {
-		// TODO Auto-generated method stub
-		
-	}
+
+	@CouldNotBeEmpty()
+	@FieldName(name="измеренное значение параметра")
 	public double getValue() {
 		return value;
 	}
 	public void setValue(double value) {
 		this.value = value;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="измеряемый производственный параметр")
 	public DeviceParameter getParameter() {
 		return parameter;
 	}
 	public void setParameter(DeviceParameter parameter) {
 		this.parameter = parameter;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="время произведения измерения")
 	public Date getTime() {
 		return time;
 	}

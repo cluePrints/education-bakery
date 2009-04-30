@@ -1,9 +1,9 @@
 package org.bakery.server.domain.pricing;
 
-import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.production.ProductType;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 
 /**
  * Represents some product price
@@ -14,17 +14,10 @@ import org.springframework.validation.Errors;
 public class PriceListItem extends BusinessEntity {
 	private static final long serialVersionUID=1L;
 	private PriceList parent=new PriceList();
-	private double price;
+	private Double price;
 	private ProductType product=new ProductType();
 	
-	
-	@Override
-	public void validate(Errors errors) {
-		if (CommonFormValidator.isEmptyEntity(parent))
-			errors.reject(null, "priceListItem.parent.empty");
-		if (CommonFormValidator.isEmptyEntity(product))
-			errors.reject(null, "priceListItem.product.empty");
-	}
+
 	@Override
 	public String toString() {
 		return product.getName()+" "+price+" "+parent.toString();
@@ -32,6 +25,8 @@ public class PriceListItem extends BusinessEntity {
 	public PriceListItem() {
 		super();
 	}
+	@CouldNotBeEmpty()
+	@FieldName(name="прайс-лист")
 	public PriceList getParent() {
 		return parent;
 	}
@@ -44,6 +39,8 @@ public class PriceListItem extends BusinessEntity {
 	public void setPrice(double price) {
 		this.price = price;
 	}
+	@CouldNotBeEmpty()
+	@FieldName(name="вид продукта")
 	public ProductType getProduct() {
 		return product;
 	}

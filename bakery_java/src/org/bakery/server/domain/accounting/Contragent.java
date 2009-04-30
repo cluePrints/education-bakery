@@ -3,10 +3,10 @@ package org.bakery.server.domain.accounting;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.production.Warehouse;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 
 public class Contragent extends BusinessEntity {
 	private static final long serialVersionUID=1L;
@@ -32,13 +32,6 @@ public class Contragent extends BusinessEntity {
 	public Contragent() {
 		super();	
 	}
-	
-	
-	@Override
-	public void validate(Errors errors) {
-		if (CommonFormValidator.isEmptyEntity(address))
-			errors.reject(null, "contragent.address.empty");		
-	}
 
 	@Override
 	public String toString() {
@@ -63,6 +56,8 @@ public class Contragent extends BusinessEntity {
 		warehouses.add(warehouse);
 	}
 	
+	@CouldNotBeEmpty()
+	@FieldName(name="имя")
 	public String getName() {
 		return name;
 	}
@@ -75,6 +70,10 @@ public class Contragent extends BusinessEntity {
 	public void setChild(Boolean child) {
 		this.child = child;
 	}
+	
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="адресс")
 	public Address getAddress() {
 		return address;
 	}

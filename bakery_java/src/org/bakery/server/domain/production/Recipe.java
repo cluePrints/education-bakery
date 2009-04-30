@@ -6,6 +6,8 @@ import java.util.Set;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.hardware.DeviceParameter;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 import org.springframework.validation.Errors;
 /**
  * Represents recipe, which have some effects
@@ -29,7 +31,7 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	/**
 	 * Time in milliseconds, consumed by process
 	 */
-	private long time;
+	private Long time;
 	
 	private Set<DeviceParameter> parameters = new HashSet<DeviceParameter>();
 	
@@ -47,11 +49,9 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 		tmp += "</parameters>";
 		return tmp;
 	}
-	@Override
-	public void validate(Errors errors) {
-		// TODO Auto-generated method stub
-
-	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="название рецепта")
 	public String getName() {
 		return name;
 	}
@@ -64,6 +64,9 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	public void setFormula(String formula) {
 		this.formula = formula;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="время, которое потребуется на выполнение рецепта")
 	public long getTime() {
 		return time;
 	}

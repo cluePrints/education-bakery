@@ -4,10 +4,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.accounting.Contragent;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 /**
  * Represents set of pricelist items, shipped by some contragent at once
  * @author Ivan_Sobolev1
@@ -21,11 +21,6 @@ public class PriceList extends BusinessEntity {
 
 	private Set<PriceListItem> items=new HashSet<PriceListItem>();
 	
-	@Override
-	public void validate(Errors errors) {
-		if (CommonFormValidator.isEmptyEntity(owner))
-			errors.reject(null, "priceList.owner.empty");
-	}
 	
 	public String toString() {
 		String result = owner.toString()+", "+date;
@@ -46,7 +41,8 @@ public class PriceList extends BusinessEntity {
 	public PriceList() {
 		super();
 	}
-
+	@CouldNotBeEmpty()
+	@FieldName(name="дата начала действия прайс-листа")
 	public Date getDate() {
 		return date;
 	}
@@ -63,6 +59,8 @@ public class PriceList extends BusinessEntity {
 		this.comment = comment;
 	}
 
+	@CouldNotBeEmpty()
+	@FieldName(name="контрагент, предоставивший прайс-лист")
 	public Contragent getOwner() {
 		return owner;
 	}

@@ -3,7 +3,8 @@ package org.bakery.server.domain.hardware;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.production.Unit;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 /**
  * Represents concrete parameter of specific device.
  * For example: fridge1_temperature
@@ -18,17 +19,17 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	private int changable;
 	private int minimize;
 	private double bestValue;
-	@Override
-	public void validate(Errors errors) {
-		// TODO Auto-generated method stub
 
-	}
+	@CouldNotBeEmpty()
+	@FieldName(name="имя")
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
+	@CouldNotBeEmpty()
+	@FieldName(name="единица измерения")
 	public Unit getUnit() {
 		return unit;
 	}

@@ -2,7 +2,8 @@ package org.bakery.server.domain.production;
 
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 /**
  * Measurement unit. Examples: gram, kilogram, cm, etc.
  * 
@@ -11,6 +12,7 @@ import org.springframework.validation.Errors;
  */
 public class Unit extends BusinessEntity implements NamedEntity{
 	private static final long serialVersionUID=1L;
+	
 	private String name;
 
 	public Unit(String name) {
@@ -23,21 +25,14 @@ public class Unit extends BusinessEntity implements NamedEntity{
 		this.name = name;
 		setId(id);
 	}
-	
-	
-	
-	@Override
-	public void validate(Errors errors) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	@Override
 	public String toString() {
 		return name;
 	}
 
+	@CouldNotBeEmpty()
+	@FieldName(name="наименование единицы измерения")
 	public String getName() {
 		return name;
 	}

@@ -4,7 +4,8 @@ import java.util.Set;
 
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 /**
  * Represents concrete device, with it's concrete parameters 
  * 
@@ -17,17 +18,12 @@ public class Device extends BusinessEntity implements NamedEntity {
 	private String description;
 	
 	private Set<DeviceParameter> parameters; 
-	
-	@Override
-	public void validate(Errors errors) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public String getName() {
 		return name;
 	}
 
+	@CouldNotBeEmpty()
+	@FieldName(name="наименование")
 	public void setName(String name) {
 		this.name = name;
 	}

@@ -5,6 +5,8 @@ import java.util.Date;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.log.Order;
 import org.bakery.server.domain.production.Recipe;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 import org.springframework.validation.Errors;
 /**
  * This entity links together and devices used to produce something.
@@ -29,11 +31,9 @@ public class ProductionPlan extends BusinessEntity {
 	 * Start date
 	 */
 	private Date startDate=(Date) NULL_DATE.clone();
-	@Override
-	public void validate(Errors errors) {
-		// TODO Auto-generated method stub
 
-	}
+	@CouldNotBeEmpty()
+	@FieldName(name="заказ")
 	public Order getOrder() {
 		return order;
 	}
@@ -41,12 +41,17 @@ public class ProductionPlan extends BusinessEntity {
 		this.order = order;
 	}
 
+	@CouldNotBeEmpty()
+	@FieldName(name="рецепт")
 	public Recipe getRecipe() {
 		return recipe;
 	}
 	public void setRecipe(Recipe recipe) {
 		this.recipe = recipe;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="дата начала действия плана")
 	public Date getStartDate() {
 		return startDate;
 	}

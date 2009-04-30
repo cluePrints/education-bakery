@@ -5,6 +5,8 @@ import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.accounting.Address;
 import org.bakery.server.domain.accounting.Contragent;
+import org.bakery.server.validation.CouldNotBeEmpty;
+import org.bakery.server.validation.FieldName;
 import org.springframework.validation.Errors;
 
 public class Warehouse extends BusinessEntity implements NamedEntity{
@@ -21,29 +23,30 @@ public class Warehouse extends BusinessEntity implements NamedEntity{
 	}	
 	
 	@Override
-	public void validate(Errors errors) {
-		if (CommonFormValidator.isEmptyEntity(owner))
-			errors.reject(null, "warehouse.owner.empty");
-		if (CommonFormValidator.isEmptyEntity(address))
-			errors.reject(null, "warehouse.address.empty");
-	}
-	
-	@Override
 	public String toString() {
 		return owner+"."+name+" ("+address+")";
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="название склада")
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="владелец склада")
 	public Contragent getOwner() {
 		return owner;
 	}
 	public void setOwner(Contragent owner) {
 		this.owner = owner;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="адресс склада")
 	public Address getAddress() {
 		return address;
 	}
