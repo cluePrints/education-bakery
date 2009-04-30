@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="914" height="522">
+	creationComplete="init()" width="100%" height="100%">
 	<mx:HTTPService id="mainSvc" 
 		useProxy="false"
 		method="GET"
 		url="{mainDataSvcUrl}"
 		result="httpResultHandler(event)"
-		fault="httpFaultHandler(event)"/>
+		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
 		<![CDATA[
 			import mx.validators.RegExpValidator;
@@ -23,17 +23,17 @@
 			public var hideEffect:*;
 			[Bindable]
             private var mainData:*;
-            
+            [Bindable]
+            private var errors:ArrayCollection = new ArrayCollection();
 			public function init():void{
 				createNew();				
 				mainSvc.cancel();
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);				
 			}
-			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP Ошибка!!!");
-			} 
+			var util:Util = new Util();
 			private function httpResultHandler(event:*):void{
+				errors = util.getHttpRespondedErrors(event);
 				mainData = event.result.mainData;
 				if (mainData != null) {
 					mainData[mainDataUnitName].filterFunction = mainFilterFunction;
@@ -91,8 +91,8 @@
 		</root>		
 	</mx:Model>		
 		<mx:Label text="{&quot;Панель управления &quot;+ mainDataUnitVisualName}" fontWeight="bold" fontSize="14"/>
-		<mx:HBox x="0" y="0" width="876" height="403">
-			<mx:VBox height="368" width="70%" horizontalAlign="center" >
+		<mx:HBox x="0" y="0" width="100%" height="357">
+			<mx:VBox height="354" width="70%" horizontalAlign="center" >
 			
 				<mx:DataGrid height="278" width="594" 
 					id="dgData" 
@@ -121,36 +121,46 @@
 				</mx:HBox>
 				</mx:VBox>
 			</mx:VBox>			
-			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
-				<mx:VBox horizontalAlign="left" height="17" width="232">	
-					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
-					<mx:TextInput id="tiId" visible="false" text=""/>
+			<mx:VBox height="354" width="100%">
+				<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
+					<mx:VBox horizontalAlign="left" height="17" width="232">	
+						<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+						<mx:TextInput id="tiId" visible="false" text=""/>
+						
+						
+					</mx:VBox>
 					
-					
-				</mx:VBox>
-				
-				<mx:VBox id="filterPanel">
-					<mx:Script>
+					<mx:VBox id="filterPanel">
+						<mx:Script>
 						<![CDATA[
 							[Bindable]
 							public var filterPanelMinimized:Boolean=true;							
 						]]>
 					</mx:Script>
-					<mx:HBox horizontalAlign="right" width="100%">
-						<mx:FormItem label="Фильтр:" width="267">
-							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized" width="96"/>
-						</mx:FormItem>												
-					</mx:HBox>					
-					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
-						<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%">
-							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
-							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
-						</mx:FormItem>
-						<mx:FormItem label="Шаблон имени:" >
-							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
-						</mx:FormItem>	
-					</mx:VBox>					
+						<mx:HBox horizontalAlign="right" width="100%">
+							<mx:FormItem label="Фильтр:" width="267">
+								<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized" width="96"/>
+							</mx:FormItem>												
+						</mx:HBox>					
+						<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
+							<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%">
+								<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
+								<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
+							</mx:FormItem>
+							<mx:FormItem label="Шаблон имени:" >
+								<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+							</mx:FormItem>	
+						</mx:VBox>					
+					</mx:VBox>
 				</mx:VBox>
 			</mx:VBox>
 		</mx:HBox>
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="100%">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
 	</mx:VBox>

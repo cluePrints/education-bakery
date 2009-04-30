@@ -1,7 +1,6 @@
 package components{
 	import flash.events.Event;
 	
-	import mx.charts.chartClasses.InstanceCache;
 	import mx.controls.Alert;
 	import mx.controls.dataGridClasses.DataGridColumn;
 	
@@ -94,8 +93,25 @@ public class Util{
 	 * Common server exception handling function
 	 **/
 	public function httpFaultHandler(event:Event):void{
-			Alert.show("HTTP error");
-
+		Alert.show("Главный сервер приложения недоступен");
 	} 
+	
+	/**
+	 *	Try to handle common errors
+	 **/ 
+	public function getHttpRespondedErrors(event:*):ArrayCollection{
+		var errors = event.result.errors;		
+		var errorCollection:ArrayCollection;
+		if (errors == null)
+			return new ArrayCollection();
+		
+		if (errors instanceof ArrayCollection){
+			errorCollection = errors
+		} else {
+			errorCollection = new ArrayCollection();
+			errorCollection.addItem(errors);	
+		}		
+		return errorCollection;
+	}
 }
 }
