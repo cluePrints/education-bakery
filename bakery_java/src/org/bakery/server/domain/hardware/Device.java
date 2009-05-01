@@ -17,13 +17,14 @@ public class Device extends BusinessEntity implements NamedEntity {
 	private String name;
 	private String description;
 	
-	private Set<DeviceParameter> parameters; 
+	private Set<DeviceParameter> parameters;
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="наименование")
 	public String getName() {
 		return name;
 	}
 
-	@CouldNotBeEmpty()
-	@FieldName(name="наименование")
 	public void setName(String name) {
 		this.name = name;
 	}
