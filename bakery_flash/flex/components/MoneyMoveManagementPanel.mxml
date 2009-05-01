@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="1068" height="518">
+	creationComplete="init()" width="1080" height="548">
 
 		
 		<mx:HTTPService id="mainSvc" 
@@ -21,7 +21,7 @@
 			<active>{cbActive.selected == true ? "1" : "0"}</active>	
 			<date>{dfDate.text}</date>
 			<order>{cbOrder.selectedItem.id}</order>
-			<priceItem>{cbPriceItem.selectedItem.id}</priceItem>
+			<price>{cbPriceItem.selectedItem.id}</price>
 			<desc>{tiDesc.text}</desc>
 			
 		</root>		
@@ -49,11 +49,12 @@
             [Bindable] private var availableOrders:ArrayCollection;
             [Bindable] private var priceItems:*;   
             [Bindable] private var availablePriceItems:ArrayCollection;
+            [Bindable] private var errors:ArrayCollection = new ArrayCollection();
             	var util:Util = new Util();	
 			public function init():void{
 				createNew();				
 				mainSvc.cancel();
-				
+			
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);
 					
@@ -65,6 +66,8 @@
 			} 
 			 
 			private function httpResultHandler(event:*):void{	
+				errors = util.getHttpRespondedErrors(event);
+				
 				accounts = util.extractItemCollection(event.result.accounts, 'account');	
 				availableAccounts = util.getActiveItems(accounts);
 				
@@ -75,6 +78,7 @@
 				availablePriceItems = util.getActiveItems(priceItems);	
 			
 				mainData = event.result.mainData;
+				
 				if (mainData != null ) {
 					mainData['moneymove'].filterFunction = mainFilterFunction;
 				}
@@ -92,14 +96,26 @@
 				return result;
 			} 
 			function bindSelected():void{
+				var item = dgData.selectedItem;
 				if (dgData.selectedIndex>=0){
+				cbActive.selected = (dgData.selectedItem.active == 1);
+				tiId.text=dgData.selectedItem.id;
+				dfDate.text = dgData.selectedItem.date;
+				tiDesc.text = dgData.selectedItem.desc;
+				cbDestinationAccount.selectedIndex = util.getItemPos(availableAccounts, item.destinationAccount);
+				cbSourceAccount.selectedIndex = util.getItemPos(availableAccounts, item.sourceAccount);
+				tiAmount.text = dgData.selectedItem.amount;
+				cbOrder.selectedIndex = util.getItemPos(availableOrders, item.order);
+				cbPriceItem.selectedIndex = util.getItemPos(availablePriceItems, item.price);
 				
-				
-	
 				}													
 			}
 			function createNew():void{
 				tiId.text="";
+				tiAmount.text = "";
+				tiDesc.text = "";
+				dfDate.text = "";
+				cbActive.selected=true;
 				formModel.mode="NEW";
 						
 			}
@@ -111,24 +127,42 @@
 				formModel.mode="EDIT";
 				mainSvc.cancel();	
 				mainSvc.send(formModel);
+			
 				
 			}
 			function filterRefresh():void{
-				mainData[''].refresh();
+				mainData['maneymove'].refresh();
 			}
 			function activeToString(item:Object, column:DataGridColumn):String{				
 				return (item.active>0 ? "active" : "not active"); 
 				
 				
 			}
+			function getDestAccountName(item:Object, column:DataGridColumn):String{	
+				var tmp = util.getItemById(accounts, item.destinationAccount);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+				function getSourceAccountName(item:Object, column:DataGridColumn):String{	
+				var tmp = util.getItemById(accounts, item.sourceAccount);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+			
 			
 		]]>
 	</mx:Script>			
 	
 		<mx:Label text="Панель управления движением денег" fontWeight="bold" fontSize="14"/>
 		<mx:VBox  width="100%">
-		<mx:HBox x="0" y="0" width="1050" height="557">
-			<mx:VBox height="481" width="762" horizontalAlign="center" >
+		<mx:HBox x="0" y="0" width="1057" height="460">
+			<mx:VBox height="433" width="767" horizontalAlign="center" >
 			
 				<mx:DataGrid height="282" width="756" 
 					id="dgData" 
@@ -136,8 +170,8 @@
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="Ид.Номер"  dataField="id"  width="55"/>
-						<mx:DataGridColumn headerText="Счет назначения"  dataField="destinationAccount"  width="100"/>
-						<mx:DataGridColumn headerText="Счет-источник"  dataField="sourceAccount"  width="100"/>
+						<mx:DataGridColumn headerText="Счет назначения"  dataField="destinationAccount"  labelFunction="getDestAccountName" width="100"/>
+						<mx:DataGridColumn headerText="Счет-источник"  dataField="sourceAccount" labelFunction="getSourceAccountName" width="100"/>
 						<mx:DataGridColumn headerText="Размер" dataField="amount"   width="50"/>
 						<mx:DataGridColumn headerText="Дата перевода " dataField="date" width="80"/>
 						<mx:DataGridColumn headerText="Заказ" dataField="order" width="60"/>
@@ -146,7 +180,7 @@
 						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="45"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<mx:HBox width="743" height="106">
+				<mx:HBox width="743" height="99">
 				<mx:VBox>
 					<mx:FormItem label="Счет назначения:" 
 						required="true">												
@@ -162,8 +196,7 @@
 							labelField="name" 
 							width="150"/>
 					</mx:FormItem>
-					<mx:FormItem label="Размер:" 
-						required="true">
+					<mx:FormItem label="Размер:" required="true" >
 						<mx:TextInput id="tiAmount">
 						</mx:TextInput>
 					</mx:FormItem>
@@ -196,14 +229,14 @@
 					</mx:FormItem>
 				
 				<mx:FormItem label="Активно:" width="111">
-					<mx:CheckBox id="cbActive"/>
+					<mx:CheckBox id="cbActive" />
 					</mx:FormItem>
 				</mx:VBox>
 				</mx:HBox>
-				<mx:HBox width="100%" height="45">
-					<mx:Button label="Перечислить сресдства" click="saveSelected()"/>
-					<mx:Button label="Отмена" click="cancel()"/>
-					<mx:Button label="Создать" click="createNew()"/>
+				<mx:HBox width="100%" height="27">
+					<mx:Button label="Сохранить" click="saveSelected()" width="173"/>
+					<mx:Button label="Отмена" click="cancel()" width="173"/>
+					<mx:Button label="Создать" click="createNew()" width="173"/>
 				</mx:HBox>
 			</mx:VBox>			
 			<mx:VBox height="232" horizontalAlign="center" verticalAlign="center" width="278">				
@@ -239,5 +272,15 @@
 				</mx:VBox>
 			</mx:VBox>
 		</mx:HBox>
+		
+		
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="910" height="84">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
 	</mx:VBox>
 	</mx:VBox>
