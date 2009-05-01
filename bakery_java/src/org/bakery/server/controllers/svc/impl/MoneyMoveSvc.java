@@ -6,15 +6,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
-import org.bakery.server.domain.log.ProductMove;
+import org.bakery.server.domain.log.MoneyMove;
 
 public class MoneyMoveSvc extends AbstractCommand {
 
 
 	@Override
 	public void init(SvcController controller) {
-		setMainDAO(controller.getDAOFacade().getProductMoveDAO());
-		setCommand(new ProductMove());
+		setMainDAO(controller.getDAOFacade().getMoneyMoveDAO());
+		setCommand(new MoneyMove());
 	}
 
 	protected void executeInternal(HttpServletRequest request,
