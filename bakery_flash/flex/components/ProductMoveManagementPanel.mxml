@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()" width="1068" height="518">
+
+		
+		<mx:HTTPService id="mainSvc" 
+		useProxy="false"
+		method="GET"
+		url="{mainDataSvcUrl}"
+		result="httpResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+		
+		<mx:Model id="formModel">		
+		<root>
+			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
+			<id>{tiId.text}</id>
+			<sourceWarehouse>{cbSourceWarehouse.selectedItem.id}</sourceWarehouse>
+			<destinationWarehouse>{cbDestinationWarehouse.selectedItem.id}</destinationWarehouse>
+			<moneyMove>{cbMoneyMove.selectedItem.id}</moneyMove>		
+			<active>{cbActive.selected == true ? "1" : "0"}</active>	
+			<date>{dfDate.text}</date>
+			
+		</root>		
+	</mx:Model>	
+		
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CollectionEvent;
+			import mx.automation.codec.ArrayPropertyCodec;
+			import mx.validators.RegExpValidator;
+			import mx.utils.StringUtil;
+			import mx.rpc.http.mxml.HTTPService;
+			import flash.sampler.getInvocationCount;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import components.Util;
+			public var mainDataSvcUrl:String;
+			public var mainDataUnitName:String;
+			public var mainDataUnitVisualName:String;
+			public var hideEffect:*;
+			[Bindable] private var mainData:*;
+			[Bindable] private var warehouse:*;   
+            [Bindable] private var availableWarehouse:ArrayCollection;
+            [Bindable] private var moneyMove:*;   
+            [Bindable] private var availableMoneyMoves:ArrayCollection;
+          
+            	var util:Util = new Util();	
+			public function init():void{
+				createNew();				
+				mainSvc.cancel();
+				formModel.mode="FETCH";
+				mainSvc.send(formModel);
+					
+			}
+			
+			private function httpFaultHandler(event:Event):void{
+					 mx.controls.Alert.show(event.toString())	;
+				
+			} 
+			 
+			private function httpResultHandler(event:*):void{	
+				
+				
+				
+				warehouse = util.extractItemCollection(event.result.warehouse, 'warehouse');	
+				availableWarehouse = util.getActiveItems(warehouse);
+				
+				moneyMove = util.extractItemCollection(event.result.moneyMove, 'moneymove');
+				availableMoneyMoves = util.getActiveItems(moneyMove);
+				
+				mainData = event.result.mainData;
+				if (mainData != null ) {
+					mainData['productmove'].filterFunction = mainFilterFunction;
+				}
+			} 
+			private function mainFilterFunction(item:*){
+				var result:Boolean=true;
+				if (!cbShowNonActive.selected && item.active<=0)
+					return false;
+				if (!cbShowActive.selected && item.active>0)
+					return false;					
+				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
+					if (!new RegExp(edFilter.text).test(item.provider))
+						return false;
+				}
+				return result;
+			} 
+			function bindSelected():void{
+				if (dgData.selectedIndex>=0){
+				
+				
+	
+				}													
+			}
+			function createNew():void{
+				tiId.text="";
+				dfDate.text = "";
+				cbActive.selected=true;
+				formModel.mode="NEW";
+						
+			}
+			function cancel():void{
+				bindSelected();
+			}
+			function saveSelected():void{
+				
+				formModel.mode="EDIT";
+				mainSvc.cancel();	
+				mainSvc.send(formModel);
+				
+			}
+			function filterRefresh():void{
+				mainData[''].refresh();
+			}
+			function activeToString(item:Object, column:DataGridColumn):String{				
+				return (item.active>0 ? "active" : "not active"); 
+				
+				
+			}
+			
+		]]>
+	</mx:Script>			
+	
+		<mx:Label text="Панель управления движением продуктов" fontWeight="bold" fontSize="14"/>
+		<mx:VBox  width="100%">
+		<mx:HBox x="0" y="0" width="1050" height="490">
+			<mx:VBox height="387" width="762" horizontalAlign="center" >
+			
+				<mx:DataGrid height="282" width="756" 
+					id="dgData" 
+					dataProvider="{mainData['producmove']}"
+					itemClick="bindSelected()">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Ид.Номер"  dataField="id"  width="55"/>
+						<mx:DataGridColumn headerText="Склад-источник"  dataField="sourceWarehouse"  width="100"/>
+						<mx:DataGridColumn headerText="Склад-приемник"  dataField="destinationWarehouse"  width="100"/>
+						<mx:DataGridColumn headerText="Дата отгрузки" dataField="date"   width="70"/>
+						<mx:DataGridColumn headerText="Денежные переводы" dataField="moneyMovee" width="90"/>
+						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="45"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<mx:HBox width="100%" height="57">
+					<mx:VBox height="100%" width="33%">
+					
+						<mx:FormItem label="Склад-источник:"
+						required="true" width="100%">												
+							<mx:ComboBox id="cbSourceWarehouse"
+								dataProvider="{availableWarehouse}"
+								labelField="name"  
+								width="90%"/>
+						</mx:FormItem>
+						
+						<mx:FormItem label="Склад-приемник:"
+						required="true" width="100%">												
+							<mx:ComboBox id="cbDestinationWarehouse"
+								dataProvider="{availableWarehouse}"
+								labelField="name"  
+								width="90%"/>
+						</mx:FormItem>
+					
+					</mx:VBox>
+					<mx:VBox height="100%" width="33%" >
+						<mx:FormItem label="Дата отгрузки:" 
+						required="true">												
+						<mx:DateField id="dfDate"
+							text=""
+							formatString="DD/MM/YY" width="131"/>
+						</mx:FormItem>
+						<mx:FormItem label="Денежные переводы:"
+						required="true" width="100%">												
+							<mx:ComboBox id="cbMoneyMove"
+								dataProvider="{availableMoneyMoves}"
+								labelField="id"  
+								width="90%"/>
+						</mx:FormItem>
+						
+					</mx:VBox>
+					<mx:VBox height="100%" width="33%">
+					<mx:FormItem label="Активно:" width="111">
+					<mx:CheckBox id="cbActive"/>
+					</mx:FormItem>
+					</mx:VBox>
+				</mx:HBox>
+				<mx:HBox width="100%" height="31">
+					<mx:VBox height="100%" width="33%">			
+						<mx:Button label="Переместить продукт" click="saveSelected()" width="194"/>		
+					</mx:VBox>
+					<mx:VBox height="100%" width="33%">
+						<mx:Button label="Отмена" click="cancel()" width="175"/>
+					</mx:VBox>
+					<mx:VBox height="100%" width="33%">
+						<mx:Button label="Создать" click="createNew()" width="175"/>	
+					</mx:VBox>
+					
+								
+					
+				
+				</mx:HBox>
+		
+			</mx:VBox>			
+			<mx:VBox height="232" horizontalAlign="center" verticalAlign="center" width="278">				
+				<mx:VBox horizontalAlign="left" height="17" width="232">	
+					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+					<mx:TextInput id="tiId" visible="false" text=""/>
+				</mx:VBox>
+				
+				<mx:VBox id="filterPanel">
+					<mx:Script>
+						<![CDATA[
+							[Bindable]
+							public var filterPanelMinimized:Boolean=true;							
+						]]>
+					</mx:Script>
+					<mx:HBox horizontalAlign="right" width="100%">
+						<mx:FormItem label="Фильтр:" width="267">
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized" width="96"/>
+						</mx:FormItem>												
+					</mx:HBox>					
+					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
+						<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
+						</mx:FormItem>
+						
+						<mx:FormItem label="Шаблон имени:" >
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+						</mx:FormItem>	
+					</mx:VBox>					
+				</mx:VBox>
+			</mx:VBox>
+		</mx:HBox>
+	</mx:VBox>
+	</mx:VBox>
