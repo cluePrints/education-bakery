@@ -72,6 +72,9 @@ public class Util{
 	public function fixedToString(item:Object, column:DataGridColumn):String{				
 		return (item.changable >0 ? "перем." : "конст."); 
 	}
+	public function childToString(item:Object, column:DataGridColumn):String{				
+		return (item.child >0 ? "дочерн." : ""); 
+	}
 	public function extractItemCollection(proxy:*, collectionName:String):ArrayCollection{
 		var result:ArrayCollection = null;
 		if (proxy != null){

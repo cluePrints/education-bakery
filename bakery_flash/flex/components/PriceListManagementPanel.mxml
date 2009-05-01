@@ -14,6 +14,7 @@
 			<comment>{encodeURI(tiComment.text)}</comment>				
 		</root>		
 	</mx:Model>		
+	
 	<!-- represents selected subItem: PriceListItem -->
 	<mx:Model id="childModel">
 		<root>

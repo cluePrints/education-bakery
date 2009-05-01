@@ -59,7 +59,7 @@
 			function bindSelected():void{
 				if (dgData.selectedIndex>=0){
 					cbActive.selected = (dgData.selectedItem.active == 1);
-					tiId.text=dgData.selectedItem.id;
+					formModel.id=dgData.selectedItem.id;
 					tiName.text=dgData.selectedItem.name;	
 					tiDesc.text=dgData.selectedItem.desc;
 					cbContragents.selectedIndex=util.getItemPos(availableContragents, dgData.selectedItem.owner);
@@ -67,7 +67,7 @@
 				}													
 			}
 			function createNew():void{
-				tiId.text="";
+				formModel.id="";
 				cbActive.selected=true;
 				cbContragents.selectedIndex=-1;
 				tiName.text="<undefined>";			
@@ -96,9 +96,9 @@
 	</mx:Script>			
 	<mx:Model id="formModel">		
 		<root>
-			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
+			<mode>EDIT</mode>
 			<owner>{cbContragents.selectedItem.id}</owner>
-			<id>{tiId.text}</id>	
+			<id></id>	
 			<desc>{encodeURI(tiDesc.text)}</desc>	
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<name>{encodeURI(tiName.text)}</name>
@@ -125,9 +125,8 @@
 			</mx:VBox>
 			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
 				<mx:VBox horizontalAlign="left">	
-					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
-					<mx:TextInput id="tiId" visible="false" text=""/>
-					<mx:FormItem label="Название:" required="true">												
+					<mx:FormItem label="Название:" 
+						required="true">												
 						<mx:TextInput id="tiName"/>
 					</mx:FormItem>
 					<mx:FormItem label="Описание:">												
