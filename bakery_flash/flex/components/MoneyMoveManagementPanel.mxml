@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="1046" height="584">
+	creationComplete="init()" width="1068" height="518">
 
 		
 		<mx:HTTPService id="mainSvc" 
@@ -14,14 +14,14 @@
 		<mx:Model id="formModel">		
 		<root>
 			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
-			<id></id>
+			<id>{tiId.text}</id>
 			<destinationAccount>{cbDestinationAccount.selectedItem.id}</destinationAccount>
 			<sourceAccount>{cbSourceAccount.selectedItem.id}</sourceAccount>
 			<amount>{tiAmount.text}</amount>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>	
 			<date>{dfDate.text}</date>
 			<order>{cbOrder.selectedItem.id}</order>
-			<price></price>
+			<priceItem>{cbPriceItem.selectedItem.id}</priceItem>
 			<desc>{tiDesc.text}</desc>
 			
 		</root>		
@@ -43,7 +43,12 @@
 			public var mainDataUnitVisualName:String;
 			public var hideEffect:*;
 			[Bindable] private var mainData:*;
-          
+			[Bindable] private var accounts:*;   
+            [Bindable] private var availableAccounts:ArrayCollection;
+            [Bindable] private var orders:*;   
+            [Bindable] private var availableOrders:ArrayCollection;
+            [Bindable] private var priceItems:*;   
+            [Bindable] private var availablePriceItems:ArrayCollection;
             	var util:Util = new Util();	
 			public function init():void{
 				createNew();				
@@ -60,10 +65,18 @@
 			} 
 			 
 			private function httpResultHandler(event:*):void{	
-					
+				accounts = util.extractItemCollection(event.result.accounts, 'account');	
+				availableAccounts = util.getActiveItems(accounts);
+				
+				orders = util.extractItemCollection(event.result.orders, 'order');
+				availableOrders = util.getActiveItems(orders);	
+			
+				priceItems = util.extractItemCollection(event.result.priceListItems, 'pricelistitem');
+				availablePriceItems = util.getActiveItems(priceItems);	
+			
 				mainData = event.result.mainData;
 				if (mainData != null ) {
-					mainData[''].filterFunction = mainFilterFunction;
+					mainData['moneymove'].filterFunction = mainFilterFunction;
 				}
 			} 
 			private function mainFilterFunction(item:*){
@@ -113,12 +126,13 @@
 	</mx:Script>			
 	
 		<mx:Label text="Панель управления движением денег" fontWeight="bold" fontSize="14"/>
-		<mx:HBox x="0" y="0" width="1036" height="546">
-			<mx:VBox height="482" width="747" horizontalAlign="center" >
+		<mx:VBox  width="100%">
+		<mx:HBox x="0" y="0" width="1050" height="557">
+			<mx:VBox height="481" width="762" horizontalAlign="center" >
 			
-				<mx:DataGrid height="282" width="738" 
+				<mx:DataGrid height="282" width="756" 
 					id="dgData" 
-					dataProvider=""
+					dataProvider="{mainData['moneymove']}"
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="Ид.Номер"  dataField="id"  width="55"/>
@@ -127,21 +141,25 @@
 						<mx:DataGridColumn headerText="Размер" dataField="amount"   width="50"/>
 						<mx:DataGridColumn headerText="Дата перевода " dataField="date" width="80"/>
 						<mx:DataGridColumn headerText="Заказ" dataField="order" width="60"/>
-						<mx:DataGridColumn headerText="Стоимость" dataField="price" width="60"/>
+						<mx:DataGridColumn headerText="Прайс" dataField="price" width="60"/>
 						<mx:DataGridColumn headerText="Описание" dataField="desc" width="70"/>
 						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="45"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<mx:HBox width="100%" height="92">
+				<mx:HBox width="743" height="106">
 				<mx:VBox>
 					<mx:FormItem label="Счет назначения:" 
 						required="true">												
 						<mx:ComboBox id="cbDestinationAccount"
+							dataProvider="{availableAccounts}"
+							labelField="name" 
 							width="150"/>
 					</mx:FormItem>
 					<mx:FormItem label="Счет-источник:" 
 						required="true">												
 						<mx:ComboBox id="cbSourceAccount"
+							dataProvider="{availableAccounts}"
+							labelField="name" 
 							width="150"/>
 					</mx:FormItem>
 					<mx:FormItem label="Размер:" 
@@ -150,7 +168,7 @@
 						</mx:TextInput>
 					</mx:FormItem>
 				</mx:VBox>
-				<mx:VBox height="100%" width="263">
+				<mx:VBox height="100%" width="246">
 						<mx:FormItem label="Дата перевода:" 
 						required="true">	
 					<mx:DateField id="dfDate"
@@ -160,6 +178,8 @@
 						<mx:FormItem label="Заказ:" 
 						required="true">												
 						<mx:ComboBox id="cbOrder"
+							dataProvider="{availableOrders}"
+							labelField="id" 
 							width="150"/>
 					</mx:FormItem>
 					<mx:FormItem label="Описание:" >
@@ -167,7 +187,14 @@
 						</mx:TextInput>
 					</mx:FormItem>
 				</mx:VBox>
-				<mx:VBox height="89" width="128">
+				<mx:VBox height="95" width="186">
+					<mx:FormItem label="Прайс" width="182">
+					<mx:ComboBox id="cbPriceItem"
+							dataProvider="{availablePriceItems}"
+							labelField="id" 
+							width="100"/>
+					</mx:FormItem>
+				
 				<mx:FormItem label="Активно:" width="111">
 					<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
@@ -212,4 +239,5 @@
 				</mx:VBox>
 			</mx:VBox>
 		</mx:HBox>
+	</mx:VBox>
 	</mx:VBox>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="928" height="454">		
+	creationComplete="init()" width="918" height="446">		
 	<mx:HTTPService id="contragentSvc" 
 		useProxy="false"
 		method="POST"
@@ -16,7 +16,7 @@
 			import flash.sampler.getInvocationCount;
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
-			
+			import components.Util;
 			public var addressDataSvcUrl:String;
 			public var contragentDataSvcUrl:String;
 			
@@ -106,8 +106,9 @@
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
-	<mx:VBox>					
+					
 		<mx:Label text="Панель работы с контрагентами" fontWeight="bold" fontSize="14"/>
+		<mx:VBox width="911">
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="263" width="601" 
@@ -183,4 +184,5 @@
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:VBox>
+
 </mx:VBox>

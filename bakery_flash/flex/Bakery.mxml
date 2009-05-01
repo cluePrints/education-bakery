@@ -16,10 +16,10 @@
 			}
 		]]>
 	</mx:Script>
-	<mx:TabNavigator width="1084" height="667">
+	<mx:TabNavigator width="1100" height="700">
 	
 	<mx:Canvas label="Движение денег" width="100%" height="100%"
-			>
+			 x="10" y="51">
 			<comp:MoneyMoveManagementPanel
 				
 				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MoneyMoveSvc"

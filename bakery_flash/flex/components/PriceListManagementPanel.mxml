@@ -2,7 +2,7 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:comp="components.*"
-	creationComplete="init()" width="974" height="595">
+	creationComplete="init()" width="930" height="543">
 	<!-- represents selected main item: PriceList -->
 	<mx:Model id="formModel">		
 		<root>
@@ -201,6 +201,8 @@
 		]]>
 	</mx:Script>				
 		<mx:Label text="Панель управления прайсами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+		
+	<mx:VBox width="100%">	
 		<mx:HBox width="895" height="273">
 			<mx:VBox height="254" width="516" horizontalAlign="center" >
 			<mx:Label  text=" Заголовки прайсов " fontWeight="bold"/>
@@ -314,4 +316,5 @@
 		</mx:VBox>	
 					
 	</mx:HBox>
+</mx:VBox>
 </mx:VBox>

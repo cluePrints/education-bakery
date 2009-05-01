@@ -110,6 +110,7 @@
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Панель управления типами продуктов" fontWeight="bold" fontSize="14"/>
+		<mx:VBox width="100%">
 		<mx:HBox x="0" y="0" width="891" height="412">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="388" width="592" 
@@ -180,4 +181,5 @@
 						 dataField="message"/>
 				</mx:columns>
 		</mx:DataGrid>
+		</mx:VBox>
 </mx:VBox>
