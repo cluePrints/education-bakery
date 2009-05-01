@@ -125,7 +125,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 				/* Double */
 				if (propType.isAssignableFrom(Double.class)
 						|| propType.equals(java.lang.Double.TYPE))
-					propValue = Float.parseFloat(strVal);
+					propValue = Double.parseDouble(strVal);
 
 				/* Date */
 				if (propType.isAssignableFrom(Date.class)) {
