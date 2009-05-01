@@ -3,7 +3,7 @@ package org.bakery.server.domain.pricing;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.production.ProductType;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
+import org.bakery.server.validation.GreaterThen;
 
 /**
  * Represents some product price
@@ -25,8 +25,8 @@ public class PriceListItem extends BusinessEntity {
 	public PriceListItem() {
 		super();
 	}
-	@CouldNotBeEmpty()
-	@FieldName(name="прайс-лист")
+	
+	@CouldNotBeEmpty(message="Прайс-лист, к которому относится эта цена на позицию продукции должен быть указан.")
 	public PriceList getParent() {
 		return parent;
 	}
@@ -34,16 +34,17 @@ public class PriceListItem extends BusinessEntity {
 		this.parent = parent;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="стоимость единицы продукта")
+	@GreaterThen(lowerLimit=0, including=false,
+				message="Стоимость должна быть положительным числом.")
+	@CouldNotBeEmpty(message="Стоимость единицы продукта должна быть задана.")
 	public Double getPrice() {
 		return price;
 	}
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	@CouldNotBeEmpty()
-	@FieldName(name="вид продукта")
+	
+	@CouldNotBeEmpty(message="Вид продукта должен быть указан.")
 	public ProductType getProduct() {
 		return product;
 	}

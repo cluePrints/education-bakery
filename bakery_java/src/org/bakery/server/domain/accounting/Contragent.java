@@ -6,7 +6,6 @@ import java.util.Set;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.production.Warehouse;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 
 public class Contragent extends BusinessEntity {
 	private static final long serialVersionUID=1L;
@@ -56,8 +55,7 @@ public class Contragent extends BusinessEntity {
 		warehouses.add(warehouse);
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="им€")
+	@CouldNotBeEmpty(message="Ќазвание склада должно быть указано.")
 	public String getName() {
 		return name;
 	}
@@ -70,10 +68,8 @@ public class Contragent extends BusinessEntity {
 	public void setChild(Boolean child) {
 		this.child = child;
 	}
-	
-	
-	@CouldNotBeEmpty()
-	@FieldName(name="адресс")
+		
+	@CouldNotBeEmpty(message="јдресс склада должен быть указан.")
 	public Address getAddress() {
 		return address;
 	}

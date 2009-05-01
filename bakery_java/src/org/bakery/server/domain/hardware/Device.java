@@ -5,7 +5,6 @@ import java.util.Set;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 /**
  * Represents concrete device, with it's concrete parameters 
  * 
@@ -19,8 +18,7 @@ public class Device extends BusinessEntity implements NamedEntity {
 	
 	private Set<DeviceParameter> parameters;
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="наименование")
+	@CouldNotBeEmpty(message="Название устройства не может быть пустым")
 	public String getName() {
 		return name;
 	}

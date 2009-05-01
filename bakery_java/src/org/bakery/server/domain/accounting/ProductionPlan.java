@@ -6,8 +6,7 @@ import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.log.Order;
 import org.bakery.server.domain.production.Recipe;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.GreaterThen;
 /**
  * This entity links together and devices used to produce something.
  * Order is expected to be holder of plans at entity level.
@@ -32,8 +31,7 @@ public class ProductionPlan extends BusinessEntity {
 	 */
 	private Date startDate=(Date) NULL_DATE.clone();
 
-	@CouldNotBeEmpty()
-	@FieldName(name="заказ")
+	@CouldNotBeEmpty(message="«аказ, к которому относитс€ производственный план не указан.")
 	public Order getOrder() {
 		return order;
 	}
@@ -41,8 +39,7 @@ public class ProductionPlan extends BusinessEntity {
 		this.order = order;
 	}
 
-	@CouldNotBeEmpty()
-	@FieldName(name="рецепт")
+	@CouldNotBeEmpty(message="–ецепт приготовлени€ продукта должен быть выбран.")
 	public Recipe getRecipe() {
 		return recipe;
 	}
@@ -50,8 +47,8 @@ public class ProductionPlan extends BusinessEntity {
 		this.recipe = recipe;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="дата начала действи€ плана")
+	@GreaterThen(message="ѕроизводственный план можно создать только дл€ будущего периода.")
+	@CouldNotBeEmpty(message="ƒата начала выполнени€ производственного плана должна быть задана.")
 	public Date getStartDate() {
 		return startDate;
 	}

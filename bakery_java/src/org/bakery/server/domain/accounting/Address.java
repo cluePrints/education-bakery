@@ -7,7 +7,6 @@ import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.production.Warehouse;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 
 /**
  * Address representation and linked concerns, like 
@@ -118,8 +117,8 @@ public class Address extends BusinessEntity implements NamedEntity {
 		this.warehouses = warehouses;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="адресс")
+	
+	@CouldNotBeEmpty(message="ѕоле адресс должно быть заполнено.")
 	public String getName() {
 		return name;
 	}

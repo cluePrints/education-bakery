@@ -1,13 +1,10 @@
 package org.bakery.server.domain.production;
 
-import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.accounting.Address;
 import org.bakery.server.domain.accounting.Contragent;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
-import org.springframework.validation.Errors;
 
 public class Warehouse extends BusinessEntity implements NamedEntity{
 	private static final long serialVersionUID=1L;
@@ -27,8 +24,7 @@ public class Warehouse extends BusinessEntity implements NamedEntity{
 		return owner+"."+name+" ("+address+")";
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="название склада")
+	@CouldNotBeEmpty(message="Ќазвание склада должно быть задано.")
 	public String getName() {
 		return name;
 	}
@@ -36,8 +32,7 @@ public class Warehouse extends BusinessEntity implements NamedEntity{
 		this.name = name;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="владелец склада")
+	@CouldNotBeEmpty(message="¬ладелец склада должен быть указан.")
 	public Contragent getOwner() {
 		return owner;
 	}
@@ -45,8 +40,7 @@ public class Warehouse extends BusinessEntity implements NamedEntity{
 		this.owner = owner;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="адресс склада")
+	@CouldNotBeEmpty(message="јдресс склада должен быть указан.")
 	public Address getAddress() {
 		return address;
 	}

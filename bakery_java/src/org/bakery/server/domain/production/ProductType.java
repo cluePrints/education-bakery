@@ -3,7 +3,6 @@ package org.bakery.server.domain.production;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 
 public class ProductType extends BusinessEntity implements NamedEntity {
 	private static final long serialVersionUID=1L;
@@ -15,8 +14,7 @@ public class ProductType extends BusinessEntity implements NamedEntity {
 		return name;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="наименование продукта")
+	@CouldNotBeEmpty(message="Наименование продукта должно быть задано.")
 	public String getName() {
 		return name;
 	}
@@ -24,8 +22,7 @@ public class ProductType extends BusinessEntity implements NamedEntity {
 		this.name = name;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="еденица измерения продукта")
+	@CouldNotBeEmpty(message="Единица измерения количества продукта должна быть указана.")
 	public Unit getUnit() {
 		return unit;
 	}

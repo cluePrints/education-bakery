@@ -4,7 +4,6 @@ import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.production.Unit;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 /**
  * Represents concrete parameter of specific device.
  * For example: fridge1_temperature
@@ -20,16 +19,15 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	private int minimize;
 	private Double bestValue;
 
-	@CouldNotBeEmpty()
-	@FieldName(name="имя")
+	@CouldNotBeEmpty(message="Название параметра устройства должно быть задано.")
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	@CouldNotBeEmpty()
-	@FieldName(name="единица измерения")
+	
+	@CouldNotBeEmpty(message="Единица измерения для параметра устройства не указана.")
 	public Unit getUnit() {
 		return unit;
 	}
@@ -55,8 +53,7 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 		this.minimize = minimize;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="единица измерения")
+	@CouldNotBeEmpty(message="Рекомендуемое значение параметра устройства должно быть задано")
 	public Double getBestValue() {
 		return bestValue;
 	}

@@ -3,7 +3,6 @@ package org.bakery.server.domain.accounting;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 /**
  * Represents Account entity
  * 
@@ -30,8 +29,7 @@ public class Account extends BusinessEntity implements NamedEntity{
 		return owner.getName()+"."+name;
 	}
 	
-	@CouldNotBeEmpty
-	@FieldName(name="им€")
+	@CouldNotBeEmpty(message="Ќазвание счета не может быть пустым.")
 	public String getName() {
 		return name;
 	}
@@ -45,8 +43,7 @@ public class Account extends BusinessEntity implements NamedEntity{
 		this.desc = desc;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="владелец")
+	@CouldNotBeEmpty(message=" онтрагент-владелец счета должен быть задан.")
 	public Contragent getOwner() {
 		return owner;
 	}

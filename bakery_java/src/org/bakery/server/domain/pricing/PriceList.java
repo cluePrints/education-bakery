@@ -7,7 +7,6 @@ import java.util.Set;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.accounting.Contragent;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 /**
  * Represents set of pricelist items, shipped by some contragent at once
  * @author Ivan_Sobolev1
@@ -41,8 +40,8 @@ public class PriceList extends BusinessEntity {
 	public PriceList() {
 		super();
 	}
-	@CouldNotBeEmpty()
-	@FieldName(name="дата начала действия прайс-листа")
+	
+	@CouldNotBeEmpty(message="Дата начала действия прайс-листа должна быть задана.")
 	public Date getDate() {
 		return date;
 	}
@@ -59,8 +58,7 @@ public class PriceList extends BusinessEntity {
 		this.comment = comment;
 	}
 
-	@CouldNotBeEmpty()
-	@FieldName(name="контрагент, предоставивший прайс-лист")
+	@CouldNotBeEmpty(message="Контрагент, предоставивший прайс-лист должен быть указан.")
 	public Contragent getOwner() {
 		return owner;
 	}

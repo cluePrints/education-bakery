@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 /**
  * Represent value of specific parameter at specific time.
  * 
@@ -29,8 +28,7 @@ public class Measure extends BusinessEntity {
 	 */
 	private Date time=(Date) NULL_DATE.clone();
 
-	@CouldNotBeEmpty()
-	@FieldName(name="измеренное значение параметра")
+	@CouldNotBeEmpty(message="Измеренное значение параметра должно быть указано.")
 	public Double getValue() {
 		return value;
 	}
@@ -38,8 +36,7 @@ public class Measure extends BusinessEntity {
 		this.value = value;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="измеряемый производственный параметр")
+	@CouldNotBeEmpty(message="Измеряемый производственный параметр должен быть указан.")
 	public DeviceParameter getParameter() {
 		return parameter;
 	}
@@ -47,8 +44,7 @@ public class Measure extends BusinessEntity {
 		this.parameter = parameter;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="время произведения измерения")
+	@CouldNotBeEmpty(message="Время произведения измерения значения производственного параметра должно быть указано.")
 	public Date getTime() {
 		return time;
 	}

@@ -7,8 +7,7 @@ import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.hardware.DeviceParameter;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.GreaterThen;
 /**
  * Represents recipe, which have some effects
  * 
@@ -50,8 +49,7 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 		return tmp;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="название рецепта")
+	@CouldNotBeEmpty(message="Краткое название рецепта должно быть задано.")
 	public String getName() {
 		return name;
 	}
@@ -65,8 +63,8 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 		this.formula = formula;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="время, которое потребуется на выполнение рецепта")
+	@GreaterThen(message="Время, которое потребуется на выполнение рецепта должно быть целым положительным числом.")
+	@CouldNotBeEmpty(message="Время, которое потребуется на выполнение рецепта должно быть задано.")
 	public Long getTime() {
 		return time;
 	}

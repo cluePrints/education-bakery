@@ -5,8 +5,6 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -14,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bakery.server.controllers.svc.helper.SvcHelper;
-import org.bakery.server.domain.accounting.Contragent;
-import org.bakery.server.domain.production.Unit;
 import org.bakery.server.validation.CouldNotBeEmpty;
 import org.bakery.server.validation.ValidationHelper;
 
@@ -40,45 +36,18 @@ public abstract class BusinessEntity implements Serializable {
 			BeanInfo inf = Introspector.getBeanInfo(getClass(), BusinessEntity.class);
 			PropertyDescriptor[] properties = inf.getPropertyDescriptors();
 			for (PropertyDescriptor prop : properties) {				
-				if (prop.getReadMethod().getAnnotation(CouldNotBeEmpty.class) != null) {					
-					Class type = prop.getPropertyType();
-					Object valueObj = prop.getReadMethod().invoke(this);
-					
-					if (String.class.equals(type)){
-						String value = (String) valueObj;
-						if ((value == null) || (value.trim().length()==0))
-							reportEmptyError(result, prop);
-						
-					} else if (BusinessEntity.class.isAssignableFrom(type)){
-						BusinessEntity value = (BusinessEntity) valueObj;
-						if ((value == null) || (value.getId() == null) ||(value.getId()<=0))
-							reportEmptyError(result, prop);
-							
-					} else if (Date.class.isAssignableFrom(type)){
-						Date value = (Date) valueObj;
-						if ((value == null) || (value.getTime() == 0))
-							reportEmptyError(result, prop);
-						
-					} else if (Object.class.isAssignableFrom(type)) {
-						if (valueObj == null)
-							reportEmptyError(result, prop);
-					}
-						
-				}
+				if (prop.getReadMethod().getAnnotation(CouldNotBeEmpty.class) != null)					
+					ValidationHelper.validateEmpty(this, prop, result);
+				
 			}
 		} catch (Exception ieEx){
 			throw new RuntimeException(ieEx);
 		}
 		return result;
-	}
-	private void reportEmptyError(Map<String, String> errors, PropertyDescriptor field){
-		errors.put(
-				getClass().getSimpleName()
-				+"."
-				+field.getName()
-				
-				,"Вы не указали "+ValidationHelper.getFieldReadableName(field));							
-	}
+	}	
+	
+	
+	
 	public Long getId() {
 		return id;
 	}

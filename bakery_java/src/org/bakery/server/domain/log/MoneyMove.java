@@ -8,9 +8,9 @@ import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.accounting.Account;
 import org.bakery.server.domain.pricing.PriceListItem;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
+import org.bakery.server.validation.GreaterThen;
 /**
- * Abstractes money move between two accounts. Is result of 
+ * Abstracts money move between two accounts. Is result of 
  * 	Order processing.
  * 	Move without date is planned
  * 
@@ -58,6 +58,9 @@ public class MoneyMove extends BusinessEntity {
 		return (NULL_DATE.equals(this.date) || date == null) ? 1 : 0;
 	}
 	
+	
+	@GreaterThen(message="Количество оплачиваемых единиц ресурсов должно быть положительно.")
+	@CouldNotBeEmpty(message="Количество оплачиваемых единиц ресурсов не может быть пустым.")
 	public Double getAmount() {
 		return amount;
 	}
@@ -76,16 +79,15 @@ public class MoneyMove extends BusinessEntity {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	@CouldNotBeEmpty()
-	@FieldName(name="денежный счет назначения")
+	
+	@CouldNotBeEmpty(message="Денежный счет назначения должен быть задан.")
 	public Account getDestinationAccount() {
 		return destinationAccount;
 	}
 	public void setDestinationAccount(Account destinationAccount) {
 		this.destinationAccount = destinationAccount;
 	}
-	@CouldNotBeEmpty()
-	@FieldName(name="денежный счет источник")
+	@CouldNotBeEmpty(message="Денежный счет источник перечисляемых средств должен быть задан.")
 	public Account getSourceAccount() {
 		return sourceAccount;
 	}
@@ -93,8 +95,7 @@ public class MoneyMove extends BusinessEntity {
 		this.sourceAccount = sourceAccount;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="заказ")
+	@CouldNotBeEmpty(message="Заказ, к которому относится данное движение денег по счетам должен быть указан.")
 	public Order getOrder() {
 		return order;
 	}
@@ -105,8 +106,7 @@ public class MoneyMove extends BusinessEntity {
 		super();
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="прайс-лист")
+	@CouldNotBeEmpty(message="Прайс-лист для указанного движения средств должен быть указан.")
 	public PriceListItem getPrice() {
 		return price;
 	}

@@ -4,13 +4,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.accounting.Contragent;
 import org.bakery.server.domain.accounting.ProductionPlan;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
-import org.springframework.validation.Errors;
+import org.bakery.server.validation.GreaterThen;
 
 /**
  * Order is representation of future actions between two Contragents.
@@ -81,8 +79,8 @@ public class Order extends BusinessEntity {
 	public Order() {
 		super();
 	}
-	@CouldNotBeEmpty()
-	@FieldName(name="поставщик")
+	
+	@CouldNotBeEmpty(message="Контрагент-поставщик должен быть указан.")
 	public Contragent getProvider() {
 		return provider;
 	}
@@ -90,8 +88,7 @@ public class Order extends BusinessEntity {
 		this.provider = provider;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="потребитель")	
+	@CouldNotBeEmpty(message="Контрагент-потребитель должен быть указан.")	
 	public Contragent getConsumer() {
 		return consumer;
 	}
@@ -99,8 +96,7 @@ public class Order extends BusinessEntity {
 		this.consumer = consumer;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="дата создания")
+	@CouldNotBeEmpty(message="Дата подписания договора должна быть указана.")
 	public Date getCreationDate() {
 		return creationDate;
 	}

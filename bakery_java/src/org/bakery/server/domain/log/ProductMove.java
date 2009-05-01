@@ -5,7 +5,7 @@ import java.util.Date;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.production.Warehouse;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
+import org.bakery.server.validation.GreaterThen;
 /**
  * Is representation of move between two warehouses. 
  * Product is moved as a reaction on some money move.
@@ -50,14 +50,14 @@ public class ProductMove extends BusinessEntity {
 	public void setDestinationWarehouse(Warehouse destinationWarehouse) {
 		this.destinationWarehouse = destinationWarehouse;
 	}
+	
 	public Date getDate() {
 		return date;
 	}
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	@CouldNotBeEmpty()
-	@FieldName(name="движение денег, предваряющее перевод товара")
+	@CouldNotBeEmpty(message="Движение денег, предваряющее перевод товара не указано.")
 	public MoneyMove getMoneyMove() {
 		return moneyMove;
 	}

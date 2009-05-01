@@ -3,7 +3,6 @@ package org.bakery.server.domain.production;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 /**
  * Measurement unit. Examples: gram, kilogram, cm, etc.
  * 
@@ -31,8 +30,7 @@ public class Unit extends BusinessEntity implements NamedEntity{
 		return name;
 	}
 
-	@CouldNotBeEmpty()
-	@FieldName(name="наименование единицы измерения")
+	@CouldNotBeEmpty(message="Наименование единицы измерения не может быть пустым.")
 	public String getName() {
 		return name;
 	}

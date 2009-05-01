@@ -2,7 +2,6 @@ package org.bakery.server.domain.production;
 
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.FieldName;
 /**
  * Represents effect, which is part of a recipe
  * 
@@ -34,8 +33,7 @@ public class RecipeEffect extends BusinessEntity{
 	 */
 	private ProductType productType;
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="рецепт, к которому относится этот эффект")
+	@CouldNotBeEmpty(message="Рецепт, к которому относится этот потребляемый\\производимый эффект должен быть указан.")
 	public Recipe getRecipe() {
 		return recipe;
 	}
@@ -49,8 +47,7 @@ public class RecipeEffect extends BusinessEntity{
 		this.consumed = consumed;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="формула вычисления результата")
+	@CouldNotBeEmpty(message="Формула вычисления результата должна быть задана.")
 	public String getResultFormula() {
 		return resultFormula;
 	}
@@ -58,8 +55,7 @@ public class RecipeEffect extends BusinessEntity{
 		this.resultFormula = resultFormula;
 	}
 	
-	@CouldNotBeEmpty()
-	@FieldName(name="тип продукта")
+	@CouldNotBeEmpty(message="Должен быть указан потребляемый\\производимый тип продукта.")
 	public ProductType getProductType() {
 		return productType;
 	}
