@@ -18,7 +18,7 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	private Device device;
 	private int changable;
 	private int minimize;
-	private double bestValue;
+	private Double bestValue;
 
 	@CouldNotBeEmpty()
 	@FieldName(name="имя")
@@ -54,10 +54,13 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	public void setMinimize(int minimize) {
 		this.minimize = minimize;
 	}
-	public double getBestValue() {
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="единица измерения")
+	public Double getBestValue() {
 		return bestValue;
 	}
-	public void setBestValue(double bestValue) {
+	public void setBestValue(Double bestValue) {
 		this.bestValue = bestValue;
 	}
 }

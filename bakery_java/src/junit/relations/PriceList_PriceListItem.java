@@ -36,11 +36,11 @@ public class PriceList_PriceListItem extends AbstractDBTest {
 			
 			
 			PriceListItem pli1 = new PriceListItem();
-			pli1.setPrice(10F);
+			pli1.setPrice(10.0);
 			pli1.setProduct(pt1);	
 			
 			PriceListItem pli2 = new PriceListItem();
-			pli2.setPrice(20F);
+			pli2.setPrice(20.0);
 			pli2.setProduct(pt2);	
 			
 			PriceList pl1 = (PriceList) session.get(PriceList.class, 1L);

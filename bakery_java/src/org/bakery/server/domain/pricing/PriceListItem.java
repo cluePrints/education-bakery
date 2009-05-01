@@ -33,10 +33,10 @@ public class PriceListItem extends BusinessEntity {
 	public void setParent(PriceList parent) {
 		this.parent = parent;
 	}
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 	@CouldNotBeEmpty()

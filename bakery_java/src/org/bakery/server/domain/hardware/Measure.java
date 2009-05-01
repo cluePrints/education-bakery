@@ -31,10 +31,10 @@ public class Measure extends BusinessEntity {
 
 	@CouldNotBeEmpty()
 	@FieldName(name="измеренное значение параметра")
-	public double getValue() {
+	public Double getValue() {
 		return value;
 	}
-	public void setValue(double value) {
+	public void setValue(Double value) {
 		this.value = value;
 	}
 	

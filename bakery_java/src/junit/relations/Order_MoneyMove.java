@@ -39,7 +39,7 @@ public class Order_MoneyMove extends AbstractDBTest {
 			
 			
 			PriceListItem pli1 = new PriceListItem();
-			pli1.setPrice(10F);
+			pli1.setPrice(10.0);
 			pli1.setProduct(pt1);			
 			
 			Contragent contr = (Contragent) session.get(Contragent.class, 1L);
@@ -62,7 +62,7 @@ public class Order_MoneyMove extends AbstractDBTest {
 			order.setCreationDate(new Date());
 			assertNotNull(acc1);
 			MoneyMove mv1 = new MoneyMove();
-			mv1.setAmount(5);
+			mv1.setAmount(5.0);
 			mv1.setDestinationAccount(acc1);
 			assertNotNull(mv1.getDestinationAccount());
 			mv1.setSourceAccount(acc1);
@@ -70,7 +70,7 @@ public class Order_MoneyMove extends AbstractDBTest {
 			mv1.setPrice(pli1);
 			
 			MoneyMove mv2 = new MoneyMove();
-			mv2.setAmount(3);
+			mv2.setAmount(3.0);
 			mv2.setDestinationAccount(acc1);
 			assertNotNull(acc1.getId());
 			assertFalse(acc1.getId()==0);
@@ -96,7 +96,7 @@ public class Order_MoneyMove extends AbstractDBTest {
 			acc1 = (Account) session.get(Account.class, 1L);
 			int numBefore = order.getMoneyMoves().size();
 			mv1 = new MoneyMove();
-			mv1.setAmount(3);
+			mv1.setAmount(3.0);
 			mv1.setDestinationAccount(acc1);
 			assertNotNull(mv1.getDestinationAccount());
 			mv1.setSourceAccount(acc1);
@@ -104,7 +104,7 @@ public class Order_MoneyMove extends AbstractDBTest {
 			mv1.setPrice(pli1);
 			
 			mv2 = new MoneyMove();
-			mv2.setAmount(9);
+			mv2.setAmount(9.0);
 			mv2.setDestinationAccount(acc1);
 			assertNotNull(mv2.getDestinationAccount());
 			mv2.setSourceAccount(acc1);

@@ -58,10 +58,10 @@ public class MoneyMove extends BusinessEntity {
 		return (NULL_DATE.equals(this.date) || date == null) ? 1 : 0;
 	}
 	
-	public double getAmount() {
+	public Double getAmount() {
 		return amount;
 	}
-	public void setAmount(double amount) {
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
 	public String getDesc() {
