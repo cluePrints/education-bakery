@@ -63,11 +63,11 @@
 				
 				
 				
-				warehouse = util.extractItemCollection(event.result.warehouse, 'warehouse');	
+				warehouse = util.extractItemCollection(event.result.warehouses, 'warehouse');	
 				availableWarehouse = util.getActiveItems(warehouse);
 				
-				moneyMove = util.extractItemCollection(event.result.moneyMove, 'moneymove');
-				availableMoneyMoves = util.getActiveItems(moneyMove);
+				moneyMove = util.extractItemCollection(event.result.moneyMoves, 'moneymove');
+				availableMoneyMoves = moneyMove;
 				
 				mainData = event.result.mainData;
 				if (mainData != null ) {
