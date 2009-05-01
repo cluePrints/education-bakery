@@ -98,7 +98,7 @@
 			function bindSelected():void{
 				var item = dgData.selectedItem;
 				if (dgData.selectedIndex>=0){
-				cbActive.selected = (dgData.selectedItem.active == 1);
+				cbActive.selected = (dgData.selectedItem.active == 0);
 				tiId.text=dgData.selectedItem.id;
 				dfDate.text = dgData.selectedItem.date;
 				tiDesc.text = dgData.selectedItem.desc;
@@ -134,7 +134,7 @@
 				mainData['maneymove'].refresh();
 			}
 			function activeToString(item:Object, column:DataGridColumn):String{				
-				return (item.active>0 ? "active" : "not active"); 
+				return (item.active>0 ? "-" : "+"); 
 				
 				
 			}
@@ -177,7 +177,7 @@
 						<mx:DataGridColumn headerText="Заказ" dataField="order" width="60"/>
 						<mx:DataGridColumn headerText="Прайс" dataField="price" width="60"/>
 						<mx:DataGridColumn headerText="Описание" dataField="desc" width="70"/>
-						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="45"/>
+						<mx:DataGridColumn dataField="Оплачен" labelFunction="activeToString" width="55"/>
 					</mx:columns>
 				</mx:DataGrid>
 				<mx:HBox width="743" height="99">
@@ -228,8 +228,8 @@
 							width="100"/>
 					</mx:FormItem>
 				
-				<mx:FormItem label="Активно:" width="111">
-					<mx:CheckBox id="cbActive" />
+				<mx:FormItem label="Оплачен" width="111">
+					<mx:CheckBox id="cbActive"  />
 					</mx:FormItem>
 				</mx:VBox>
 				</mx:HBox>
