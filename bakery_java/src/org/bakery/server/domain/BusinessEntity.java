@@ -77,7 +77,7 @@ public abstract class BusinessEntity implements Serializable {
 				+"."
 				+field.getName()
 				
-				,"Поле \""+ValidationHelper.getFieldReadableName(field)+"\" не может быть пустым.");							
+				,"Вы не указали "+ValidationHelper.getFieldReadableName(field));							
 	}
 	public Long getId() {
 		return id;

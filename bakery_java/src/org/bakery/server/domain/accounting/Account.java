@@ -1,11 +1,9 @@
 package org.bakery.server.domain.accounting;
 
-import org.bakery.server.controllers.validation.CommonFormValidator;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.validation.CouldNotBeEmpty;
 import org.bakery.server.validation.FieldName;
-import org.springframework.validation.Errors;
 /**
  * Represents Account entity
  * 
@@ -32,7 +30,7 @@ public class Account extends BusinessEntity implements NamedEntity{
 		return owner.getName()+"."+name;
 	}
 	
-	@CouldNotBeEmpty()
+	@CouldNotBeEmpty
 	@FieldName(name="имя")
 	public String getName() {
 		return name;

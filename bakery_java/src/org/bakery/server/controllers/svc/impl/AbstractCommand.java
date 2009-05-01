@@ -37,14 +37,15 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		AbstractFormMode mode = AbstractFormMode.valueOf(request.getParameter("mode"));
 		
 		// fill command according to request
-		bindCommand(request);	
-		
-		Map<String, String> beanValidationErrors = command.validate();
-		
-		if (beanValidationErrors.isEmpty() && (!AbstractFormMode.FETCH.equals(mode))){
-			// run edit/remove/restore/get
-			runCommonMode(mode);
+		bindCommand(request);
+		Map<String, String> beanValidationErrors = null;
+		if (!AbstractFormMode.FETCH.equals(mode)){
+			beanValidationErrors = command.validate();
 		}
+		
+		// run edit/remove/restore/get
+		runCommonMode(mode);
+		
 		
 		// ancestors actions
 		executeInternal(request, response, controller, mode);
