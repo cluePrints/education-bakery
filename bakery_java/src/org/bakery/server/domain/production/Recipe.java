@@ -67,10 +67,10 @@ public class Recipe extends BusinessEntity implements NamedEntity {
 	
 	@CouldNotBeEmpty()
 	@FieldName(name="время, которое потребуется на выполнение рецепта")
-	public long getTime() {
+	public Long getTime() {
 		return time;
 	}
-	public void setTime(long time) {
+	public void setTime(Long time) {
 		this.time = time;
 	}
 	public Set<RecipeEffect> getEffects() {
