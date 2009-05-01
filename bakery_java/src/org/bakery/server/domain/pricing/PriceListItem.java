@@ -33,6 +33,9 @@ public class PriceListItem extends BusinessEntity {
 	public void setParent(PriceList parent) {
 		this.parent = parent;
 	}
+	
+	@CouldNotBeEmpty()
+	@FieldName(name="стоимость единицы продукта")
 	public Double getPrice() {
 		return price;
 	}
