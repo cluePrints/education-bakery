@@ -7,7 +7,7 @@
 		method="POST"
 		url="{contragentDataSvcUrl}"
 		result="httpContragentResultHandler(event)"
-		fault="httpFaultHandler(event)"/>
+		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
 		<![CDATA[
 			import mx.validators.RegExpValidator;
@@ -21,28 +21,30 @@
 			public var contragentDataSvcUrl:String;
 			
 			[Bindable]
-            private var contragents:*;
+            private var contragents:ArrayCollection = new ArrayCollection();
             [Bindable]
-            private var availableAddresses:*;
+            private var availableAddresses:ArrayCollection = new ArrayCollection();
 			[Bindable]
-            private var addresses:*;
+            private var addresses:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var errors:ArrayCollection = new ArrayCollection();
 			
+			public var util:Util = new Util();
 			public function init():void{
 				createNew();
 				formModel.mode="FETCH";
 				contragentSvc.send(formModel);				
 			}
-			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP Ошибка!!!");
-			} 
+
 			private function httpContragentResultHandler(event:*):void{
-				contragents = event.result.mainData;
+				errors = util.getHttpRespondedErrors(event);
+				contragents = util.extractItemCollection(event.result.mainData, 'contragent');
 				if (contragents != null) {
-					contragents["contragent"].filterFunction = mainFilterFunction;
+					contragents.filterFunction = mainFilterFunction;
 				}
+				addresses = util.extractItemCollection(event.result.addresses, 'address');	
+				availableAddresses = util.getActiveItems(addresses);
 				
-				availableAddresses = event.result.addressesAvailable;
-				addresses = event.result.addresses;
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;
@@ -59,19 +61,18 @@
 			function bindSelected():void{
 				if (dgData.selectedIndex>=0){
 					cbActive.selected = (dgData.selectedItem.active == 1);
-					tiId.text=dgData.selectedItem.id;
+					formModel.id=dgData.selectedItem.id;
 					tiName.text=dgData.selectedItem.name;	
-					cbAddresses.selectedIndex=getContragentAddressPos(dgData.selectedItem.address);
+					cbAddresses.selectedIndex=util.getItemPos(availableAddresses, dgData.selectedItem.address);
 					formModel.address=dgData.selectedItem.address;
-					cbChild.selected= (dgData.selectedItem.child ==1);				
+					cbChild.selected= (dgData.selectedItem.child ==1);									
 				}													
 			}
 			function createNew():void{
-				tiId.text="";
 				cbActive.selected=true;
 				cbChild.selected=false;
-				formModel.mode="NEW";
 				cbAddresses.selectedIndex=-1;
+				formModel.id="";
 				tiName.text="<undefined>";			
 			}
 			function cancel():void{
@@ -83,43 +84,11 @@
 				contragentSvc.send(formModel);
 			}
 			function filterRefresh():void{
-				contragents["contragent"].refresh();
+				contragents.refresh();
 			}
-			function activeToString(item:Object, column:DataGridColumn):String{				
-				return (item.active>0 ? "active" : "not active"); 
-			}
-			function childToString(item:Object, column:DataGridColumn):String{				
-				return (item.child>0 ? "+" : "-"); 
-			}
-			function getAddressIdByContragentId(_id:int){
-				var a = availableAddresses[id==_id.toString()].id;
-				return a;
-			}
-			function getContragentAddressPos(_addressId:int){
-				var result=0;
-				if (availableAddresses == undefined)
-					return null;
-				for each (var address in availableAddresses.address){ 
-					if (address.id == _addressId) {
-						return result;
-					}
-					result++;
-				} 		
-				return -1;		
-			}
-			function getContragentAddress(_id:int){
-				var result=null;
-				if (addresses == undefined)
-					return null;
-				for each (var address in addresses.address){ 
-					if (address.id == _id) {
-						result = address;
-					}
-				} 
-				return result;
-			}
+
 			function getContragentAddressName(item:Object, column:DataGridColumn):String{
-				var tmp = getContragentAddress(item.address);
+				var tmp = util.getItemById(addresses, item.address);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -130,34 +99,32 @@
 	</mx:Script>			
 	<mx:Model id="formModel">		
 		<root>
-			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
-			<address>{cbAddresses.selectedItem.id}</address>
-			<id>{tiId.text}</id>		
+			<mode>"EDIT"</mode>
+			<address>{cbAddresses.selectedItem.id}</address>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<child>{cbChild.selected == true ? "1" : "0"}</child>
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
+	<mx:VBox>					
 		<mx:Label text="Панель работы с контрагентами" fontWeight="bold" fontSize="14"/>
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
-				<mx:DataGrid height="348" width="601" 
+				<mx:DataGrid height="263" width="601" 
 					id="dgData" 
-					dataProvider="{contragents['contragent']}"
+					dataProvider="{contragents}"
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
 						<mx:DataGridColumn headerText="Имя" dataField="name" width="150"/>
 						<mx:DataGridColumn headerText="Адресс" labelFunction="getContragentAddressName" width="150"/>
-						<mx:DataGridColumn headerText="Child" labelFunction="childToString" width="50"/>
-						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString" width="80"/>
+						<mx:DataGridColumn headerText="Child" labelFunction="util.childToString" width="50"/>
+						<mx:DataGridColumn dataField="Активный" labelFunction="util.activeToString" width="80"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
 			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
 				<mx:VBox horizontalAlign="left">	
-					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
-					<mx:TextInput id="tiId" visible="false" text=""/>
 					<mx:FormItem label="Имя:" 
 						required="true">												
 						<mx:TextInput id="tiName"/>
@@ -165,7 +132,7 @@
 					<mx:FormItem label="Адресс:" 
 						required="true">												
 						<mx:ComboBox id="cbAddresses"
-							dataProvider="{availableAddresses.address}"
+							dataProvider="{availableAddresses}"
 							labelField="name" width="160"
 							/>
 					</mx:FormItem>
@@ -207,4 +174,13 @@
 				</mx:VBox>
 			</mx:VBox>
 		</mx:HBox>
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="100%">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
 	</mx:VBox>
+</mx:VBox>
