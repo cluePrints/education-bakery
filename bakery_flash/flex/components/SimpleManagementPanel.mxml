@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="100%" height="100%">
+	creationComplete="init()" width="845" height="478">
 	<mx:HTTPService id="mainSvc" 
 		useProxy="false"
 		method="GET"
@@ -91,8 +91,8 @@
 		</root>		
 	</mx:Model>		
 		<mx:Label text="{&quot;Панель управления &quot;+ mainDataUnitVisualName}" fontWeight="bold" fontSize="14"/>
-		<mx:HBox x="0" y="0" width="100%" height="357">
-			<mx:VBox height="354" width="70%" horizontalAlign="center" >
+		<mx:HBox x="0" y="0" width="833" height="291">
+			<mx:VBox height="285" width="70%" horizontalAlign="center" >
 			
 				<mx:DataGrid height="278" width="594" 
 					id="dgData" 
@@ -104,24 +104,24 @@
 						<mx:DataGridColumn dataField="Активность" labelFunction="activeToString" width="55"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<mx:VBox width="504" height="67">
-				<mx:HBox width="490" height="24">
-				<mx:FormItem label="Наименование:" 
-						required="true" width="293">												
+			</mx:VBox>			
+			<mx:VBox height="277" width="274">
+				<mx:HBox width="261" height="91">
+				<mx:VBox width="128" height="53">
+					<mx:FormItem label="Наименование:" 
+						required="true" width="143">												
 						<mx:TextInput id="tiName"/>
 					</mx:FormItem>
 					<mx:FormItem label="Активно:" width="111">
 						<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
-					</mx:HBox>
-					<mx:HBox horizontalAlign="center" width="496" height="32">
+				</mx:VBox>
+					<mx:VBox horizontalAlign="center" width="100" height="100%">
 					<mx:Button label="Сохранить" click="saveSelected()"/>							
 					<mx:Button label="Отмена" click="cancel()"/>
 					<mx:Button label="Создать" click="createNew()"/>							
+					</mx:VBox>
 				</mx:HBox>
-				</mx:VBox>
-			</mx:VBox>			
-			<mx:VBox height="354" width="100%">
 				<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
 					<mx:VBox horizontalAlign="left" height="17" width="232">	
 						<mx:TextInput id="tiMode" visible="false" text="EDIT"/>

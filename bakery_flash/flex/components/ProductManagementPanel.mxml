@@ -22,12 +22,15 @@
 			public var productTypeDataSvcUrl:String;
 			
 			[Bindable]
-            private var productTypes:*;
+            private var productTypes:ArrayCollection;
             [Bindable]
             private var availableUnits:ArrayCollection;
 			[Bindable]
             private var units:ArrayCollection;
-			
+						
+			[Bindable]
+	        private var errors:ArrayCollection = new ArrayCollection();    
+	        
 			public function init():void{
 				createNew();
 				productTypeSvc.cancel();
@@ -37,9 +40,10 @@
 
 			var util:Util = new Util();
 			private function httpproducttypeResultHandler(event:*):void{
-				productTypes = event.result.mainData;
+				errors = util.getHttpRespondedErrors(event);
+				productTypes = util.extractItemCollection(event.result.mainData, 'producttype');
 				if (productTypes != null) {
-					productTypes["producttype"].filterFunction = mainFilterFunction;
+					productTypes.filterFunction = mainFilterFunction;
 				}
 				
 				units = util.extractItemCollection(event.result.units, 'unit');
@@ -61,13 +65,13 @@
 			function bindSelected():void{
 				if (dgData.selectedIndex>=0){
 					cbActive.selected = (dgData.selectedItem.active == 1);
-					tiId.text=dgData.selectedItem.id;
+					formModel.id=dgData.selectedItem.id;
 					tiName.text=dgData.selectedItem.name;	
-					cbUnits.selectedIndex=getProductTypeUnitPos(dgData.selectedItem.unit);			
+					cbUnits.selectedIndex=util.getItemPos(availableUnits, dgData.selectedItem.unit);	
 				}													
 			}
 			function createNew():void{
-				tiId.text="";
+				formModel.id="";
 				cbActive.selected=true;
 				formModel.mode="NEW";
 				formModel.unit=0;				
@@ -83,32 +87,12 @@
 				productTypeSvc.send(formModel);
 			}
 			function filterRefresh():void{
-				productTypes["producttype"].refresh();
+				productTypes.refresh();
 			}
-			function activeToString(item:Object, column:DataGridColumn):String{				
-				return (item.active>0 ? "active" : "not active"); 
-			}
-			function getProductTypeUnitPos(_unitId:int){
-				var result=0;
-				for each (var unit in availableUnits){ 
-					if (unit.id == _unitId) {
-						return result;
-					}
-					result++;
-				} 		
-				return -1;		
-			}
-			function getProductTypeUnit(_id:int){
-				var result=null;
-				for each (var unit in units){ 
-					if (unit.id == _id) {
-						result = unit;
-					}
-				} 
-				return result;
-			}
+
+
 			function getProductTypeUnitName(item:Object, column:DataGridColumn):String{
-				var tmp = getProductTypeUnit(item.unit);
+				var tmp = util.getItemById(units, item.unit);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -119,9 +103,8 @@
 	</mx:Script>			
 	<mx:Model id="formModel">		
 		<root>
-			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
-			<unit>{cbUnits.selectedItem.id}</unit>
-			<id>{tiId.text}</id>		
+			<mode>"EDIT"</mode>
+			<unit>{cbUnits.selectedItem.id}</unit>	
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
@@ -131,25 +114,23 @@
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="388" width="592" 
 					id="dgData" 
-					dataProvider="{productTypes['producttype']}"
+					dataProvider="{productTypes}"
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="80"/>
 						<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
 						<mx:DataGridColumn headerText="ед.измерения" labelFunction="getProductTypeUnitName" width="150"/>
-						<mx:DataGridColumn dataField="Активный" labelFunction="activeToString" width="80"/>
+						<mx:DataGridColumn dataField="Активный" labelFunction="util.activeToString" width="80"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
 			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
 				<mx:VBox horizontalAlign="left" height="147">	
-					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
-					<mx:TextInput id="tiId" visible="false" text=""/>
 					<mx:FormItem label="Название:" 
 						required="true">												
 						<mx:TextInput id="tiName"/>
 					</mx:FormItem>
-					<mx:FormItem label="ед. измерения:" 
+					<mx:FormItem label="Ед. измерения:" 
 						required="true">												
 						<mx:ComboBox id="cbUnits"
 							dataProvider="{availableUnits}"
@@ -190,4 +171,13 @@
 				</mx:VBox>
 			</mx:VBox>
 		</mx:HBox>
-	</mx:VBox>
+		<mx:DataGrid dataProvider="{errors}"
+				visible="{errors.length>0}"
+				width="100%"
+				height="60">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Ошибки"
+						 dataField="message"/>
+				</mx:columns>
+		</mx:DataGrid>
+</mx:VBox>

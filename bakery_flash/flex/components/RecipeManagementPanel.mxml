@@ -57,7 +57,7 @@
 			public var childDataSvcUrl:String;
 			public var hideEffect:*;
 			[Bindable]
-            private var mainData:*;                  
+            private var mainData:ArrayCollection = new ArrayCollection();                  
 
 			[Bindable] private var devices:ArrayCollection;
 			[Bindable] private var availableParameters:ArrayCollection;
@@ -69,9 +69,11 @@
 
             
 			[Bindable] private var recipeEffects:ArrayCollection;
-			[Bindable] private var selectedRecipeEffects:ArrayCollection = new ArrayCollection();            
+			[Bindable] private var selectedRecipeEffects:ArrayCollection = new ArrayCollection();     
+											
+			[Bindable]
+	        private var errors:ArrayCollection = new ArrayCollection();          
 			
-			// XXX: It's dumb, change it
 			var util:Util = new Util();
 			
 			function childBindSelected(){
@@ -106,6 +108,8 @@
 			}
 
 			private function httpResultHandler(event:*):void{
+				errors = util.getHttpRespondedErrors(event);
+				
 				productTypes = util.extractItemCollection(event.result.productTypes, 'producttype');
 				recipeEffects = util.extractItemCollection(event.result.recipeEffects, 'recipeeffect');
 				parameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
@@ -114,13 +118,14 @@
 				availableProductTypes = util.getActiveItems(productTypes);
 				availableParameters = util.getActiveItems(parameters);				
 								            
-				mainData = event.result.mainData;
+				mainData = util.extractItemCollection(event.result.mainData, 'recipe');
 				
 				for each (var param in availableParameters){
 					param.devicename = util.getItemById(devices, param.device).name;	
 				}
 			} 
 			private function httpChildResultHandler(event:*):void{
+				errors = util.getHttpRespondedErrors(event);
 				recipeEffects = util.extractItemCollection(event.result.mainData, 'recipeffect');				
 				bindSelected(true);
 			} 
@@ -214,7 +219,7 @@
 			<mx:VBox height="236" width="462" horizontalAlign="left" >
 					<mx:DataGrid height="99" width="456" 
 						id="dgData" 
-						dataProvider="{mainData['recipe']}"
+						dataProvider="{mainData}"
 						itemClick="bindSelected(false)">
 						<mx:columns>
 							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
@@ -281,37 +286,50 @@
 			</mx:HBox>
 		</mx:HBox>
 	</mx:VBox>
-	<mx:HBox width="948" height="257">		
-				<mx:DataGrid height="240" width="99%" 
-					id="dgChildData"
-					dataProvider="{selectedRecipeEffects}"
-					itemClick="childBindSelected()">
-					<mx:columns>
-						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="40"/>
-						<mx:DataGridColumn headerText="Продукт" labelFunction="getProductTypeName" width="150"/>
-						<mx:DataGridColumn headerText="Потребляемый" labelFunction="util.consumedToString" width="150"/>
-						<mx:DataGridColumn headerText="Формула рез-та" dataField="resultFormula" width="65"/>
-					</mx:columns>
-				</mx:DataGrid>				
-		<mx:VBox height="104" width="297">
-			<mx:FormItem label="Ресурс:" width="296">
-				<mx:ComboBox id="cbChildProductType"
-					dataProvider="{availableProductTypes}"
-					labelField="name" width="210"/>				
-			</mx:FormItem>
-			<mx:FormItem label="Потребляемый:"
-				required="true">
-				<mx:CheckBox id="cbChildConsumed"/>
-			</mx:FormItem>
-			<mx:FormItem label="Формула:">
-				<mx:TextInput id="tiChildResultFormula" width="216"/>				
-			</mx:FormItem>
-			<mx:HBox>
-				<mx:Button label="Новый" click="childCreateNew()"/>
-				<mx:Button label="Сохранить" click="childSave()"/>
-				<mx:Button label="Отмена" click="childBindSelected()"/>				
-			</mx:HBox>		
-		</mx:VBox>	
-					
-	</mx:HBox>
+	<mx:VBox>
+		
+		
+		<mx:HBox width="948" height="212">		
+					<mx:DataGrid height="207" width="99%" 
+						id="dgChildData"
+						dataProvider="{selectedRecipeEffects}"
+						itemClick="childBindSelected()">
+						<mx:columns>
+							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="40"/>
+							<mx:DataGridColumn headerText="Продукт" labelFunction="getProductTypeName" width="150"/>
+							<mx:DataGridColumn headerText="Потребляемый" labelFunction="util.consumedToString" width="150"/>
+							<mx:DataGridColumn headerText="Формула рез-та" dataField="resultFormula" width="65"/>
+						</mx:columns>
+					</mx:DataGrid>				
+			<mx:VBox height="104" width="297">
+				<mx:FormItem label="Ресурс:" width="296">
+					<mx:ComboBox id="cbChildProductType"
+						dataProvider="{availableProductTypes}"
+						labelField="name" width="210"/>				
+				</mx:FormItem>
+				<mx:FormItem label="Потребляемый:"
+					required="true">
+					<mx:CheckBox id="cbChildConsumed"/>
+				</mx:FormItem>
+				<mx:FormItem label="Формула:">
+					<mx:TextInput id="tiChildResultFormula" width="216"/>				
+				</mx:FormItem>
+				<mx:HBox>
+					<mx:Button label="Новый" click="childCreateNew()"/>
+					<mx:Button label="Сохранить" click="childSave()"/>
+					<mx:Button label="Отмена" click="childBindSelected()"/>				
+				</mx:HBox>		
+			</mx:VBox>	
+						
+		</mx:HBox>
+		<mx:DataGrid dataProvider="{errors}"
+				visible="{errors.length>0}"
+				width="100%"
+				height="60">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Ошибки"
+						 dataField="message"/>
+				</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
 </mx:VBox>
