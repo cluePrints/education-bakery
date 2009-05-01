@@ -43,9 +43,10 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 			beanValidationErrors = command.validate();
 		}
 		
-		// run edit/remove/restore/get
-		runCommonMode(mode);
-		
+		if (beanValidationErrors == null || beanValidationErrors.isEmpty()){
+			// run edit/remove/restore/get
+			runCommonMode(mode);
+		}
 		
 		// ancestors actions
 		executeInternal(request, response, controller, mode);
