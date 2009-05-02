@@ -44,6 +44,7 @@
             [Bindable] private var availableWarehouse:ArrayCollection;
             [Bindable] private var moneyMove:*;   
             [Bindable] private var availableMoneyMoves:ArrayCollection;
+            [Bindable] private var errors:ArrayCollection = new ArrayCollection();
           
             	var util:Util = new Util();	
 			public function init():void{
@@ -61,7 +62,7 @@
 			 
 			private function httpResultHandler(event:*):void{	
 				
-				
+				errors = util.getHttpRespondedErrors(event);
 				
 				warehouse = util.extractItemCollection(event.result.warehouses, 'warehouse');	
 				availableWarehouse = util.getActiveItems(warehouse);
@@ -70,6 +71,7 @@
 				availableMoneyMoves = moneyMove;
 				
 				mainData = event.result.mainData;
+				
 				if (mainData != null ) {
 					mainData['productmove'].filterFunction = mainFilterFunction;
 				}
@@ -87,10 +89,14 @@
 				return result;
 			} 
 			function bindSelected():void{
+				var item = dgData.selectedItem;
 				if (dgData.selectedIndex>=0){
-				
-				
-	
+				cbActive.selected = (dgData.selectedItem.active == 1);
+				tiId.text=dgData.selectedItem.id;
+				dfDate.text = dgData.selectedItem.date;
+				cbMoneyMove.selectedIndex = util.getItemPos(availableMoneyMoves, item.moneyMove);
+				cbSourceWarehouse.selectedIndex = util.getItemPos(availableWarehouse, item.sourceWarehouse);
+				cbDestinationWarehouse.selectedIndex = util.getItemPos(availableWarehouse, item.destinationWarehouse);
 				}													
 			}
 			function createNew():void{
@@ -109,14 +115,35 @@
 				mainSvc.cancel();	
 				mainSvc.send(formModel);
 				
+				
 			}
 			function filterRefresh():void{
-				mainData[''].refresh();
+				mainData['productmove'].refresh();
 			}
 			function activeToString(item:Object, column:DataGridColumn):String{				
-				return (item.active>0 ? "active" : "not active"); 
+				return (item.active>0 ? "+" : "-"); 
 				
 				
+			}
+			
+			function getSourceWarehouse(item:Object, column:DataGridColumn):String{	
+				var tmp = util.getItemById(warehouse, item.sourceWarehouse);
+			
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+			
+			function getDestinationWarehouse(item:Object, column:DataGridColumn):String{	
+				var tmp = util.getItemById(warehouse, item.destinationWarehouse);
+					
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
 			}
 			
 		]]>
@@ -126,23 +153,21 @@
 		<mx:VBox  width="100%">
 		<mx:HBox x="0" y="0" width="1050" height="490">
 			<mx:VBox height="387" width="762" horizontalAlign="center" >
-			
 				<mx:DataGrid height="282" width="756" 
 					id="dgData" 
-					dataProvider="{mainData['producmove']}"
+					dataProvider="{mainData['productmove']}"
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="Ид.Номер"  dataField="id"  width="55"/>
-						<mx:DataGridColumn headerText="Склад-источник"  dataField="sourceWarehouse"  width="100"/>
-						<mx:DataGridColumn headerText="Склад-приемник"  dataField="destinationWarehouse"  width="100"/>
+						<mx:DataGridColumn headerText="Склад-источник"  dataField="sourceWarehouse"  labelFunction="getSourceWarehouse" width="100"/>
+						<mx:DataGridColumn headerText="Склад-приемник"  dataField="destinationWarehouse" labelFunction="getDestinationWarehouse"  width="100"/>
 						<mx:DataGridColumn headerText="Дата отгрузки" dataField="date"   width="70"/>
-						<mx:DataGridColumn headerText="Денежные переводы" dataField="moneyMovee" width="90"/>
-						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="45"/>
+						<mx:DataGridColumn headerText="Денежные переводы" dataField="moneyMove" width="90"/>
+						<mx:DataGridColumn dataField="Перемещен" labelFunction="activeToString" width="55"/>
 					</mx:columns>
 				</mx:DataGrid>
 				<mx:HBox width="100%" height="57">
 					<mx:VBox height="100%" width="33%">
-					
 						<mx:FormItem label="Склад-источник:"
 						required="true" width="100%">												
 							<mx:ComboBox id="cbSourceWarehouse"
@@ -177,7 +202,7 @@
 						
 					</mx:VBox>
 					<mx:VBox height="100%" width="33%">
-					<mx:FormItem label="Активно:" width="111">
+					<mx:FormItem label="Перемещен:" width="111">
 					<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
 					</mx:VBox>
@@ -230,5 +255,14 @@
 				</mx:VBox>
 			</mx:VBox>
 		</mx:HBox>
+		
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="910" height="84">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
 	</mx:VBox>
 	</mx:VBox>
