@@ -38,7 +38,7 @@
 		useProxy="false"
 		method="GET"
 		url="{childDataSvcUrl}"
-		result="httpChildResultHandler(event)"
+		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:VBox horizontalAlign="center" width="956">	
 	<mx:Script>
@@ -90,7 +90,6 @@
 				childSvc.send(childModel);
 			}
 
-		
 			function getProductTypeName(item:Object, column:DataGridColumn):String{				
 				var tmp = util.getItemById(productTypes, item.productType);
 				if (tmp == null) {
@@ -108,6 +107,7 @@
 			}
 
 			private function httpResultHandler(event:*):void{
+				saveSelectionState();
 				errors = util.getHttpRespondedErrors(event);
 				
 				productTypes = util.extractItemCollection(event.result.productTypes, 'producttype');
@@ -116,30 +116,74 @@
 				devices = util.extractItemCollection(event.result.devices, 'device');
 				            	            
 				availableProductTypes = util.getActiveItems(productTypes);
-				availableParameters = util.getActiveItems(parameters);				
-								            
-				mainData = util.extractItemCollection(event.result.mainData, 'recipe');
+				availableParameters = util.getActiveItems(parameters);
 				
 				for each (var param in availableParameters){
 					param.devicename = util.getItemById(devices, param.device).name;	
 				}
+								
+				if (availableParameters != null){
+					availableParameters.filterFunction = singleDeviceFilterFunction;
+					availableParameters.refresh();
+				}
+													            
+				mainData = util.extractItemCollection(event.result.mainData, 'recipe');
+				
+				
+				loadSelectionState();
 			} 
-			private function httpChildResultHandler(event:*):void{
-				errors = util.getHttpRespondedErrors(event);
-				recipeEffects = util.extractItemCollection(event.result.mainData, 'recipeffect');				
-				bindSelected(true);
-			} 
-			private var previousSelected:int=-104;
-			
-			function bindSelected(refreshAnyWay:Boolean):void{				
-				if ((refreshAnyWay) || (dgData.selectedIndex >= 0) && (previousSelected != dgData.selectedIndex)) {
-					previousSelected = dgData.selectedIndex;
-
+			private var selectedMainId:int=-1;
+			private var selectedParamId:int=-1;
+			private var selectedEffectId:int=-1;
+			private function saveSelectionState():void{
+				if (dgData.selectedItem != null) {
+					selectedMainId = dgData.selectedItem.id;
+				}
+				if (dgChildData.selectedItem != null) {
+					selectedParamId = dgChildData.selectedItem.id;
+				}
+				if (dgCurrentParameters.selectedItem != null) {
+					selectedEffectId = dgCurrentParameters.selectedItem.id;
+				}
+			}
+			private function singleDeviceFilterFunction(item:*):Boolean{
+				if ((dgData.selectedItem != null) && (dgData.selectedItem.parameters != null)){
+					var param = dgData.selectedItem.parameters.parameter;
+					var id = null;
+					if (param instanceof ArrayCollection) {
+						id = param.getItemAt(0).id
+					} else {
+						id = param.id;
+					}
+					if (id == null)
+						return true;
+					if (id == item.device) {
+						return true;
+					} else {
+						return false;
+					}					
+				} else {
+					return true;
+				}
+			}
+			private function loadSelectionState():void{
+				if (selectedMainId>-1) {
+					dgData.selectedIndex = util.getItemPos(mainData, selectedMainId);			
+					bindSelected();
+				}
+				if (selectedParamId>-1) {
+					dgChildData.selectedIndex = util.getItemPos(selectedParameters, selectedParamId);
+				}			
+			}
+			function bindSelected():void{				
+				if ((dgData.selectedIndex >= 0)) {
 					cbActive.selected = (dgData.selectedItem.active == 1);
 																			
 					tiName.text=dgData.selectedItem.name;
 					tiTime.text=dgData.selectedItem.time;
 					tiFormula.text=dgData.selectedItem.formula;
+					
+					availableParameters.refresh();
 					
 					selectedParameters.removeAll();				
 					if ((dgData.selectedItem.parameters != null) && (dgData.selectedItem.parameters.parameter!=null)){
@@ -158,15 +202,17 @@
 							var item = new Object();
 							var p = dgData.selectedItem.parameters.parameter;
 							var param = util.getItemById(parameters, p.id);
-							var device = util.getItemById(devices, param.device);
-							item.parameter = param;
-							item.device = device;
-							item.paramname = param.name;
-							item.devicename = device.name;
-							selectedParameters.addItem(item);
+							if (param != null){
+								var device = util.getItemById(devices, param.device);
+								item.parameter = param;
+								item.device = device;
+								item.paramname = param.name;
+								item.devicename = device.name;							
+								selectedParameters.addItem(item);
+							}
 						}
 						
-					}
+					}					
 					selectedParameters.refresh();	
 					
 					selectedRecipeEffects.removeAll();
@@ -193,24 +239,31 @@
 				tiChildResultFormula.text = "";
 			}
 			function cancel():void{
-				bindSelected(false);
+				formModel.id="";
+				bindSelected();
 			}
 			function saveSelected():void{
 				formModel.mode="EDIT";
 				mainSvc.cancel();	
 				mainSvc.send(formModel);
 			}
-			function addDeviceParameter():void{
-				formModel.mode="SPECIAL_ADD";
-				formModel.id = dgAvailableParameters.selectedItem.id;
-				mainSvc.cancel();
-				mainSvc.send(formModel);			
+			function addDeviceParameter():void{			
+				if (dgData.selectedIndex>-1) {
+					formModel.mode="SPECIAL_ADD";
+					formModel.id = dgData.selectedItem.id;
+					formModel.spec_id = dgAvailableParameters.selectedItem.id;
+					mainSvc.cancel();
+					mainSvc.send(formModel);		
+				}	
 			}
 			function removeDeviceParameter():void{
-				formModel.id = dgCurrentParameters.selectedItem.parameter.id;
-				formModel.mode="SPECIAL_REMOVE";
-				mainSvc.cancel();
-				mainSvc.send(formModel);							
+				if (dgData.selectedIndex>-1) {
+					formModel.id = dgData.selectedItem.id;
+					formModel.spec_id = dgCurrentParameters.selectedItem.parameter.id;
+					formModel.mode="SPECIAL_REMOVE";
+					mainSvc.cancel();
+					mainSvc.send(formModel);							
+				}
 			}
 		]]>
 	</mx:Script>				
@@ -220,7 +273,7 @@
 					<mx:DataGrid height="99" width="456" 
 						id="dgData" 
 						dataProvider="{mainData}"
-						itemClick="bindSelected(false)">
+						itemClick="bindSelected()">
 						<mx:columns>
 							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
 							<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
