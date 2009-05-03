@@ -30,7 +30,7 @@
 		</set>
 		<set name="parameters"
 			fetch="join"
-			cascade="save-update"
+			cascade="all"
 			outer-join="true"
 			table="recip_parameters">
 				<key column="recip_id"/>

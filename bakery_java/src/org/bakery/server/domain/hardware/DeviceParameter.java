@@ -1,7 +1,11 @@
 package org.bakery.server.domain.hardware;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
+import org.bakery.server.domain.production.Recipe;
 import org.bakery.server.domain.production.Unit;
 import org.bakery.server.validation.CouldNotBeEmpty;
 /**
@@ -18,6 +22,8 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	private int changable;
 	private int minimize;
 	private Double bestValue;
+	
+	private Set<Recipe> recipes = new HashSet<Recipe>();
 
 	@CouldNotBeEmpty(message="Название параметра устройства должно быть задано.")
 	public String getName() {
@@ -59,5 +65,11 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	}
 	public void setBestValue(Double bestValue) {
 		this.bestValue = bestValue;
+	}
+	public Set<Recipe> getRecipes() {
+		return recipes;
+	}
+	public void setRecipes(Set<Recipe> recipes) {
+		this.recipes = recipes;
 	}
 }

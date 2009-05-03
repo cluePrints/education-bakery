@@ -31,5 +31,14 @@
 		<many-to-one
 			name="device"
 			column="device_id"/>
+		<set name="recipes"
+			table="recip_parameters"
+			cascade="all">
+				<key column="device_parameter_id"/>
+            	<many-to-many column="recipe_id"
+            		fetch="join"
+            		outer-join="false"
+                	class="org.bakery.server.domain.production.Recipe"/>			
+		</set>
 	</class>
 </hibernate-mapping>
