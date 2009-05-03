@@ -50,7 +50,11 @@ public class ValidationHelper {
 					|| Integer.class.isAssignableFrom(type)
 					|| Double.class.isAssignableFrom(type)
 					|| Float.class.isAssignableFrom(type)){
-				Double val = (Double) field.getReadMethod().invoke(target);
+				Object v = field.getReadMethod().invoke(target);
+				if (v== null)
+					return;
+				Double val = Double.valueOf(v.toString());
+				
 				Double limit = field.getReadMethod().getAnnotation(GreaterThen.class).lowerLimit();
 				if (field.getReadMethod().getAnnotation(GreaterThen.class).including()){
 					if (limit > val)
@@ -58,7 +62,7 @@ public class ValidationHelper {
 								+ field.getName(), 
 								field.getReadMethod().getAnnotation(GreaterThen.class).message());
 				} else {
-					if (limit >= val)
+					if (limit >= val)	
 						errors.put(target.getClass().getSimpleName() + "."
 								+ field.getName(), 
 								field.getReadMethod().getAnnotation(GreaterThen.class).message());					
