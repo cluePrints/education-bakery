@@ -72,7 +72,7 @@
 				// XXX: It's dumb, change it
 				var util:Util = new Util();
 				
-				function childBindSelected(){
+				function childBindSelected():void{
 					var item = dgChildData.selectedItem;
 					childModel.id = item.id;			
 					tiChildName.text = item.name;	
@@ -82,7 +82,7 @@
 					cbChildFixed.selected = (item.fixed == 1);
 					cbChildMinimized.selected = (item.minimized == 1);
 				}				
-				function childSave(){
+				function childSave():void{
 					childSvc.cancel();
 					childSvc.send(childModel);
 				}
