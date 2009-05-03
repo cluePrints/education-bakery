@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()" width="1080" height="548">
+
+		
+		<mx:HTTPService id="mainSvc" 
+		useProxy="false"
+		method="GET"
+		url="{mainDataSvcUrl}"
+		result="httpResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+		
+		<mx:Model id="formModel">		
+		<root>
+			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
+			<id>{tiId.text}</id>	
+			<active>{cbActive.selected == true ? "1" : "0"}</active>	
+			<startDate>{dfStartDate.text}</startDate>
+			<order>(cbOrder.selectedItem.id)</order>
+			<recipe>{cbRecipe.selectedItem.id}</recipe>
+			
+			
+		</root>		
+	</mx:Model>	
+		
+	<mx:Script>
+		<![CDATA[
+			import mx.events.CollectionEvent;
+			import mx.automation.codec.ArrayPropertyCodec;
+			import mx.validators.RegExpValidator;
+			import mx.utils.StringUtil;
+			import mx.rpc.http.mxml.HTTPService;
+			import flash.sampler.getInvocationCount;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import components.Util;
+			public var mainDataSvcUrl:String;
+			public var mainDataUnitName:String;
+			public var mainDataUnitVisualName:String;
+			public var hideEffect:*;
+			[Bindable] private var mainData:*;
+			[Bindable] private var recipe:*;   
+            [Bindable] private var availableRecipe:ArrayCollection;
+            [Bindable] private var orders:*;   
+            [Bindable] private var availableOrders:ArrayCollection;
+            
+            [Bindable] private var errors:ArrayCollection = new ArrayCollection();
+            	var util:Util = new Util();	
+			public function init():void{
+				createNew();				
+				mainSvc.cancel();
+			
+				formModel.mode="FETCH";
+				mainSvc.send(formModel);
+					
+			}
+			
+			private function httpFaultHandler(event:Event):void{
+					 mx.controls.Alert.show(event.toString())	;
+				
+			} 
+			 
+			private function httpResultHandler(event:*):void{	
+				errors = util.getHttpRespondedErrors(event);
+				
+				orders = util.extractItemCollection(event.result.orders, 'order');
+				availableOrders = util.getActiveItems(orders);
+				
+				recipe = util.extractItemCollection(event.result.recipe, 'recipe');
+				availableRecipe = util.getActiveItems(recipe);
+		
+			
+				mainData = event.result.mainData;
+				
+				if (mainData != null ) {
+					mainData['productionplan'].filterFunction = mainFilterFunction;
+				}
+			} 
+			private function mainFilterFunction(item:*){
+				var result:Boolean=true;
+				if (!cbShowNonActive.selected && item.active<=0)
+					return false;
+				if (!cbShowActive.selected && item.active>0)
+					return false;					
+				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
+					if (!new RegExp(edFilter.text).test(item.provider))
+						return false;
+				}
+				return result;
+			} 
+			function bindSelected():void{
+				var item = dgData.selectedItem;
+				if (dgData.selectedIndex>=0){
+				cbActive.selected = (dgData.selectedItem.active == 0);
+				tiId.text=dgData.selectedItem.id;
+				dfStartDate.text = dgData.selectedItem.startDate;
+				cbOrder.selectedItem = dgData.selectedItem.order;
+				cbRecipe.selectedIndex = util.getItemPos(availableRecipe, item.recipe);
+				
+				
+				}													
+			}
+			function createNew():void{
+				tiId.text="";
+				
+				cbActive.selected=true;
+				formModel.mode="NEW";
+						
+			}
+			function cancel():void{
+				bindSelected();
+			}
+			function saveSelected():void{
+				
+				formModel.mode="EDIT";
+				mainSvc.cancel();	
+				mainSvc.send(formModel);
+			
+				
+			}
+			function filterRefresh():void{
+				mainData['productionplan'].refresh();
+			}
+			function activeToString(item:Object, column:DataGridColumn):String{				
+				return (item.active>0 ? "-" : "+"); 
+				
+				
+			}
+		function getRecipeName(item:Object, column:DataGridColumn):String{	
+				var tmp = util.getItemById(recipe, item.recipe);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+			
+			
+		]]>
+	</mx:Script>			
+	
+		<mx:Label text="Панель управления производственными планами" fontWeight="bold" fontSize="14"/>
+		<mx:VBox  width="100%">
+		<mx:HBox x="0" y="0" width="1057" height="460">
+			<mx:VBox height="407" width="745" horizontalAlign="center" >
+			
+				<mx:DataGrid height="262" width="712" 
+					id="dgData" 
+					dataProvider="{mainData['productionplan']}"
+					itemClick="bindSelected()">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Ид.Номер"  dataField="id"  width="35"/>
+						<mx:DataGridColumn headerText="Рецепт"  dataField="recipe" labelFunction="getRecipeName"  width="100"/>
+						<mx:DataGridColumn headerText="Дата начала"  dataField="startDate"  width="100"/>
+						<mx:DataGridColumn headerText="Заказ" dataField="order"   width="50"/>
+						<mx:DataGridColumn dataField="Активн." labelFunction="activeToString" width="55"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<mx:HBox width="100%" height="82">
+					<mx:VBox height="100%" width="234">
+					
+						<mx:FormItem label="Рецепт:" 
+						required="true">												
+						<mx:ComboBox id="cbRecipe"
+							dataProvider = "{availableRecipe}"
+							labelField="name" 
+							width="150"/>
+					</mx:FormItem>
+					
+					<mx:FormItem label="Заказ:" 
+						required="true">												
+						<mx:ComboBox id="cbOrder"
+							dataProvider = "{availableOrders}"
+							labelField="id" 
+							width="150"/>
+					</mx:FormItem>
+					</mx:VBox>
+					<mx:VBox height="100%" width="180">
+					
+						<mx:FormItem label="Дата начала:" 
+						required="true">	
+					<mx:DateField id="dfStartDate"
+							text=""
+							formatString="DD/MM/YY"/>
+						</mx:FormItem>
+						<mx:FormItem label="Активен" width="111">
+					<mx:CheckBox id="cbActive"  />
+					</mx:FormItem>
+					</mx:VBox>
+				</mx:HBox>
+				<mx:HBox width="100%" height="43">
+					<mx:Button label="Сохранить" click="saveSelected()" width="173"/>
+					<mx:Button label="Отмена" click="cancel()" width="173"/>
+					<mx:Button label="Создать" click="createNew()" width="173"/>
+				</mx:HBox>
+			</mx:VBox>			
+			<mx:VBox height="232" horizontalAlign="center" verticalAlign="center" width="278">				
+				<mx:VBox horizontalAlign="left" height="17" width="232">	
+					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
+					<mx:TextInput id="tiId" visible="false" text=""/>
+					
+					
+				</mx:VBox>
+				
+				<mx:VBox id="filterPanel">
+					<mx:Script>
+						<![CDATA[
+							[Bindable]
+							public var filterPanelMinimized:Boolean=true;							
+						]]>
+					</mx:Script>
+					<mx:HBox horizontalAlign="right" width="100%">
+						<mx:FormItem label="Фильтр:" width="267">
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized" width="96"/>
+						</mx:FormItem>												
+					</mx:HBox>					
+					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
+						<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
+						</mx:FormItem>
+						
+						<mx:FormItem label="Шаблон имени:" >
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+						</mx:FormItem>	
+					</mx:VBox>					
+				</mx:VBox>
+			</mx:VBox>
+		</mx:HBox>
+		
+		
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="910" height="84">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+	</mx:VBox>
