@@ -2,7 +2,7 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:comp="components.*"
-	creationComplete="init()" width="930" height="543">
+	creationComplete="init()" width="974" height="595">
 	<!-- represents selected main item: PriceList -->
 	<mx:Model id="formModel">		
 		<root>
@@ -57,21 +57,24 @@
 			public var childDataSvcUrl:String;
 			public var hideEffect:*;
 			[Bindable]
-            private var mainData:*;
+            private var mainData:ArrayCollection;
             
-            [Bindable] private var units:ArrayCollection;            
-            [Bindable] private var availableUnits:ArrayCollection;
+            [Bindable] private var units:ArrayCollection = new ArrayCollection();            
+            [Bindable] private var availableUnits:ArrayCollection = new ArrayCollection();
             
-            [Bindable] private var contragents:ArrayCollection;            
-            [Bindable] private var availableContragents:ArrayCollection;
+            [Bindable] private var contragents:ArrayCollection = new ArrayCollection();            
+            [Bindable] private var availableContragents:ArrayCollection = new ArrayCollection();
 
-            [Bindable] private var addresses:ArrayCollection;            
+            [Bindable] private var addresses:ArrayCollection = new ArrayCollection();            
 
-			[Bindable] private var productTypes:ArrayCollection;            
-            [Bindable] private var availableProductTypes:ArrayCollection;
+			[Bindable] private var productTypes:ArrayCollection = new ArrayCollection();            
+            [Bindable] private var availableProductTypes:ArrayCollection = new ArrayCollection();
             
-			[Bindable] private var priceListItems:ArrayCollection;
-			[Bindable] private var selectedPriceListItems:ArrayCollection = new ArrayCollection();            
+			[Bindable] private var priceListItems:ArrayCollection = new ArrayCollection();
+			[Bindable] private var selectedPriceListItems:ArrayCollection = new ArrayCollection();     
+			
+			[Bindable]
+	        private var errors:ArrayCollection = new ArrayCollection();       
 			
 			// XXX: It's dumb, change it
 			var util:Util = new Util();
@@ -116,6 +119,7 @@
 			}
 
 			private function httpResultHandler(event:*):void{
+				errors = util.getHttpRespondedErrors(event);
 				units = util.extractItemCollection(event.result.units, 'unit');
 				contragents = util.extractItemCollection(event.result.contragents, 'contragent');
 				addresses = util.extractItemCollection(event.result.addresses, 'address');
@@ -127,12 +131,13 @@
 				availableProductTypes = util.getActiveItems(productTypes);
 				
 				          
-				mainData = event.result.mainData;
+				mainData =  util.extractItemCollection(event.result.mainData, 'pricelist');
 				if (mainData != null) {
-					mainData["pricelist"].filterFunction = mainFilterFunction;
+					mainData.filterFunction = mainFilterFunction;
 				}
 			} 
 			private function httpChildResultHandler(event:*):void{
+				errors = util.getHttpRespondedErrors(event);
 				priceListItems = util.extractItemCollection(event.result.mainData, 'pricelistitem');
 				bindSelected(true);
 			} 
@@ -175,8 +180,7 @@
 			}
 			function createNew():void{
 				formModel.id="";
-				cbActive.selected=true;
-				formModel.mode="NEW";			
+				cbActive.selected=true;		
 				tiComment.text="";
 				cbOwner.selectedIndex = -1;
 			}
@@ -195,126 +199,136 @@
 				mainSvc.send(formModel);
 			}
 			function filterRefresh():void{
-				mainData["pricelist"].refresh();
+				mainData.refresh();
 			}
 
 		]]>
-	</mx:Script>				
-		<mx:Label text="Панель управления прайсами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
-		
-	<mx:VBox width="100%">	
-		<mx:HBox width="895" height="273">
-			<mx:VBox height="254" width="516" horizontalAlign="center" >
-			<mx:Label  text=" Заголовки прайсов " fontWeight="bold"/>
-				<mx:DataGrid height="126" width="514" 
-					id="dgData" 
-					dataProvider="{mainData['pricelist']}"
-					itemClick="bindSelected(false)">
-					<mx:columns>
-						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
-						<mx:DataGridColumn headerText="Контрагент" labelFunction="getContragentName" width="150"/>
-						<mx:DataGridColumn headerText="Дата" dataField="date" width="80"/>
-						<mx:DataGridColumn headerText="Комментарий" dataField="comment"/>
-						<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="55"/>						
-					</mx:columns>
-				</mx:DataGrid>
-				<mx:HBox width="507" height="57">
-				<mx:VBox horizontalAlign="left" height="54" width="283">
+	</mx:Script>	
+		<mx:VBox>			
+			<mx:Label text="Панель управления прайсами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+			<mx:HBox width="895" height="273">
+				<mx:VBox height="254" width="516" horizontalAlign="center" >
+				<mx:Label  text=" Заголовки прайсов " fontWeight="bold"/>
+					<mx:DataGrid height="126" width="514" 
+						id="dgData" 
+						dataProvider="{mainData}"
+						itemClick="bindSelected(false)">
+						<mx:columns>
+							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
+							<mx:DataGridColumn headerText="Контрагент" labelFunction="getContragentName" width="150"/>
+							<mx:DataGridColumn headerText="Дата" dataField="date" width="80"/>
+							<mx:DataGridColumn headerText="Комментарий" dataField="comment"/>
+							<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="55"/>						
+						</mx:columns>
+					</mx:DataGrid>
+					<mx:HBox width="507" height="57">
+					<mx:VBox horizontalAlign="left" height="54" width="283">
+						
+					<mx:FormItem label="Контрагент:" 
+							required="true">												
+							<mx:ComboBox id="cbOwner"
+								dataProvider="{availableContragents}"
+								labelField="name" width="180"/>
+						</mx:FormItem>	
+						<mx:HBox width="260">
+						<mx:FormItem label="Активно:"
+							required="true">
+							<mx:CheckBox id="cbActive"/>
+						</mx:FormItem>
+						
+						<mx:FormItem label="Дата:" 
+							required="true">												
+							<mx:DateField id="dfDate"
+								text=""
+								formatString="DD/MM/YY"/>
+						</mx:FormItem>
+						</mx:HBox>
+						</mx:VBox>
+						<mx:FormItem label="Комментарий:">												
+							<mx:TextInput id="tiComment" width="94" height="25"/>
+						</mx:FormItem>
+						</mx:HBox>
 					
-				<mx:FormItem label="Контрагент:" 
-						required="true">												
-						<mx:ComboBox id="cbOwner"
-							dataProvider="{availableContragents}"
-							labelField="name" width="180"/>
-					</mx:FormItem>	
-					<mx:HBox width="260">
-					<mx:FormItem label="Активно:"
-						required="true">
-						<mx:CheckBox id="cbActive"/>
-					</mx:FormItem>
-					
-					<mx:FormItem label="Дата:" 
-						required="true">												
-						<mx:DateField id="dfDate"
-							text=""
-							formatString="DD/MM/YY"/>
-					</mx:FormItem>
+					<mx:HBox horizontalAlign="center" height="30">
+						<mx:Button label="Сохранить" click="saveSelected()"/>							
+						<mx:Button label="Отмена" click="cancel()"/>
+						<mx:Button label="Создать" click="createNew()"/>
 					</mx:HBox>
+				</mx:VBox>			
+				<mx:VBox height="206" horizontalAlign="center" verticalAlign="center" width="357">				
+	
+					
+					<mx:VBox id="filterPanel">
+						<mx:Script>
+							<![CDATA[
+								[Bindable]
+								public var filterPanelMinimized:Boolean=true;							
+							]]>
+						</mx:Script>
+						<mx:HBox horizontalAlign="right" width="100%">
+							<mx:FormItem label="Фильтр:">
+								<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+								
+								<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">
+								<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%" cornerRadius="0" borderStyle="none" borderThickness="0">
+									<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
+									<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
+								</mx:FormItem>	
+								<mx:FormItem label="Шаблон имени:" >
+						<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+					</mx:FormItem>
+																</mx:VBox>
+			
+							</mx:FormItem>												
+						</mx:HBox>					
 					</mx:VBox>
-					<mx:FormItem label="Комментарий:">												
-						<mx:TextInput id="tiComment" width="94" height="25"/>
-					</mx:FormItem>
-					</mx:HBox>
-				
-				<mx:HBox horizontalAlign="center" height="30">
-					<mx:Button label="Сохранить" click="saveSelected()"/>							
-					<mx:Button label="Отмена" click="cancel()"/>
-					<mx:Button label="Создать" click="createNew()"/>
-				</mx:HBox>
-			</mx:VBox>			
-			<mx:VBox height="206" horizontalAlign="center" verticalAlign="center" width="357">				
-
-				
-				<mx:VBox id="filterPanel">
-					<mx:Script>
-						<![CDATA[
-							[Bindable]
-							public var filterPanelMinimized:Boolean=true;							
-						]]>
-					</mx:Script>
-					<mx:HBox horizontalAlign="right" width="100%">
-						<mx:FormItem label="Фильтр:">
-							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
-							
-							<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">
-							<mx:FormItem label="Показывать:" horizontalAlign="left" width="100%" cornerRadius="0" borderStyle="none" borderThickness="0">
-								<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активные"/>
-								<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивные"/>
-							</mx:FormItem>	
-							<mx:FormItem label="Шаблон имени:" >
-					<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
-				</mx:FormItem>
-															</mx:VBox>
-		
-						</mx:FormItem>												
-					</mx:HBox>					
 				</mx:VBox>
-			</mx:VBox>
-		</mx:HBox>
-	</mx:VBox>
-	<mx:HBox width="882" height="205">		
-		<mx:VBox height="100%" width="571" horizontalAlign="center" >
-			<mx:Label  text="Прайс" fontWeight="bold"/>
-				<mx:DataGrid height="172" width="564" 	id="dgChildData" 
-					dataProvider="{selectedPriceListItems}"
-					itemClick="childBindSelected()">
-					<mx:columns>
-						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="35"/>
-						<mx:DataGridColumn headerText="Продукт" labelFunction="getProductTypeName" width="150"/>
-						<mx:DataGridColumn headerText="Активность" labelFunction="util.activeToString" width="40"/>
-						<mx:DataGridColumn headerText="Цена" dataField="price" width="50"/>
-					</mx:columns>
-				</mx:DataGrid>				
+			</mx:HBox>
 		</mx:VBox>
-		<mx:VBox height="166">
-			<mx:FormItem label="Продукт:" width="218">
-				<mx:ComboBox id="cbChildProductType"
-					dataProvider="{availableProductTypes}"
-					labelField="name" width="140"/>				
-			</mx:FormItem>
-			<mx:FormItem label="Цена:">
-				<mx:TextInput id="tiChildPrice"/>				
-			</mx:FormItem>
-			<mx:FormItem label="Активность:">
-				<mx:CheckBox id="cbChildActive"/>				
-			</mx:FormItem>	
-			<mx:HBox>
-				<mx:Button label="Новый" click="childCreateNew()"/>
-				<mx:Button label="Сохранить" click="childSave()"/>
-				<mx:Button label="Отмена" click="childBindSelected()"/>				
-			</mx:HBox>		
-		</mx:VBox>	
-					
-	</mx:HBox>
-</mx:VBox>
+		<mx:HBox width="882" height="205">		
+			<mx:VBox height="100%" width="571" horizontalAlign="center" >
+				<mx:Label  text="Прайс" fontWeight="bold"/>
+					<mx:DataGrid height="172" width="564" 	id="dgChildData" 
+						dataProvider="{selectedPriceListItems}"
+						itemClick="childBindSelected()">
+						<mx:columns>
+							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="35"/>
+							<mx:DataGridColumn headerText="Продукт" labelFunction="getProductTypeName" width="150"/>
+							<mx:DataGridColumn headerText="Активность" labelFunction="util.activeToString" width="40"/>
+							<mx:DataGridColumn headerText="Цена" dataField="price" width="50"/>
+						</mx:columns>
+					</mx:DataGrid>				
+			</mx:VBox>
+			<mx:VBox height="166">
+				<mx:FormItem label="Продукт:" width="218"
+					required="true">
+					<mx:ComboBox id="cbChildProductType"
+						dataProvider="{availableProductTypes}"
+						labelField="name" width="140"/>				
+				</mx:FormItem>
+				<mx:FormItem label="Цена:"
+					required="true">
+					<mx:TextInput id="tiChildPrice"/>				
+				</mx:FormItem>
+				<mx:FormItem label="Активность:">
+					<mx:CheckBox id="cbChildActive"/>				
+				</mx:FormItem>	
+				<mx:HBox>
+					<mx:Button label="Новый" click="childCreateNew()"/>
+					<mx:Button label="Сохранить" click="childSave()"/>
+					<mx:Button label="Отмена" click="childBindSelected()"/>				
+				</mx:HBox>		
+			</mx:VBox>	
+						
+		</mx:HBox>
+		<mx:DataGrid dataProvider="{errors}"
+				visible="{errors.length>0}"
+				width="100%"
+				height="60">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Ошибки"
+						 dataField="message"/>
+				</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
 </mx:VBox>

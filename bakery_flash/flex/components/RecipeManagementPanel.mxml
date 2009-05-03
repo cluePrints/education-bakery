@@ -80,7 +80,7 @@
 				var item = dgChildData.selectedItem;
 				if (item != null){
 					childModel.id = item.id;
-					cbChildProductType.selectedIndex = util.getItemPos(availableProductTypes, item.product);
+					cbChildProductType.selectedIndex = util.getItemPos(availableProductTypes, item.productType);
 					tiChildResultFormula.text = item.resultFormula;
 					cbChildConsumed.selected = (item.consumed ==1);
 				}
@@ -92,7 +92,7 @@
 
 		
 			function getProductTypeName(item:Object, column:DataGridColumn):String{				
-				var tmp = util.getItemById(productTypes, item.product);
+				var tmp = util.getItemById(productTypes, item.productType);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -241,7 +241,8 @@
 							<mx:TextInput id="tiTime"/>
 						</mx:FormItem>
 						</mx:HBox>
-						<mx:FormItem label="Название:" width="241">												
+						<mx:FormItem label="Название:" width="241"
+							required="true">												
 							<mx:TextInput id="tiName" width="142" height="25"/>
 						</mx:FormItem>
 						<mx:FormItem label="Формула:" width="311">												
@@ -302,16 +303,17 @@
 						</mx:columns>
 					</mx:DataGrid>				
 			<mx:VBox height="104" width="297">
-				<mx:FormItem label="Ресурс:" width="296">
+				<mx:FormItem label="Ресурс:" width="296"
+					required="true">
 					<mx:ComboBox id="cbChildProductType"
 						dataProvider="{availableProductTypes}"
 						labelField="name" width="210"/>				
 				</mx:FormItem>
-				<mx:FormItem label="Потребляемый:"
-					required="true">
+				<mx:FormItem label="Потребляемый:">
 					<mx:CheckBox id="cbChildConsumed"/>
 				</mx:FormItem>
-				<mx:FormItem label="Формула:">
+				<mx:FormItem label="Формула:"
+					required="true">
 					<mx:TextInput id="tiChildResultFormula" width="216"/>				
 				</mx:FormItem>
 				<mx:HBox>
