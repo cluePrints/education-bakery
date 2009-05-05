@@ -73,6 +73,6 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 		this.recipes = recipes;
 	}
 	public String toString(){
-		return getDevice().getName()+" :: "+getName();
+		return getDevice().getName()+"."+getName();
 	}
 }
