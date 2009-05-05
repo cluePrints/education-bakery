@@ -6,34 +6,32 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MySQL"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Mock"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/antlr-2.7.6.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/commons-collections-3.1.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/hibernate3.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/javassist-3.4.GA.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/jstl.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/jta-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/mysql-connector-java-5.1.7-bin.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/ognl.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/slf4j-api-1.5.2.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/slf4j-simple-1.5.2.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-beans.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-binding.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-context.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-core.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-dao.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-hibernate3.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-jdbc.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-portlet.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-remoting.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-web.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-webflow-1.0.5-stress.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/WebContent/WEB-INF/lib/spring-webmvc.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/build/lib/easymock.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/build/lib/javaee.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/build/lib/junit.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/build/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="C:/Documents and Settings/Odmin/Рабочий стол/Учеба/Диплом/bakery_java_2009-03-25/bakery/build/lib/spring-mock.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/antlr-2.7.6.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/hibernate3.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/javassist-3.4.GA.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jstl.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jta-1.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/mysql-connector-java-5.1.7-bin.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ognl.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-api-1.5.2.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/slf4j-simple-1.5.2.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-beans.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-binding.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-context.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-core.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-dao.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-hibernate3.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-jdbc.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-remoting.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-web.jar"/>	
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-webmvc.jar"/>
+	<classpathentry kind="lib" path="build/lib/easymock.jar"/>
+	<classpathentry kind="lib" path="build/lib/javaee.jar"/>
+	<classpathentry kind="lib" path="build/lib/junit.jar"/>
+	<classpathentry kind="lib" path="build/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="build/lib/spring-mock.jar"/>
 	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
