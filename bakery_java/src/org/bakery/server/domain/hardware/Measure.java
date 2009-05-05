@@ -28,7 +28,7 @@ public class Measure extends BusinessEntity {
 	 */
 	private Date time=(Date) NULL_DATE.clone();
 
-	@CouldNotBeEmpty(message="Измеренное значение параметра должно быть указано.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public Double getValue() {
 		return value;
 	}
@@ -36,7 +36,7 @@ public class Measure extends BusinessEntity {
 		this.value = value;
 	}
 	
-	@CouldNotBeEmpty(message="Измеряемый производственный параметр должен быть указан.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public DeviceParameter getParameter() {
 		return parameter;
 	}
@@ -44,12 +44,11 @@ public class Measure extends BusinessEntity {
 		this.parameter = parameter;
 	}
 	
-	@CouldNotBeEmpty(message="Время произведения измерения значения производственного параметра должно быть указано.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public Date getTime() {
 		return time;
 	}
 	public void setTime(Date time) {
 		this.time = time;
-	}
-
+	}		
 }

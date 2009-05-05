@@ -1,4 +1,4 @@
-CREATE TABLE BAKERY.addresses (
+﻿CREATE TABLE BAKERY.addresses (
        address_id INTEGER NOT NULL AUTO_INCREMENT
      , address_address CHAR(250)
      , address_active INT NOT NULL DEFAULT 1
@@ -236,4 +236,3 @@ CREATE TABLE BAKERY.product_moves (
      , CONSTRAINT FK_product_moves_5 FOREIGN KEY (product_move_money_move)
                   REFERENCES BAKERY.money_moves (money_move_id)
 )DEFAULT CHARSET=utf8;
-

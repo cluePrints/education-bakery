@@ -18,7 +18,7 @@ public class Device extends BusinessEntity implements NamedEntity {
 	
 	private Set<DeviceParameter> parameters;
 	
-	@CouldNotBeEmpty(message="Название устройства не может быть пустым")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")
 	public String getName() {
 		return name;
 	}
@@ -41,5 +41,8 @@ public class Device extends BusinessEntity implements NamedEntity {
 
 	public void setParameters(Set<DeviceParameter> parameters) {
 		this.parameters = parameters;
+	}	
+	public String toString(){
+		return name;
 	}
 }

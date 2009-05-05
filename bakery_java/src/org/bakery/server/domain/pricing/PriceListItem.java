@@ -15,8 +15,7 @@ public class PriceListItem extends BusinessEntity {
 	private static final long serialVersionUID=1L;
 	private PriceList parent=new PriceList();
 	private Double price;
-	private ProductType product=new ProductType();
-	
+	private ProductType product=new ProductType();	
 
 	@Override
 	public String toString() {
@@ -26,7 +25,7 @@ public class PriceListItem extends BusinessEntity {
 		super();
 	}
 	
-	@CouldNotBeEmpty(message="Прайс-лист, к которому относится эта цена на позицию продукции должен быть указан.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public PriceList getParent() {
 		return parent;
 	}
@@ -35,8 +34,8 @@ public class PriceListItem extends BusinessEntity {
 	}
 	
 	@GreaterThen(lowerLimit=0, including=false,
-				message="Стоимость должна быть положительным числом.")
-	@CouldNotBeEmpty(message="Стоимость единицы продукта должна быть задана.")
+				message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public Double getPrice() {
 		return price;
 	}
@@ -44,7 +43,7 @@ public class PriceListItem extends BusinessEntity {
 		this.price = price;
 	}
 	
-	@CouldNotBeEmpty(message="Вид продукта должен быть указан.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public ProductType getProduct() {
 		return product;
 	}

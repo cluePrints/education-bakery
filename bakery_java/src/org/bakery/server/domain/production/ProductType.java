@@ -14,7 +14,7 @@ public class ProductType extends BusinessEntity implements NamedEntity {
 		return name;
 	}
 	
-	@CouldNotBeEmpty(message="Наименование продукта должно быть задано.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public String getName() {
 		return name;
 	}
@@ -22,7 +22,7 @@ public class ProductType extends BusinessEntity implements NamedEntity {
 		this.name = name;
 	}
 	
-	@CouldNotBeEmpty(message="Единица измерения количества продукта должна быть указана.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public Unit getUnit() {
 		return unit;
 	}

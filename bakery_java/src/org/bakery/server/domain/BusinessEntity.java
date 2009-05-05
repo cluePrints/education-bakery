@@ -29,24 +29,7 @@ public abstract class BusinessEntity implements Serializable {
 	private Long id=NOT_EXISTENT;
 	
 	private int active=1;
-	
-	public Map<String, String> validate() {
-		Map<String, String> result = (Map<String, String>) NO_ERRORS.clone();
-		try{
-			BeanInfo inf = Introspector.getBeanInfo(getClass(), BusinessEntity.class);
-			PropertyDescriptor[] properties = inf.getPropertyDescriptors();
-			for (PropertyDescriptor prop : properties) {				
-				if (prop.getReadMethod().getAnnotation(CouldNotBeEmpty.class) != null)					
-					ValidationHelper.validateEmpty(this, prop, result);
-				
-			}
-		} catch (Exception ieEx){
-			throw new RuntimeException(ieEx);
-		}
-		return result;
-	}	
-	
-	
+		
 	
 	public Long getId() {
 		return id;
@@ -59,6 +42,10 @@ public abstract class BusinessEntity implements Serializable {
 	}
 	public void setActive(int active) {
 		this.active = active;
+	}
+	
+	public String getTextView(){
+		return toString();
 	}
 	
 	public static final Date NULL_DATE = new Date(0){	
@@ -154,6 +141,5 @@ public abstract class BusinessEntity implements Serializable {
 			return false;
 		return true;
 	}
-
 }
 

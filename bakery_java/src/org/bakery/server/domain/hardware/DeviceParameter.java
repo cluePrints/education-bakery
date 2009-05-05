@@ -25,7 +25,7 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	
 	private Set<Recipe> recipes = new HashSet<Recipe>();
 
-	@CouldNotBeEmpty(message="Название параметра устройства должно быть задано.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public String getName() {
 		return name;
 	}
@@ -33,7 +33,7 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 		this.name = name;
 	}
 	
-	@CouldNotBeEmpty(message="Единица измерения для параметра устройства не указана.")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.")
 	public Unit getUnit() {
 		return unit;
 	}
@@ -59,7 +59,7 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 		this.minimize = minimize;
 	}
 	
-	@CouldNotBeEmpty(message="Рекомендуемое значение параметра устройства должно быть задано")
+	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")
 	public Double getBestValue() {
 		return bestValue;
 	}
@@ -71,5 +71,8 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	}
 	public void setRecipes(Set<Recipe> recipes) {
 		this.recipes = recipes;
+	}
+	public String toString(){
+		return getDevice().getName()+" :: "+getName();
 	}
 }
