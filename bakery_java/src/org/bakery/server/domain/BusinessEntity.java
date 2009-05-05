@@ -2,18 +2,14 @@ package org.bakery.server.domain;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.bakery.server.controllers.svc.helper.SvcHelper;
-import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.ValidationHelper;
 
 /**
  * Abstract parent for all entities from domain. All objects have:

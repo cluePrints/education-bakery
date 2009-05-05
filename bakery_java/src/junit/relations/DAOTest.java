@@ -1,8 +1,4 @@
 package junit.relations;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import junit.util.TestConst;
@@ -10,10 +6,9 @@ import junit.util.TestConst;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.NamedEntity;
 import org.bakery.server.domain.hardware.DeviceParameter;
+import org.bakery.server.domain.hardware.Measure;
 import org.bakery.server.domain.log.MoneyMove;
 import org.bakery.server.domain.log.ProductMove;
-import org.bakery.server.domain.production.Recipe;
-import org.bakery.server.domain.production.Warehouse;
 import org.bakery.server.persistence.AbstractDAO;
 import org.bakery.server.persistence.DAOFacade;
 
@@ -21,8 +16,18 @@ public class DAOTest extends AbstractSpringTest{
 	protected DAOFacade DAOFacade;	
 
 	public void testDAOs() throws Exception {
+		List m = DAOFacade.getMoneyMoveDAO().searchByName("%", 0,100);
+		((MoneyMove) m.get(0)).getOrder().toString();
 		
-		List r =  DAOFacade.getRecipeDAO().searchByName("%", 0, 100);
+		m = DAOFacade.getDeviceParameterDAO().searchByName("%", 0,100);
+		((DeviceParameter) m.get(0)).getDevice().toString();
+		
+		m = DAOFacade.getDeviceParameterDAO().searchByName("%", 0,100);
+		
+		m = DAOFacade.getMeasureDAO().searchByName("%", 0,100);	
+		System.out.println(((Measure) m.get(0)).getParameter().getDevice());
+
+		/*List r =  DAOFacade.getRecipeDAO().searchByName("%", 0, 100);
 		int n=0;
 		for (Object rec : r){
 			System.out.println(((Recipe) rec).toXml());
@@ -46,7 +51,7 @@ public class DAOTest extends AbstractSpringTest{
 				AbstractDAO dao = (AbstractDAO) readMethod.invoke(DAOFacade);
 				testSingleDAO(dao);
 			}
-		}
+		}*/
 	}
 	
 	protected void testAvailable(AbstractDAO dao) throws Exception {

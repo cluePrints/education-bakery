@@ -12,15 +12,20 @@
 		</id>
 		<property name="active"
 			  type="integer"
-			  column="measure_active"/>
+			  column="measure_active"
+			  not-null="true"/>
 		<property
 			name="time"
-			column="measure_time"/>
+			column="measure_time"
+			not-null="true"/>
 		<property
 			name="value"
-			column="measure_value"/>
+			column="measure_value"
+			not-null="true"/>
 		<many-to-one 
 			name="parameter"
-			column="measure_device_parameter"/>		
+			column="measure_device_parameter"
+			not-null="true"
+			outer-join="true"/>		
 	</class>
 </hibernate-mapping>

@@ -27,9 +27,9 @@
 				<property name="targetClassName"
 					value="org.bakery.server.domain.hardware.Measure" />
 				<property name="querySearchByName"
-					value="from Measure m left join fetch m.parameter p where p.name like :searchName order by m.active desc, p.name asc" />
+					value="from Measure m left join fetch m.parameter p join fetch p.device d where p.name like :searchName order by m.active desc, d.name asc, p.name asc" />
 				<property name="queryGetAvailable"
-					value="from Measure m left join fetch m.parameter p where m.active>0" />
+					value="from Measure m left join fetch m.parameter p join fetch p.device d  where m.active>0" />
 		</bean>
 		</property>
 		<property name="unitDAO">
@@ -159,7 +159,17 @@
 				<property name="targetClassName"
 					value="org.bakery.server.domain.log.MoneyMove" />
 				<property name="querySearchByName"
-					value="from MoneyMove mv left join fetch mv.destinationAccount dest join fetch mv.sourceAccount src left join fetch mv.price pli left join fetch pli.product left join fetch dest.owner dest left join fetch src.owner where src.owner.name like :searchName order by mv.date asc" />
+					value="from MoneyMove mv left
+							 join fetch mv.destinationAccount dest
+							 	left join fetch dest.owner dest 
+							 join fetch mv.sourceAccount src
+							 	left join fetch src.owner 
+							 left join fetch mv.price pli 
+							 	left join fetch pli.product
+							 left join fetch mv.order ord
+							 	left join fetch ord.provider
+							 	left join fetch ord.consumer
+							 where src.owner.name like :searchName order by mv.date asc" />
 				<property name="queryGetAvailable">
 					<value>
 						from MoneyMove mv left join fetch mv.price pli
@@ -241,7 +251,9 @@
 					value="org.bakery.server.domain.hardware.DeviceParameter" />
 				<property name="querySearchByName">
 					<value>
-						from DeviceParameter dp where dp.name like :searchName order by dp.active, dp.name
+						from DeviceParameter dp 
+							left join fetch dp.device
+						where dp.name like :searchName order by dp.active, dp.name
 					</value>
 				</property>
 				<property name="queryGetAvailable">
@@ -291,7 +303,7 @@
 					value="org.bakery.server.domain.accounting.ProductionPlan" />
 				<property name="querySearchByName">
 					<value>
-						from ProductionPlan dp where :searchName like resultFormula
+						from ProductionPlan dp where (:searchName like "") OR (1==1)  
 					</value>
 				</property>
 				<property name="queryGetAvailable">
