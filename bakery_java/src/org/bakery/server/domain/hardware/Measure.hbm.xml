@@ -12,7 +12,7 @@
 		</id>
 		<property name="active"
 			  type="integer"
-			  column="device_active"/>
+			  column="measure_active"/>
 		<property
 			name="time"
 			column="measure_time"/>

@@ -17,6 +17,7 @@ public class DAOFacade {
 	private AbstractDAO recipeDAO;
 	private AbstractDAO productionPlanDAO;
 	private AbstractDAO recipeEffectDAO;
+	private AbstractDAO measureDAO;
 	public AbstractDAO getAddressDAO() {
 		return addressDAO;
 	}
@@ -112,5 +113,11 @@ public class DAOFacade {
 	}
 	public void setProductionPlanDAO(AbstractDAO productionPlanDAO) {
 		this.productionPlanDAO = productionPlanDAO;
+	}
+	public AbstractDAO getMeasureDAO() {
+		return measureDAO;
+	}
+	public void setMeasureDAO(AbstractDAO measureDAO) {
+		this.measureDAO = measureDAO;
 	}
 }

@@ -22,6 +22,16 @@
 	</bean>
 
 	<bean id="DAOFacade" class="org.bakery.server.persistence.DAOFacade">
+		<property name="measureDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.hardware.Measure" />
+				<property name="querySearchByName"
+					value="from Measure m left join fetch m.parameter p where p.name like :searchName order by m.active desc, p.name asc" />
+				<property name="queryGetAvailable"
+					value="from Measure m left join fetch m.parameter p where m.active>0" />
+		</bean>
+		</property>
 		<property name="unitDAO">
 			<bean parent="abstractDAO">
 				<property name="targetClassName"
