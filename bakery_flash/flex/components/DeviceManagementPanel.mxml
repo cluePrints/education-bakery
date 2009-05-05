@@ -18,8 +18,8 @@
 			
 			<id></id>
 			<active>{cbChildActive.selected == true ? "1" : "0"}</active>
-			<fixed>{cbChildFixed.selected == true ? "1" : "0"}</fixed>
-			<minimized>{cbChildMinimized.selected == true ? "1" : "0"}</minimized>
+			<changable>{cbChildFixed.selected == true ? "0" : "1"}</changable>
+			<minimize>{cbChildMinimized.selected == true ? "1" : "0"}</minimize>
 			
 			<device>{dgData.selectedItem.id}</device>
 			
@@ -79,8 +79,8 @@
 					tiChildBestValue.text = item.bestValue;
 					cbChildUnit.selectedIndex = util.getItemPos(availableUnits, item.unit);
 					cbChildActive.selected = (item.active == 1);
-					cbChildFixed.selected = (item.fixed == 1);
-					cbChildMinimized.selected = (item.minimized == 1);
+					cbChildFixed.selected = (item.changable == 0);
+					cbChildMinimized.selected = (item.minimize == 1);
 				}				
 				function childSave():void{
 					childSvc.cancel();

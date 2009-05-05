@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()" width="918" height="446">		
+	<mx:HTTPService id="measuresSvc" 
+		useProxy="false"
+		method="POST"
+		url="{measuresDataSvcUrl}"
+		result="httpResultHandler(event)"
+		fault="util.httpFaultHandler(event)"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.validators.RegExpValidator;
+			import mx.utils.StringUtil;
+			import mx.rpc.http.mxml.HTTPService;
+			import flash.sampler.getInvocationCount;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import components.Util;
+			public var measuresDataSvcUrl:String;
+			
+			[Bindable]
+            private var measures:ArrayCollection = new ArrayCollection();
+            
+			[Bindable]
+            private var devices:ArrayCollection = new ArrayCollection();
+            [Bindable]
+            private var deviceParameters:ArrayCollection = new ArrayCollection();
+            
+			[Bindable]
+            private var availableDeviceParameters:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			private var errors:ArrayCollection = new ArrayCollection();
+			
+			public var util:Util = new Util();
+			public function init():void{
+				createNew();
+				formModel.mode="FETCH";
+				measuresSvc.send(formModel);				
+			}
+
+			private function httpResultHandler(event:*):void{
+				errors = util.getHttpRespondedErrors(event);
+				measures = util.extractItemCollection(event.result.mainData, 'measure');
+				if (measures != null) {
+					measures.filterFunction = mainFilterFunction;
+				}
+				devices = util.extractItemCollection(event.result.devices, 'devices');					
+				
+				deviceParameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
+				availableDeviceParameters  = util.getActiveItems(deviceParameters );
+				
+			} 
+			private function mainFilterFunction(item:*){
+				var result:Boolean=true;
+				if (!cbShowNonActive.selected && item.active<=0)
+					return false;
+				if (!cbShowActive.selected && item.active>0)
+					return false;					
+				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
+					if (!new RegExp(edFilter.text).test(item.name))
+						return false;
+				}
+				return result;
+			} 
+			function bindSelected():void{
+				if (dgData.selectedIndex>=0){
+					cbActive.selected = (dgData.selectedItem.active == 1);
+					formModel.id=dgData.selectedItem.id;
+					tiValue.text=dgData.selectedItem.value;	
+					cbDeviceParameters.selectedIndex=util.getItemPos(availableDeviceParameters, dgData.selectedItem.address);
+				}													
+			}
+			function createNew():void{
+				cbActive.selected=true;
+				cbDeviceParameters.selectedIndex=-1;
+				formModel.id="";
+				tiValue.text="";			
+			}
+			function cancel():void{
+				bindSelected();
+			}
+			function saveSelected():void{
+				formModel.mode="EDIT";
+				measuresSvc.cancel();			
+				measuresSvc.send(formModel);
+			}
+			function filterRefresh():void{
+				measures.refresh();
+			}
+
+			function getDeviceParameterName(item:Object, column:DataGridColumn):String{
+				var tmp = util.getItemById(deviceParameters, item.address);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+		]]>
+	</mx:Script>			
+	<mx:Model id="formModel">		
+		<root>
+			<mode>"EDIT"</mode>
+			<parameter>{cbDeviceParameters.selectedItem.id}</parameter>		
+			<active>{cbActive.selected == true ? "1" : "0"}</active>
+			<value>{tiValue.text}</value>
+		</root>		
+	</mx:Model>		
+					
+		<mx:Label text="Измеренные значения параметров производства" fontWeight="bold" fontSize="14"/>
+		<mx:VBox width="100%">
+		<mx:HBox x="0" y="0">
+			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
+				<mx:DataGrid height="263" width="601" 
+					id="dgData" 
+					dataProvider="{measures}"
+					itemClick="bindSelected()">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
+						<mx:DataGridColumn headerText="Значение" dataField="value" width="150"/>
+						<mx:DataGridColumn dataField="Активный" labelFunction="util.activeToString" width="80"/>
+					</mx:columns>
+				</mx:DataGrid>
+			</mx:VBox>
+			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
+				<mx:VBox horizontalAlign="left">	
+					<mx:FormItem label="Значение:" 
+						required="true">												
+						<mx:TextInput id="tiValue"/>
+					</mx:FormItem>
+					<mx:FormItem label="Производственный параметр :" 
+						required="true">												
+						<mx:ComboBox id="cbDeviceParameters"
+							dataProvider="{availableDeviceParameters}"
+							labelField="name" width="160"
+							/>
+					</mx:FormItem>
+					<mx:FormItem label="Активный">
+						<mx:CheckBox id="cbActive"/>
+					</mx:FormItem>
+				</mx:VBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="Сохранить" click="saveSelected()"/>							
+					<mx:Button label="Отмена" click="cancel()"/>
+				</mx:HBox>
+				<mx:HBox horizontalAlign="center">
+					<mx:Button label="Создать" click="createNew()"/>							
+				</mx:HBox>
+				<mx:VBox id="filterPanel">
+					<mx:Script>
+						<![CDATA[
+							[Bindable]
+							public var filterPanelMinimized:Boolean=true;							
+						]]>
+					</mx:Script>
+					<mx:HBox horizontalAlign="right" width="100%">
+						<mx:FormItem label="Фильтр">
+							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized"/>
+						</mx:FormItem>												
+					</mx:HBox>					
+					<mx:VBox id="filterDetails" visible="{filterPanelMinimized ? false : true}">												
+						<mx:FormItem label="Показывать" horizontalAlign="left" width="100%">
+							<mx:CheckBox id="cbShowActive" click="filterRefresh()" selected="true" label="Активный"/>
+							<mx:CheckBox id="cbShowNonActive" click="filterRefresh()" selected="true" label="Неактивный"/>
+						</mx:FormItem>
+						<mx:FormItem label="Шаблон имени:" >
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+						</mx:FormItem>	
+					</mx:VBox>					
+				</mx:VBox>
+			</mx:VBox>
+		</mx:HBox>
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="100%">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>
+
+</mx:VBox>

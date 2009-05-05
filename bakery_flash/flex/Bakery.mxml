@@ -17,7 +17,6 @@
 		]]>
 	</mx:Script>
 	<mx:TabNavigator width="1100" height="700">
-	
 	<mx:Canvas label="Движение денег" width="100%" height="100%"
 			 x="10" y="51">
 			<comp:MoneyMoveManagementPanel
@@ -107,6 +106,12 @@
 				warehouseDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.WarehouseSvc"
 				 width="100%" height="100%"/>			
 		</mx:Canvas>
-		
+		<mx:Canvas label="Изм. зн. параметров" width="100%" height="100%"
+			show="manageMeasures.init()">
+			<comp:MeasuresManagementPanel
+				id="manageMeasures"
+				measuresDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MeasureSvc"
+				width="100%" height="100%"/>			
+		</mx:Canvas>
 	</mx:TabNavigator>			
 </mx:Application>
