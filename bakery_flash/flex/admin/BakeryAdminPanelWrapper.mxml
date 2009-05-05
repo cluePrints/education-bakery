@@ -12,9 +12,7 @@
 	<mx:VBox
 		width="100%"
 		height="100%" horizontalAlign="right">
-		<mx:Button click="hide()" label="X">			
-			
-		</mx:Button>	
+		<mx:Button click="hide()" label="X"/>			
 		<mx:Box 
 			width="90%"
 			height="90%"

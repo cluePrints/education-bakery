@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" xmlns:admin="admin.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import mx.controls.PopUpButton;
+			private function hide():void{
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox
+		 width="100%" height="100%"
+		 verticalAlign="middle"
+		horizontalAlign="center">			
+		<mx:VBox
+			width="100%"
+			horizontalAlign="right">
+			<mx:Button click="hide()" label="X"/>								
+		</mx:VBox>
+		<mx:VBox>
+			<mx:Box 
+				width="90%"
+				height="90%"
+				horizontalAlign="center"
+				verticalAlign="top">			
+				<mx:Text htmlText="Рабочее место менеджера по качеству"/>
+				<mx:VBox
+					width="1024"
+					height="768"				
+					verticalAlign="middle"
+					horizontalAlign="center">
+				</mx:VBox>
+			</mx:Box>	
+		</mx:VBox>
+	</mx:VBox>
+</mx:Canvas>

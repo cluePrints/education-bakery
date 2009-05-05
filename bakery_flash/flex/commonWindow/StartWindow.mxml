@@ -3,6 +3,7 @@
 	>
 	<mx:Script>
 		<![CDATA[
+			import qualityManager.QualityMain;
 			import admin.BakeryAdminPanelWrapper;
 			import mx.managers.PopUpManager;
 			import mx.controls.Alert;
@@ -10,7 +11,7 @@
 				if (workPlace.selectedValue == 'admin'){
 					PopUpManager.createPopUp(rootCanvas, BakeryAdminPanelWrapper, true);
 				} else if (workPlace.selectedValue == 'qa'){
-					
+					PopUpManager.createPopUp(rootCanvas, QualityMain, true);
 				} else if (workPlace.selectedValue == 'market'){
 					
 				} else {
