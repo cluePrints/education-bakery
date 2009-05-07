@@ -29,7 +29,7 @@
 	<mx:Canvas label="Движение денег" width="100%" height="100%"
 		show="manageMoneyMove.init()"
 			 x="10" y="51">
-			<comp:MoneyMoveManagementPanel
+			<comp:MoneyMoveManagementPanel____
 				id="manageMoneyMove"
 				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MoneyMoveSvc"
 				width="100%" height="100%"/>	
