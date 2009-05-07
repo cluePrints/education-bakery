@@ -172,14 +172,16 @@
 							 where src.owner.name like :searchName order by mv.date asc" />
 				<property name="queryGetAvailable">
 					<value>
-						from MoneyMove mv left join fetch mv.price pli
-						left join fetch pli.product left join fetch
-						mv.destinationAccount dest left join fetch
-						dest.owner dest left join fetch mv.sourceAccount
-						src left join fetch src.owner
-
-						order by mv.id desc
-
+						join fetch mv.destinationAccount dest
+							 	left join fetch dest.owner dest 
+							 join fetch mv.sourceAccount src
+							 	left join fetch src.owner 
+							 left join fetch mv.price pli 
+							 	left join fetch pli.product
+							 left join fetch mv.order ord
+							 	left join fetch ord.provider
+							 	left join fetch ord.consumer
+						where mv.active>0 order by mv.id
 					</value>
 				</property>
 				<property name="queryFetchByParent">
@@ -258,7 +260,8 @@
 				</property>
 				<property name="queryGetAvailable">
 					<value>
-						from DeviceParameter dp where dp.active>0 order by dp.active, dp.name
+						from DeviceParameter dp 
+							left join fetch dp.device where dp.active>0 order by dp.active, dp.name
 					</value>
 				</property>
 			</bean>
