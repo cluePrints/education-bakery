@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:admin="admin.*"
+	xmlns:dev="qa.simpledevicereport.*" 
+	width="100%" 
+	height="100%">
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import mx.controls.PopUpButton;
+			private function hide():void{
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:VBox
+		 width="100%" height="100%"
+		 verticalAlign="middle"
+		horizontalAlign="center">			
+		<mx:VBox
+			width="100%"
+			horizontalAlign="right">
+			<mx:Button click="hide()" label="X"/>								
+		</mx:VBox>
+		<mx:VBox>
+			<mx:Box 
+				width="90%"
+				height="90%"
+				horizontalAlign="center"
+				verticalAlign="top">			
+				<mx:Text htmlText="Рабочее место менеджера по качеству"/>
+				<mx:VBox
+					width="1024"
+					height="768"				
+					verticalAlign="middle"
+					horizontalAlign="left">
+					
+					<mx:HBox 
+						width="100%"
+						height="100%">
+						<mx:VBox
+							width="70%"
+							height="100%">		
+							<mx:Label text="bbayasdy">
+							
+							</mx:Label>					
+						</mx:VBox>
+						<mx:Grid
+							width="30%"
+							height="100%">
+							<mx:GridRow
+								width="100%"
+								height="100%">																									
+								<mx:GridItem
+									width="100%"
+									height="100%">									
+									<mx:VBox>
+										<mx:Label text="Быстрые отчеты"/>
+										<mx:TabNavigator
+											width="200"
+											height="200">
+											<mx:Canvas label="Работоспособность оборудования"
+												 width="100%"
+												 height="100%">
+												<dev:DeviceStateChart
+													width="100%"
+													height="100%"
+													id="devChart"
+													mainDataSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.qa.DeviceStateReportSvc"/>
+												<!--mx:Legend dataProvider="{devChart}"/-->
+											</mx:Canvas>
+											<mx:Canvas label="Незавершенные циклы"
+												width="100%"
+												height="100%">
+												<mx:BarChart
+													width="100%"
+												 	height="100%"
+													id="chartNotReadyPlans">
+													<mx:series>
+														<mx:BarSeries displayName="Series 1" xField=""/>
+													</mx:series>
+												</mx:BarChart>
+												<mx:Legend dataProvider="{chartNotReadyPlans}"/>
+											</mx:Canvas>
+											<mx:Canvas label="Сбои апаратуры" width="100%" height="100%">
+											</mx:Canvas>
+										</mx:TabNavigator>
+									</mx:VBox>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%">
+									<mx:VBox>
+										<mx:Label text="Последние события"/>
+										<mx:TabNavigator
+											width="200"
+											height="200">
+											<mx:Canvas 
+												 label="Потребности в продукции"
+												 width="100%"
+												 height="100%">			
+												 <mx:Button label="Перейти к редактированию планов"/>								
+											</mx:Canvas>
+											<mx:Canvas
+												label="Сбои апаратуры"
+												width="100%"
+												height="100%">
+												<mx:Button label="Изучить подробнее"/>
+											</mx:Canvas>
+										</mx:TabNavigator>
+									</mx:VBox>
+								</mx:GridItem>
+							</mx:GridRow>
+							<mx:GridRow width="100%" height="100%">
+								<mx:GridItem width="100%" height="100%">
+								</mx:GridItem>
+							</mx:GridRow>
+						</mx:Grid>
+					</mx:HBox>
+					
+				</mx:VBox>
+			</mx:Box>	
+		</mx:VBox>
+	</mx:VBox>
+</mx:Canvas>

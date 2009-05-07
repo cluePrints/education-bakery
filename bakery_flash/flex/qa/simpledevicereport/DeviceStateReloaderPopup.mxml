@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	verticalAlign="middle">
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var okFunc:Function;
+			[Bindable]
+			public var cancelFunc:Function;
+			
+			
+			private function myOkFunc():void{
+				okFunc();
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+	<mx:Text htmlText="Сервер не доступен. &lt;BR/&gt;Попробовать еще раз?"/>
+	<mx:HBox>
+		<mx:Button
+			label="Да"
+			click="{myOkFunc}"/>
+		<!--mx:Button
+			label="Нет"
+			click="{cancelFunc}"//-->
+	</mx:HBox>
+</mx:VBox>

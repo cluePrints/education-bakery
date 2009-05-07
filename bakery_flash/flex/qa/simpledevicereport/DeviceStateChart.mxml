@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="refresh()" width="845" height="478">
+	<mx:HTTPService id="reportSvc" 
+		useProxy="false"
+		method="GET"
+		url="{mainDataSvcUrl}"
+		result="httpResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import components.Util;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]			
+			public var devicesState:ArrayCollection = new ArrayCollection();
+			public var mainDataSvcUrl:String;
+			
+			public function refresh():void{
+				reportSvc.cancel();
+				reportSvc.send(null);
+			}			
+			
+			var util:Util = new Util();
+			function httpFaultHandler(event:*):void {
+				var p:DeviceStateReloaderPopup = new DeviceStateReloaderPopup();
+				p.width = this.width;
+				p.height = this.height
+				PopUpManager.addPopUp(p, this, true);
+			}
+			
+			function httpResultHandler(event:*):void {
+				if (event.result.internalServerError != null) {
+					httpFaultHandler(event);
+					return;
+				}
+				devicesState = event.result.availableDevicesReport;
+			}			
+		]]>
+	</mx:Script>
+		
+	<mx:VBox>
+		<mx:PieChart 
+			id="piechart"
+			width="100%"
+			height="100%"
+			visible="true"
+			showDataTips="true">
+			<mx:series>
+				<mx:PieSeries displayName="Состояние устройств" 
+					field="amount"
+					nameField="type"
+					dataProvider="{devicesState}"/>					
+			</mx:series>
+		</mx:PieChart>		
+	</mx:VBox>
+</mx:VBox>
