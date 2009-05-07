@@ -55,7 +55,7 @@ public class Contragent extends BusinessEntity {
 		warehouses.add(warehouse);
 	}
 	
-	@CouldNotBeEmpty(message="Ќазвание склада должно быть указано.")
+	@CouldNotBeEmpty(message="»м€ контрагента должно быть указано.")
 	public String getName() {
 		return name;
 	}
