@@ -172,8 +172,9 @@
 							 where src.owner.name like :searchName order by mv.date asc" />
 				<property name="queryGetAvailable">
 					<value>
-						join fetch mv.destinationAccount dest
-							 	left join fetch dest.owner dest 
+						from MoneyMove mv left
+							join fetch mv.destinationAccount dest
+							 	left join fetch dest.owner ow 
 							 join fetch mv.sourceAccount src
 							 	left join fetch src.owner 
 							 left join fetch mv.price pli 
@@ -181,7 +182,7 @@
 							 left join fetch mv.order ord
 							 	left join fetch ord.provider
 							 	left join fetch ord.consumer
-						where mv.active>0 order by mv.id
+							order by mv.id
 					</value>
 				</property>
 				<property name="queryFetchByParent">

@@ -16,7 +16,7 @@ public class DAOTest extends AbstractSpringTest{
 	protected DAOFacade DAOFacade;	
 
 	public void testDAOs() throws Exception {
-		List m = DAOFacade.getMoneyMoveDAO().searchByName("%", 0,100);
+		List m = DAOFacade.getMoneyMoveDAO().getAvailable();
 		((MoneyMove) m.get(0)).getOrder().toString();
 		
 		m = DAOFacade.getDeviceParameterDAO().searchByName("%", 0,100);

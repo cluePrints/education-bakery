@@ -18,11 +18,11 @@ public class DeviceStateReportSvc implements ControllerAwareCommand{
 		int nTotal = controller.getDAOFacade().getDeviceDAO().searchByName("%", 0, 1000).size();
 		PrintWriter out = response.getWriter();
 		out.write("\n<availableDevicesReport>");
-		out.write("\n<type>Работоспособные</type>");
+		out.write("\n<type>Available</type>");
 		out.write("\n<amount>"+nAvailable+"</amount>");
 		out.write("\n</availableDevicesReport>");
 		out.write("\n<availableDevicesReport>");
-		out.write("\n<type>Неработоспособные</type>");
+		out.write("\n<type>Not-available</type>");
 		out.write("\n<amount>"+(nTotal-nAvailable)+"</amount>");
 		out.write("\n</availableDevicesReport>");
 	}
