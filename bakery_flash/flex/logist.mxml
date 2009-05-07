@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+	
+	xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" >
+<mx:Script>
+	<![CDATA[
+		import LogComp.contragentAccount;
+		import LogComp.writeNewOrder;
+		import LogComp.registration;
+		import LogComp.ResultProduction;
+		import LogComp.ProductList;
+		import LogComp.ProductMoveList;
+		import LogComp.MoneyMoveList;
+		import LogComp.AccountList;
+		import LogComp.OrderList;
+		import LogComp.PriceList;
+		import LogComp.ContragentList;
+		import LogComp.Help;
+		import LogComp.About;
+		import components.ContragentManagementPanel;
+		import mx.controls.Button;
+		
+		private var mbSelectedItem:*;
+		private var mbItem:*;
+
+
+	function mbClick(event:MouseEvent){
+		var str:String; 
+		
+		str = event.target.toString();
+		switch(str.substring(str.length - 2,str.length)){
+			case "20":
+				mbItem = 0;
+				break;
+			case "22":
+				mbItem = 1;
+				break;
+			case "24":
+				mbItem = 2;
+				break;
+		
+		}
+		test.text = mbItem;
+	}
+	function mbMouseOver(event:*){
+	mbItem = event.index;
+	}
+	function mbItemClick(event:*){
+		test.text = event.index + mbItem*10;
+		mbSelectedItem = event.index + mbItem*10;
+		mainCanvas.removeAllChildren();
+		switch(mbSelectedItem){
+			case 0:
+			var newComp = new ResultProduction();
+				break;
+			case 1:
+			var newComp = new registration();
+				break;
+			case 2:
+			var newComp = new writeNewOrder();
+				break;
+			case 3:
+			var newComp = new contragentAccount();
+				break		
+			case 10:
+			var newComp = new ContragentList();
+				break;
+			case 11:
+			var newComp = new OrderList();
+				break;
+			case 12:
+			var newComp = new ProductList();
+				break;	
+			case 13:
+			var newComp = new PriceList();
+				break;
+			case 14:
+			var newComp = new AccountList();
+				break;
+			case 15:
+			var newComp = new MoneyMoveList();
+				break;
+			case 16:
+			var newComp = new ProductMoveList();
+				break;			
+			case 20:
+			var newComp = new About();
+				break;
+			case 21:
+			var newComp = new Help();
+				break;
+		}
+		mainCanvas.addChild(newComp);
+		
+	}
+	
+		]]>
+</mx:Script>
+<mx:Canvas width="100%" >
+<mx:VBox width="100%">
+<mx:HBox  height="78">
+<mx:MenuBar id="mainMenuBar" labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)" width="368" height="27" fontWeight="bold" fontSize="10">
+        <mx:XMLList>
+            <menuitem label="|  РАБОТА   |" >
+                <menuitem label="С результатами производства"/>
+                 <menuitem label="Зарегистрировать контрагента"/>
+                 <menuitem label="Составить договор"/>
+                 <menuitem label="Оплатить счет"/>
+                  <menuitem label="С планами"/>
+                  
+            </menuitem>
+            <menuitem label="|  ПРОСМОТР  |" >
+                <menuitem label="Списока контрагентов" />
+                 <menuitem label="Списока заказов"/>
+                  <menuitem label="Списока продукции"/>
+                   <menuitem label="Списока прайсов"/>
+                    <menuitem label="Списока счетов"/>
+                  <menuitem label="Движения денег"/>
+                   <menuitem label="Движения продуктов"/>
+                   
+            </menuitem>
+            <menuitem label="|  ПОМОЩЬ  |" type="check" >
+            <menuitem label="О программе" enabled="False"/>
+            <menuitem label="Помощь пользователю"/>
+            </menuitem>
+          
+        </mx:XMLList>
+    </mx:MenuBar>
+    <mx:Label id="test" text="" />
+    </mx:HBox>
+    
+    <mx:Canvas id="mainCanvas" width="100%" >
+    	
+    	
+    </mx:Canvas>
+    </mx:VBox>
+    </mx:Canvas>
+</mx:Application>
