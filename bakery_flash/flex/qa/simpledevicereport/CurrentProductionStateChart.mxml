@@ -16,7 +16,7 @@
 			import mx.collections.ArrayCollection;
 			
 			[Bindable]			
-			public var devicesState:ArrayCollection = new ArrayCollection();
+			public var report:ArrayCollection = new ArrayCollection();
 			public var mainDataSvcUrl:String;
 			
 			public function refresh():void{
@@ -37,7 +37,7 @@
 					httpFaultHandler(event);
 					return;
 				}
-				devicesState = event.result.availableDevicesReport;
+				report = event.result.report;
 			}			
 		]]>
 	</mx:Script>
@@ -45,18 +45,12 @@
 	<mx:VBox
 		width="100%"
 		height="100%">
-		<mx:PieChart 
-			id="piechart"
+		<mx:BarChart 
 			width="100%"
-			height="100%"
-			visible="true"
-			showDataTips="true">
-			<mx:series>
-				<mx:PieSeries displayName="Состояние устройств" 
-					field="amount"
-					nameField="type"
-					dataProvider="{devicesState}"/>					
+			height="100%">
+			<mx:series>				
+				<mx:BarSeries yField="productionPlan" xField="hoursLeft"/>
 			</mx:series>
-		</mx:PieChart>		
+		</mx:BarChart>
 	</mx:VBox>
 </mx:VBox>

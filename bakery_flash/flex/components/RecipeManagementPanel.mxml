@@ -100,7 +100,8 @@
 			}
 			
 			public function init():void{
-				createNew();				
+				createNew();		
+				childCreateNew();		
 				mainSvc.cancel();
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);				
@@ -234,7 +235,7 @@
 				tiName.text="";
 			}
 			function childCreateNew():void{
-				childModel.id="";			
+				childModel.id=null;			
 				cbChildProductType.selectedIndex = -1;				
 				tiChildResultFormula.text = "";
 			}

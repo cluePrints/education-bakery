@@ -45,18 +45,12 @@
 	<mx:VBox
 		width="100%"
 		height="100%">
-		<mx:PieChart 
-			id="piechart"
+		<mx:BarChart 
 			width="100%"
-			height="100%"
-			visible="true"
-			showDataTips="true">
-			<mx:series>
-				<mx:PieSeries displayName="Состояние устройств" 
-					field="amount"
-					nameField="type"
-					dataProvider="{devicesState}"/>					
+			height="100%">
+			<mx:series>				
+				<mx:BarSeries yField="productionPlan" xField=""/>
 			</mx:series>
-		</mx:PieChart>		
+		</mx:BarChart>
 	</mx:VBox>
 </mx:VBox>
