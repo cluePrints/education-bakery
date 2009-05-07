@@ -5,13 +5,12 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bakery.server.controllers.svc.impl.AbstractCommand;
 import org.bakery.server.persistence.DAOFacade;
 import org.bakery.server.util.LoggingUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-public class SvcController extends AbstractController implements ISvcController{
+public class SimpleSvcController extends AbstractController implements ISvcController {
 	private DAOFacade DAOFacade;
 
 	@Override
@@ -27,8 +26,8 @@ public class SvcController extends AbstractController implements ISvcController{
 			response.setContentType("text/html;charset=UTF-8");
 			String svcClassName = svcName;
 			Class svcClass = Class.forName(svcClassName);
-			AbstractCommand command = (AbstractCommand) svcClass.newInstance();
-			command.init(this);
+			ControllerAwareCommand command = (ControllerAwareCommand) svcClass.newInstance();
+
 			command.execute(request, response, this);
 
 		} catch (Exception ex) {			
@@ -45,6 +44,9 @@ public class SvcController extends AbstractController implements ISvcController{
 		out.write("  </exception>");
 		out.write("</internalServerError>");
 	}
+	/* (non-Javadoc)
+	 * @see org.bakery.server.controllers.svc.ISvcController#getDAOFacade()
+	 */
 	public DAOFacade getDAOFacade() {
 		return DAOFacade;
 	}

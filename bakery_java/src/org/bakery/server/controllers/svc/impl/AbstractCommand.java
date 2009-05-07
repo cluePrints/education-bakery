@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bakery.server.controllers.svc.ControllerAwareCommand;
+import org.bakery.server.controllers.svc.ISvcController;
 import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
@@ -36,7 +37,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 	 */
 
 	public void execute(HttpServletRequest request,
-			HttpServletResponse response, SvcController controller)
+			HttpServletResponse response, ISvcController controller)
 			throws Exception {
 		/* Extract all from request */
 		AbstractFormMode mode = AbstractFormMode.valueOf(request
@@ -158,7 +159,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 	}
 
 	protected abstract void executeInternal(HttpServletRequest request,
-			HttpServletResponse response, SvcController controller,
+			HttpServletResponse response, ISvcController controller,
 			AbstractFormMode mode) throws Exception;
 
 	public abstract void init(SvcController controller) throws Exception;

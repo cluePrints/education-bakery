@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bakery.server.controllers.svc.ISvcController;
 import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
@@ -22,7 +23,7 @@ public class RecipeSvc extends AbstractCommand{
 	}
 	@Override
 	protected void executeInternal(HttpServletRequest request,
-			HttpServletResponse response, SvcController controller,
+			HttpServletResponse response, ISvcController controller,
 			AbstractFormMode mode) throws Exception {
 		try{
 			long id = Long.parseLong(request.getParameter("spec_id"));

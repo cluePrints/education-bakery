@@ -30,7 +30,8 @@
 			column="device_parameter_unit"/>		
 		<many-to-one
 			name="device"
-			column="device_id"/>
+			column="device_id"
+			fetch="join"/>
 		<set name="recipes"
 			table="recip_parameters"
 			cascade="all">

@@ -133,7 +133,7 @@
 						required="true">												
 						<mx:ComboBox id="cbDeviceParameters"
 							dataProvider="{availableDeviceParameters}"
-							labelField="name" width="160"
+							labelField="textView" width="160"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Активный">

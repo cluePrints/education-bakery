@@ -18,4 +18,8 @@
 	<bean name="/svc.htm" id="svcController" class="org.bakery.server.controllers.svc.SvcController">
 		<property name="DAOFacade" ref="DAOFacade"/>
 	</bean>
+	
+	<bean name="/simpleSvc.htm" id="simpleController" class="org.bakery.server.controllers.svc.SimpleSvcController">
+		<property name="DAOFacade" ref="DAOFacade"/>
+	</bean>
 </beans>

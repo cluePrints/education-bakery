@@ -3,7 +3,7 @@
 	>
 	<mx:Script>
 		<![CDATA[
-			import qualityManager.QualityMain;
+			import qa.QualityMain;
 			import admin.BakeryAdminPanelWrapper;
 			import mx.managers.PopUpManager;
 			import mx.controls.Alert;
