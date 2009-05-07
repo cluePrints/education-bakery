@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="902" height="632">
+<mx:Script>
+	function clearAll(){
+		orderSize.text = "";
+		
+		contragentProvider.selectedIndex = 0;
+		productNameForOrder.selectedIndex = 0;
+	}
+</mx:Script>
+	<mx:Label  text= "НОВЫЙ ДОГОВОР" fontSize="14" y="10" x="134" width="204" fontWeight="bold"/>
+	<mx:VBox x="5" y="41" height="463" width="100%">
+	<mx:HBox>
+	<mx:FormItem label="Договор на поставку" required="true" width="65%" fontWeight="bold" >
+			<mx:CheckBox selected="true" fontWeight="normal" />
+		</mx:FormItem>
+		<mx:FormItem label="Договор на покупку" required="true" width="65%" fontWeight="bold" >
+			<mx:CheckBox selected="false" fontWeight="normal" />
+		</mx:FormItem>
+		</mx:HBox>
+		<mx:FormItem label="Заказчик" required="true" width="65%" fontWeight="bold" >
+			<mx:ComboBox text="" id="contragentCustomer" width="95%" fontWeight="normal" />
+		</mx:FormItem>
+		<mx:FormItem label="Поставщик" required="true" width="65%" fontWeight="bold" >
+			<mx:ComboBox text="" id="contragentProvider" width="95%" fontWeight="normal" />
+		</mx:FormItem>
+		
+		<mx:FormItem label="Дата поставки" required="true" width="95%" fontWeight="bold" >
+			<mx:DateField id="orderDoneDate" fontWeight="normal"  >
+				
+			</mx:DateField>
+		</mx:FormItem>
+		<mx:VBox width="880" height="314">
+			<mx:DataGrid width="818" height="241">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Продукт" />
+					<mx:DataGridColumn headerText="Цена" />
+					<mx:DataGridColumn headerText="Количество" />
+					<mx:DataGridColumn headerText="един.изм" />
+					<mx:DataGridColumn headerText="Склад-заказчика" />
+					
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:HBox>
+		<mx:FormItem label="Продукция" required="true" width="55%" fontWeight="bold">
+			<mx:ComboBox id="productNameForOrder" width="95%" fontWeight="normal"  />
+		</mx:FormItem>
+		<mx:FormItem label="Размер заказа" required="true" width="55%" fontWeight="bold" >
+			<mx:TextInput text="" id="orderSize" width="95%" fontWeight="normal" />
+		</mx:FormItem>
+		<mx:Button label="Добавить в заказ" />
+		<mx:Button label="Удалить" />
+		</mx:HBox>
+		</mx:VBox>
+		<mx:HBox width="100%" height="33">
+		<mx:Button label="Сохранить договор" />
+		<mx:Button label="Очистить"  click="clearAll()"/>
+		<mx:Button label="Выход"/>
+		</mx:HBox>
+	</mx:VBox>
+</mx:Canvas>

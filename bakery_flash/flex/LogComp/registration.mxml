@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="640" height="518">
+<mx:Script>
+function clearAll(){
+	itContragentName.text = "";
+	itContragentAddress.text = "";
+	itContragentWareHous.text = "";
+	itContragentWareHousAddress.text = "";
+	itContragentWareHousAddress.text = "";
+	itContragentAccount.text = "";
+}
+</mx:Script>
+	<mx:Label text="РЕГИСТРАЦИЯ НОВОГО КОНТРАГЕНТА"  fontSize="14" height="22" width="514" x="63" y="10" fontWeight="bold"/>
+	<mx:VBox x="44" y="57" height="174" width="521" fontWeight="bold">
+		
+		<mx:FormItem label="Контрагент" required="true" width="90%" fontWeight="bold"  fontSize="12" >
+			<mx:TextInput id="itContragentName" width="95%" fontWeight="normal" >
+			</mx:TextInput>
+		</mx:FormItem>
+		<mx:FormItem label="Адресс" required="true" width="90%" fontWeight="bold" >
+			<mx:TextInput id="itContragentAddress" width="95%" fontWeight="normal"  >
+			</mx:TextInput>
+		</mx:FormItem>
+		<mx:FormItem label="Скалад" required="true" width="90%" fontWeight="bold"  >
+			<mx:TextInput id="itContragentWareHous" width="95%" fontWeight="normal"  >
+			</mx:TextInput>
+		</mx:FormItem>
+		<mx:FormItem label="Адресс склада" required="true" width="90%" fontWeight="bold"  >
+			<mx:TextInput id="itContragentWareHousAddress" width="95%" fontWeight="normal"  >
+			</mx:TextInput>
+		</mx:FormItem>
+		<mx:FormItem label="Номер счета" required="true" width="90%" fontWeight="bold" >
+			<mx:TextInput id="itContragentAccount" width="95%" fontWeight="normal"  >
+			</mx:TextInput>
+		</mx:FormItem>
+		<mx:FormItem label="child" width="90%" fontWeight="bold" >
+						<mx:CheckBox id="cbContragentChild"/>		
+		</mx:FormItem>
+	</mx:VBox>
+	<mx:HBox x="44" y="239" width="521" height="66">
+		<mx:Button label="Сохранить" />
+		<mx:Button label="Очистить" click="clearAll()"/>
+		<mx:Button label="Выход" />
+	</mx:HBox>
+</mx:Canvas>

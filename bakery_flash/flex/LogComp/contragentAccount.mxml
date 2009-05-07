@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="520" height="384" fontSize="24">
+<mx:Script>
+	function clearAll(){
+		contragentName.selectedIndex = 0;
+		orderName.selectedIndex = 0;
+		date.text = "";
+	}
+</mx:Script>
+	<mx:Label text="ОПЛАТА СЧЕТА КОНТРАГЕНТОМ" x="58.5" y="10" fontSize="14" fontWeight="bold"/>
+	<mx:VBox x="10" y="53" height="100%" width="510">
+	<mx:FormItem label="Контрагент" width="90%" fontWeight="bold" fontSize="10">
+		<mx:ComboBox id="contragentName" width="95%"  fontWeight="normal"/>
+	</mx:FormItem>
+	<mx:FormItem label="Заказ" width="90%" fontWeight="bold" fontSize="10">
+		<mx:ComboBox id="orderName" width="95%" fontWeight="normal"/>
+	</mx:FormItem>
+	<mx:FormItem label="Дата перевода" width="90%" fontWeight="bold" fontSize="10">
+		<mx:DateField id="date" fontWeight="normal">
+		</mx:DateField>
+	</mx:FormItem>
+	<mx:HBox width="100%">
+		<mx:Button label="Перечислить"  fontSize="10"/>
+		<mx:Button label="Очистить"  click="clearAll()" fontSize="10"/>
+		<mx:Button label="Выход" fontSize="10"/>
+	</mx:HBox>
+	</mx:VBox>
+</mx:Canvas>

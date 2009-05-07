@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+	<mx:Label text="АРМ менеджера - логиста"  fontSize="24" horizontalCenter="-39" verticalCenter="-133"/>
+	<mx:Text x="10" y="43" text="Описание программы. Назначение и т.п." width="380" height="247"/>
+	
+</mx:Canvas>
