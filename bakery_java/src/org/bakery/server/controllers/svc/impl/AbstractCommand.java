@@ -81,7 +81,18 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		BeanInfo inf = java.beans.Introspector.getBeanInfo(clazz, Object.class);
 		PropertyDescriptor[] propDescriptors = inf.getPropertyDescriptors();
 		for (PropertyDescriptor prop : propDescriptors) {
-
+			// validation
+			if (AbstractFormMode.EDIT.equals(mode)
+					|| AbstractFormMode.NEW.equals(mode)) {
+				ValidationHelper.validateEmpty(command, prop,
+						beanValidationErrors);
+				ValidationHelper.validateStringLen(command, prop,
+						beanValidationErrors);
+				// XXX: get current date from server!
+				ValidationHelper.validateGreaterThen(command, prop,
+						beanValidationErrors, new Date(0));
+			}
+			
 			Class propType = prop.getPropertyType();
 			Object propValue = null;
 			String strVal = request.getParameter(prop.getName());
@@ -144,15 +155,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 			} catch (Exception e) {
 				// validation will be later
 			} finally {
-				if (AbstractFormMode.EDIT.equals(mode)
-						|| AbstractFormMode.NEW.equals(mode)) {
-					ValidationHelper.validateEmpty(command, prop,
-							beanValidationErrors);
-					ValidationHelper.validateStringLen(command, prop,
-							beanValidationErrors);
-					ValidationHelper.validateGreaterThen(command, prop,
-							beanValidationErrors, new Date(0));
-				}
+				
 			}
 		}
 
