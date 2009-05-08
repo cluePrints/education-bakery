@@ -8,7 +8,7 @@
 		method="POST"
 		url="{warehouseDataSvcUrl}"
 		result="httpwarehouseResultHandler(event)"
-		fault="httpFaultHandler(event)"/>
+		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
 		<![CDATA[
 			import mx.validators.RegExpValidator;
@@ -22,16 +22,20 @@
 			public var warehouseDataSvcUrl:String;
 			public var addressDataSvcUrl:String;
 			
+			
+			var util:Util = new Util();			
 			[Bindable]
-            private var warehouses:*;
+            private var warehouses:ArrayCollection = new ArrayCollection();
             [Bindable]
-            private var availableOwners:*;
+            private var availableOwners:ArrayCollection = new ArrayCollection();
 			[Bindable]
-            private var owners:*;
+            private var owners:ArrayCollection = new ArrayCollection();
             [Bindable]
-            private var availableAddresses:*;
+            private var availableAddresses:ArrayCollection = new ArrayCollection();
 			[Bindable]
-            private var addresses:*;
+            private var addresses:ArrayCollection = new ArrayCollection();
+           	[Bindable]
+            private var errors:ArrayCollection = new ArrayCollection();
 			
 			public function init():void{
 				createNew();
@@ -40,19 +44,17 @@
 				warehouseSvc.send(formModel);
 				//addressSvc.send(formModel);				
 			}
-			private function httpFaultHandler(event:Event):void{
-				Alert.show("HTTP Ошибка!!");
-			} 
 			private function httpwarehouseResultHandler(event:*):void{
-				warehouses = event.result.mainData;
+				errors = util.getHttpRespondedErrors(event);
+				warehouses = util.extractItemCollection(event.result.mainData, 'warehouse');
 				
-				availableAddresses = event.result.availableAddresses;
-				addresses = event.result.addresses;
-				
-				availableOwners = event.result.availableContragents;
-				owners = event.result.contragents;
+				addresses = util.extractItemCollection(event.result.addresses, 'address');
+				availableAddresses = util.getActiveItems(addresses);
+												
+				owners = util.extractItemCollection(event.result.contragents, 'contragent');
+				availableOwners = util.getActiveItems(owners);
 				if (warehouses != null) {
-					warehouses["warehouse"].filterFunction = mainFilterFunction;
+					warehouses.filterFunction = mainFilterFunction;
 				}
 			} 
  
@@ -71,16 +73,16 @@
 			function bindSelected():void{
 				if (dgData.selectedIndex>=0){
 					cbActive.selected = (dgData.selectedItem.active == 1);
-					tiId.text=dgData.selectedItem.id;
+					formModel.id=dgData.selectedItem.id;
 					tiName.text=dgData.selectedItem.name;	
-					cbOwners.selectedIndex=getWarehouseOwnerPos(dgData.selectedItem.owner);
+					cbOwners.selectedIndex=util.getItemPos(availableOwners, dgData.selectedItem.owner);
 					formModel.owner=dgData.selectedItem.owner;
-					cbAddresses.selectedIndex=getWarehouseAddressPos(dgData.selectedItem.address);
+					cbAddresses.selectedIndex=util.getItemPos(availableAddresses, dgData.selectedItem.address);
 					formModel.address=dgData.selectedItem.address;				
 				}													
 			}
 			function createNew():void{
-				tiId.text="";
+				formModel.id="";
 				cbActive.selected=true;
 				formModel.mode="NEW";
 				formModel.owner=0;
@@ -103,62 +105,9 @@
 			function activeToString(item:Object, column:DataGridColumn):String{				
 				return (item.active>0 ? "active" : "not active"); 
 			}
-			function getAddressIdByWarehouseId(_id:int){
-				var a = availableAddresses[id==_id.toString()].id;
-				return a;
-			}
-			function getWarehouseAddressPos(_addressId:int){
-				if (availableAddresses == undefined)
-					return -1;
-				var result=0;
-				for each (var address in availableAddresses.address){ 
-					if (address.id == _addressId) {
-						return result;
-					}
-					result++;
-				} 		
-				return -1;		
-			}
-			function getOwnerIdByWarehouseId(_id:int){
-				var a = availableOwners[id==_id.toString()].id;
-				return a;
-			}
-			function getWarehouseOwnerPos(_ownerId:int){
-				if (availableOwners == undefined)
-					return -1;
-				var result=0;
-				for each (var owner in availableOwners.contragent){ 
-					if (owner.id == _ownerId) {
-						return result;
-					}
-					result++;
-				} 		
-				return -1;		
-			}
-			function getWarehouseOwner(_id:int){
-				if (owners == undefined)
-					return null;
-				var result=null;
-				for each (var owner in owners.contragent){ 
-					if (owner.id == _id) {
-						result = owner;
-					}
-				} 
-				return result;
-			}
-			function getWarehouseAddress(_id:int){
-				if (addresses == undefined)
-					return null;
-				var result=null;
-				for each (var address in addresses.address){ 
-					if (address.id == _id) {
-						result = address;
-					}
-				} 
-				return result;
-			}
+
 			function getWarehouseOwnerName(item:Object, column:DataGridColumn):String{
-				var tmp = getWarehouseOwner(item.owner);
+				var tmp = util.getItemById(owners, item.owner);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -166,7 +115,7 @@
 				}					
 			}
 			function getWarehouseAddressName(item:Object, column:DataGridColumn):String{
-				var tmp = getWarehouseAddress(item.address);
+				var tmp = util.getItemById(addresses, item.address);
 				if (tmp == null) {
 					return "";
 				} else {
@@ -177,10 +126,9 @@
 	</mx:Script>			
 	<mx:Model id="formModel">		
 		<root>
-			<mode>{tiId.text as int>0 ? tiMode.text : &quot;NEW&quot;}</mode>
-			<owner></owner>
-			<address></address>
-			<id>{tiId.text}</id>		
+			<mode>EDIT</mode>
+			<owner>{cbOwners.selectedItem.id}</owner>
+			<address>{cbAddresses.selectedItem.id}</address>	
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<name>{encodeURI(tiName.text)}</name>
 		</root>		
@@ -191,7 +139,7 @@
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
 				<mx:DataGrid height="100%" width="100%" 
 					id="dgData" 
-					dataProvider="{warehouses['warehouse']}"
+					dataProvider="{warehouses}"
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="70"/>
@@ -204,8 +152,6 @@
 			</mx:VBox>
 			<mx:VBox height="50%" horizontalAlign="center" verticalAlign="center">				
 				<mx:VBox horizontalAlign="left">	
-					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
-					<mx:TextInput id="tiId" visible="false" text=""/>
 					<mx:FormItem label="Название:" 
 						required="true">												
 						<mx:TextInput id="tiName"/>
@@ -213,17 +159,15 @@
 					<mx:FormItem label="Владелец:" 
 						required="true">												
 						<mx:ComboBox id="cbOwners"
-							dataProvider="{availableOwners.contragent}"
+							dataProvider="{availableOwners}"
 							labelField="name"
-							change="{formModel.owner=availableOwners.contragent[cbOwners.selectedIndex].id}" width="150"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Адресс:" 
 						required="true">												
 						<mx:ComboBox id="cbAddresses"
-							dataProvider="{availableAddresses.address}"
+							dataProvider="{availableAddresses}"
 							labelField="name"
-							change="{formModel.address=availableAddresses.address[cbAddresses.selectedIndex].id}"
 							width="150"
 							/>
 					</mx:FormItem>
@@ -262,5 +206,13 @@
 				</mx:VBox>
 			</mx:VBox>
 		</mx:HBox>
-			</mx:VBox>
+		</mx:VBox>
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="100%">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
 	</mx:VBox>
