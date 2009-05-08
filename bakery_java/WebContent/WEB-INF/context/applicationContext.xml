@@ -307,12 +307,19 @@
 					value="org.bakery.server.domain.accounting.ProductionPlan" />
 				<property name="querySearchByName">
 					<value>
-						from ProductionPlan dp where (:searchName like "") OR (1==1)  
+						from ProductionPlan dp 
+							left join fetch dp.order ord 
+								left join fetch ord.provider prov 
+								left join fetch ord.consumer cons							
+						where
+							 (:searchName like prov.name)
+						    or
+						     (:searchName like cons.name) 
 					</value>
 				</property>
 				<property name="queryGetAvailable">
 					<value>
-						from ProductionPlan dp where dp.active>0
+						from ProductionPlan dp where dp.startDate is null
 					</value>
 				</property>
 			</bean>

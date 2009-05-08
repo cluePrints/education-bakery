@@ -80,29 +80,18 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		Class clazz = command.getClass();
 		BeanInfo inf = java.beans.Introspector.getBeanInfo(clazz, Object.class);
 		PropertyDescriptor[] propDescriptors = inf.getPropertyDescriptors();
-		for (PropertyDescriptor prop : propDescriptors) {
-			// validation
-			if (AbstractFormMode.EDIT.equals(mode)
-					|| AbstractFormMode.NEW.equals(mode)) {
-				ValidationHelper.validateEmpty(command, prop,
-						beanValidationErrors);
-				ValidationHelper.validateStringLen(command, prop,
-						beanValidationErrors);
-				// XXX: get current date from server!
-				ValidationHelper.validateGreaterThen(command, prop,
-						beanValidationErrors, new Date(0));
-			}
-			
+		for (PropertyDescriptor prop : propDescriptors) {			
 			Class propType = prop.getPropertyType();
 			Object propValue = null;
 			String strVal = request.getParameter(prop.getName());
 			if (strVal == null)
 				continue;
 
-			strVal = URLDecoder.decode(strVal, "utf-8");
-			if (strVal == null)
-				continue;
+			strVal = URLDecoder.decode(strVal, "utf-8");			
 			try {
+				if (strVal == null) {
+					continue;
+				}	
 				/* BusinessEntity - just try to bind id */
 				if (BusinessEntity.class.isAssignableFrom(propType)) {
 					propValue = propType.newInstance();
@@ -155,7 +144,17 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 			} catch (Exception e) {
 				// validation will be later
 			} finally {
-				
+				// validation
+				if (AbstractFormMode.EDIT.equals(mode)
+						|| AbstractFormMode.NEW.equals(mode)) {
+					ValidationHelper.validateEmpty(command, prop,
+							beanValidationErrors);
+					ValidationHelper.validateStringLen(command, prop,
+							beanValidationErrors);
+					// XXX: get current date from server!
+					ValidationHelper.validateGreaterThen(command, prop,
+							beanValidationErrors, new Date(0));
+				}
 			}
 		}
 
