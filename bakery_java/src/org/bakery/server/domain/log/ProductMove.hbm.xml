@@ -21,6 +21,7 @@
 			column="product_move_source"/>
 		<many-to-one
 			name="moneyMove"
-			column="product_move_money_move"/>		
+			column="product_move_money_move"
+			outer-join="true"/>		
 	</class>
 </hibernate-mapping>

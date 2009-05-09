@@ -88,7 +88,8 @@
 				<property name="targetClassName"
 					value="org.bakery.server.domain.accounting.Account" />
 				<property name="querySearchByName"
-					value="from Account t left join fetch t.owner a where t.name like :searchName order by a.name asc, t.active desc, t.name asc" />
+					value="from Account t 
+							left join fetch t.owner a where t.name like :searchName order by a.name asc, t.active desc, t.name asc" />
 				<property name="queryGetAvailable"
 					value="from Account a left join fetch a.owner where a.active>0 order by a.active desc, a.name asc" />
 			</bean>
@@ -206,29 +207,46 @@
 					value="org.bakery.server.domain.log.ProductMove" />
 				<property name="querySearchByName">
 					<value>
-						from ProductMove pmv left join fetch
-						pmv.destinationWarehouse dw left join fetch
-						dw.owner left join fetch pmv.sourceWarehouse sw
-						left join fetch sw.owner left join fetch
-						pmv.moneyMove mmv left join fetch
-						mmv.destinationAccount.owner left join fetch
-						mmv.sourceAccount.owner left join fetch
-						mmv.price pr left join fetch pr.product where
-						pmv.moneyMove.desc like :searchName order by
-						pmv.date asc
+						from ProductMove pmv
+							left join fetch	pmv.destinationWarehouse dw
+								left join fetch	dw.owner
+								left join fetch dw.address dwa
+							left join fetch pmv.sourceWarehouse sw
+								left join fetch sw.address swa
+								left join fetch sw.owner 
+							left join fetch	pmv.moneyMove mmv
+								left join fetch	mmv.destinationAccount da
+									left join fetch da.owner daown 
+								left join fetch	mmv.sourceAccount sa
+									left join fetch sa.owner saown
+								left join fetch	mmv.price pr
+									left join fetch pr.product									
+							left join fetch mmv.order ord
+							 	left join fetch ord.provider
+							 	left join fetch ord.consumer							
+						 where pmv.moneyMove.desc like :searchName order by pmv.date asc
 					</value>
 				</property>
 				<property name="queryGetAvailable">
 					<value>
-						from ProductMove pmv left join fetch
-						pmv.destinationWarehouse dw left join fetch
-						dw.owner left join fetch pmv.sourceWarehouse sw
-						left join fetch sw.owner left join fetch
-						pmv.moneyMove mmv left join fetch
-						mmv.destinationAccount.owner left join fetch
-						mmv.sourceAccount.owner left join fetch
-						mmv.price pr left join fetch pr.product order by
-						pmv.date asc
+						from ProductMove pmv
+							left join fetch	pmv.destinationWarehouse dw
+								left join fetch	dw.owner
+								left join fetch dw.address dwa
+							left join fetch pmv.sourceWarehouse sw
+								left join fetch sw.address swa
+								left join fetch sw.owner 
+							left join fetch	pmv.moneyMove mmv
+								left join fetch	mmv.destinationAccount da
+									left join fetch da.owner daown 
+								left join fetch	mmv.sourceAccount sa
+									left join fetch sa.owner saown
+								left join fetch	mmv.price pr
+									left join fetch pr.product									
+							left join fetch mmv.order ord
+							 	left join fetch ord.provider
+							 	left join fetch ord.consumer							
+						 order by pmv.date asc
 					</value>
 				</property>
 
@@ -307,12 +325,19 @@
 					value="org.bakery.server.domain.accounting.ProductionPlan" />
 				<property name="querySearchByName">
 					<value>
-						from ProductionPlan dp where (:searchName like "") OR (1==1)  
+						from ProductionPlan dp 
+							left join fetch dp.order ord 
+								left join fetch ord.provider prov 
+								left join fetch ord.consumer cons							
+						where
+							 (:searchName like prov.name)
+						    or
+						     (:searchName like cons.name) 
 					</value>
 				</property>
 				<property name="queryGetAvailable">
 					<value>
-						from ProductionPlan dp where dp.active>0
+						from ProductionPlan dp where dp.startDate is null
 					</value>
 				</property>
 			</bean>

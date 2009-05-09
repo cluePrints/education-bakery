@@ -1,9 +1,9 @@
-﻿CREATE TABLE BAKERY.addresses (
+CREATE TABLE BAKERY.addresses (
        address_id INTEGER NOT NULL AUTO_INCREMENT
      , address_address CHAR(250)
      , address_active INT NOT NULL DEFAULT 1
      , PRIMARY KEY (address_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.recips (
        recip_id INTEGER NOT NULL AUTO_INCREMENT
@@ -12,11 +12,11 @@ CREATE TABLE BAKERY.recips (
      , recip_active INT NOT NULL DEFAULT 1
      , recip_time INTEGER NOT NULL
      , PRIMARY KEY (recip_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.TABLE_13 (
        COLUMN_1 CHAR(10)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.devices (
        device_id INTEGER NOT NULL AUTO_INCREMENT
@@ -24,14 +24,14 @@ CREATE TABLE BAKERY.devices (
      , device_name CHAR(100) NOT NULL DEFAULT '<unknown>'
      , device_desc CHAR(250)
      , PRIMARY KEY (device_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.units (
        unit_id INTEGER NOT NULL AUTO_INCREMENT
      , unit_name CHAR(100) NOT NULL DEFAULT '<unknown>'
      , unit_active INT NOT NULL DEFAULT 1
      , PRIMARY KEY (unit_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.product_types (
        product_type_id INTEGER NOT NULL AUTO_INCREMENT
@@ -42,7 +42,7 @@ CREATE TABLE BAKERY.product_types (
      , INDEX (product_type_unit)
      , CONSTRAINT FK_product_types_1 FOREIGN KEY (product_type_unit)
                   REFERENCES BAKERY.units (unit_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.contragents (
        contragent_id INTEGER NOT NULL AUTO_INCREMENT
@@ -54,7 +54,7 @@ CREATE TABLE BAKERY.contragents (
      , INDEX (contragent_address)
      , CONSTRAINT FK_contragents_1 FOREIGN KEY (contragent_address)
                   REFERENCES BAKERY.addresses (address_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.accounts (
        account_id INTEGER NOT NULL
@@ -66,7 +66,7 @@ CREATE TABLE BAKERY.accounts (
      , INDEX (account_contragent)
      , CONSTRAINT FK_accounts_1 FOREIGN KEY (account_contragent)
                   REFERENCES BAKERY.contragents (contragent_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.price_list_heads (
        price_list_head_id INTEGER NOT NULL AUTO_INCREMENT
@@ -78,7 +78,7 @@ CREATE TABLE BAKERY.price_list_heads (
      , INDEX (price_list_head_contragent)
      , CONSTRAINT FK_price_lists_1 FOREIGN KEY (price_list_head_contragent)
                   REFERENCES BAKERY.contragents (contragent_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.price_list_items (
        price_list_item_id INTEGER NOT NULL AUTO_INCREMENT
@@ -93,7 +93,7 @@ CREATE TABLE BAKERY.price_list_items (
      , INDEX (price_list_product_type)
      , CONSTRAINT FK_price_list_items_2 FOREIGN KEY (price_list_product_type)
                   REFERENCES BAKERY.product_types (product_type_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.product_warehouses (
        product_warehouse_id INTEGER NOT NULL AUTO_INCREMENT
@@ -108,7 +108,7 @@ CREATE TABLE BAKERY.product_warehouses (
      , INDEX (product_warehouse_owner)
      , CONSTRAINT FK_product_warehouses_2 FOREIGN KEY (product_warehouse_owner)
                   REFERENCES BAKERY.contragents (contragent_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.device_parameters (
        device_parameter_id INTEGER NOT NULL AUTO_INCREMENT
@@ -126,7 +126,7 @@ CREATE TABLE BAKERY.device_parameters (
      , INDEX (device_id)
      , CONSTRAINT FK_device_parameters_2 FOREIGN KEY (device_id)
                   REFERENCES BAKERY.devices (device_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.orders (
        order_id INTEGER NOT NULL AUTO_INCREMENT
@@ -139,7 +139,7 @@ CREATE TABLE BAKERY.orders (
      , INDEX (order_consumer)
      , CONSTRAINT FK_orders_1 FOREIGN KEY (order_consumer)
                   REFERENCES BAKERY.contragents (contragent_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.money_moves (
        money_move_id INTEGER NOT NULL AUTO_INCREMENT
@@ -160,7 +160,7 @@ CREATE TABLE BAKERY.money_moves (
      , INDEX (money_move_product)
      , CONSTRAINT FK_money_moves_3 FOREIGN KEY (money_move_product)
                   REFERENCES BAKERY.price_list_items (price_list_item_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.plans (
        plan_id INTEGER NOT NULL AUTO_INCREMENT
@@ -177,7 +177,7 @@ CREATE TABLE BAKERY.plans (
      , INDEX (plan_id)
      , CONSTRAINT FK_plans_3 FOREIGN KEY (plan_id)
                   REFERENCES BAKERY.plans (plan_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.recip_effects (
        recip_effect_id INTEGER NOT NULL AUTO_INCREMENT
@@ -192,7 +192,7 @@ CREATE TABLE BAKERY.recip_effects (
      , INDEX (recip_effect_recip)
      , CONSTRAINT FK_recip_effects_2 FOREIGN KEY (recip_effect_recip)
                   REFERENCES BAKERY.recips (recip_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.recip_parameters (
        recip_id INTEGER NOT NULL
@@ -203,18 +203,19 @@ CREATE TABLE BAKERY.recip_parameters (
      , INDEX (device_parameter_id)
      , CONSTRAINT FK_recip_parameters_2 FOREIGN KEY (device_parameter_id)
                   REFERENCES BAKERY.device_parameters (device_parameter_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.measures (
        measure_id INTEGER NOT NULL AUTO_INCREMENT
      , measure_value FLOAT NOT NULL
      , measure_device_parameter INTEGER NOT NULL
      , measure_time DATETIME NOT NULL
+     , measure_active INTEGER
      , PRIMARY KEY (measure_id)
      , INDEX (measure_device_parameter)
      , CONSTRAINT FK_measures_1 FOREIGN KEY (measure_device_parameter)
                   REFERENCES BAKERY.device_parameters (device_parameter_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.product_moves (
        product_move_id INT NOT NULL AUTO_INCREMENT
@@ -235,4 +236,5 @@ CREATE TABLE BAKERY.product_moves (
      , INDEX (product_move_money_move)
      , CONSTRAINT FK_product_moves_5 FOREIGN KEY (product_move_money_move)
                   REFERENCES BAKERY.money_moves (money_move_id)
-)DEFAULT CHARSET=utf8;
+) DEFAULT CHARSET=utf8;
+

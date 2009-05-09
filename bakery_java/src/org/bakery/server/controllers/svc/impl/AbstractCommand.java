@@ -89,9 +89,6 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 
 			strVal = URLDecoder.decode(strVal, "utf-8");			
 			try {
-				if (strVal == null) {
-					continue;
-				}	
 				/* BusinessEntity - just try to bind id */
 				if (BusinessEntity.class.isAssignableFrom(propType)) {
 					propValue = propType.newInstance();
