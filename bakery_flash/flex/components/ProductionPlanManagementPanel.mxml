@@ -17,7 +17,7 @@
 			<id>{tiId.text}</id>	
 			<active>{cbActive.selected == true ? "1" : "0"}</active>	
 			<startDate>{dfStartDate.text}</startDate>
-			<order>({cbOrder.selectedItem.id})</order>
+			<order>{cbOrder.selectedItem.id}</order>
 			<recipe>{cbRecipe.selectedItem.id}</recipe>
 			
 			
@@ -67,7 +67,7 @@
 				orders = util.extractItemCollection(event.result.orders, 'order');
 				availableOrders = util.getActiveItems(orders);
 				
-				recipe = util.extractItemCollection(event.result.recipe, 'recipe');
+				recipe = util.extractItemCollection(event.result.recipes, 'recipe');
 				availableRecipe = util.getActiveItems(recipe);
 		
 			
@@ -112,7 +112,7 @@
 				bindSelected();
 			}
 			function saveSelected():void{
-				
+		
 				formModel.mode="EDIT";
 				mainSvc.cancel();	
 				mainSvc.send(formModel);
