@@ -35,8 +35,21 @@
 				formModel.mode="FETCH";
 				contragentSvc.send(formModel);				
 			}
-
+			private var selectedMainId:int=-1;
+			private function saveSelectionState():void{
+				if (dgData.selectedItem != null) {
+					selectedMainId = dgData.selectedItem.id;
+				}
+			}
+			private function loadSelectionState():void{
+				if (selectedMainId>-1) {
+					dgData.selectedIndex = util.getItemPos(contragents, selectedMainId);			
+					bindSelected();
+				}
+			}
 			private function httpContragentResultHandler(event:*):void{
+				saveSelectionState();
+				
 				errors = util.getHttpRespondedErrors(event);
 				contragents = util.extractItemCollection(event.result.mainData, 'contragent');
 				if (contragents != null) {
@@ -45,6 +58,7 @@
 				addresses = util.extractItemCollection(event.result.addresses, 'address');	
 				availableAddresses = util.getActiveItems(addresses);
 				
+				loadSelectionState();
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;

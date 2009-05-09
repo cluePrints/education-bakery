@@ -39,7 +39,21 @@
 			}
 
 			var util:Util = new Util();
+			private var selectedMainId:int=-1;
+			private function saveSelectionState():void{
+				if (dgData.selectedItem != null) {
+					selectedMainId = dgData.selectedItem.id;
+				}
+			}
+			private function loadSelectionState():void{
+				if (selectedMainId>-1) {
+					dgData.selectedIndex = util.getItemPos(productTypes, selectedMainId);			
+					bindSelected();
+				}
+			}
 			private function httpproducttypeResultHandler(event:*):void{
+				saveSelectionState();
+				
 				errors = util.getHttpRespondedErrors(event);
 				productTypes = util.extractItemCollection(event.result.mainData, 'producttype');
 				if (productTypes != null) {
@@ -49,6 +63,7 @@
 				units = util.extractItemCollection(event.result.units, 'unit');
 				availableUnits = util.getActiveItems(units);
 				
+				loadSelectionState();
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;

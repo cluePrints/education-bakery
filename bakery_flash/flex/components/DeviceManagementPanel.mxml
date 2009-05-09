@@ -102,7 +102,28 @@
 					formModel.mode="FETCH";
 					mainSvc.send(formModel);				
 				}
+				private var selectedMainId:int=-1;
+				private var selectedParamId:int=-1;
+				private function saveSelectionState():void{
+					if (dgData.selectedItem != null) {
+						selectedMainId = dgData.selectedItem.id;
+					}
+					if (dgChildData.selectedItem != null) {
+						selectedParamId = dgChildData.selectedItem.id;
+					}
+				}
+				private function loadSelectionState():void{
+					if (selectedMainId>-1) {
+						dgData.selectedIndex = util.getItemPos(mainData, selectedMainId);			
+						bindSelected();
+					}
+					if (selectedParamId>-1) {
+						dgChildData.selectedIndex = util.getItemPos(selectedDeviceParameters, selectedParamId);
+					}			
+				}
 				private function httpResultHandler(event:*):void{
+					saveSelectionState();
+					
 					errors = util.getHttpRespondedErrors(event);
 					mainData = util.extractItemCollection(event.result.mainData, 'device');
 					deviceParameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
@@ -112,11 +133,13 @@
 					if (mainData != null) {
 						mainData.filterFunction = mainFilterFunction;
 					}
+					
+					loadSelectionState();
 				} 
 				private function httpChildResultHandler(event:*):void{
 					errors = util.getHttpRespondedErrors(event);
 					deviceParameters = util.extractItemCollection(event.result.mainData, 'deviceparameter');
-					bindSelected(true);
+					bindSelected();
 				} 
 				private function mainFilterFunction(item:*){
 					var result:Boolean=true;
@@ -130,11 +153,8 @@
 					}
 					return result;
 				} 
-				private var previousSelected:int=-104;
-				
-				function bindSelected(refreshAnyWay:Boolean):void{				
-					if (refreshAnyWay || (dgData.selectedIndex >= 0) && (previousSelected != dgData.selectedIndex)) {
-						previousSelected = dgData.selectedIndex;
+				function bindSelected():void{				
+					if (dgData.selectedIndex >= 0){
 						cbActive.selected = (dgData.selectedItem.active == 1);
 						formModel.id=dgData.selectedItem.id;
 						tiName.text=dgData.selectedItem.name;										
@@ -162,7 +182,7 @@
 					tiChildName.text="<undefined>";			
 				}
 				function cancel():void{
-					bindSelected(false);
+					bindSelected();
 				}
 				function saveSelected():void{
 					formModel.mode="EDIT";
@@ -182,7 +202,7 @@
 					<mx:DataGrid height="114" width="501" 
 						id="dgData" 
 						dataProvider="{mainData}"
-						itemClick="bindSelected(false)">
+						itemClick="bindSelected()">
 						<mx:columns>
 							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="70"/>
 							<mx:DataGridColumn headerText="Наименование" dataField="name"/>

@@ -22,7 +22,7 @@
 			public var mainDataUnitVisualName:String;
 			public var hideEffect:*;
 			[Bindable]
-            private var mainData:*;
+            private var mainData:ArrayCollection = new ArrayCollection();
             [Bindable]
             private var errors:ArrayCollection = new ArrayCollection();
 			public function init():void{
@@ -32,12 +32,27 @@
 				mainSvc.send(formModel);				
 			}
 			var util:Util = new Util();
-			private function httpResultHandler(event:*):void{
-				errors = util.getHttpRespondedErrors(event);
-				mainData = event.result.mainData;
-				if (mainData != null) {
-					mainData[mainDataUnitName].filterFunction = mainFilterFunction;
+				private var selectedMainId:int=-1;
+			private function saveSelectionState():void{
+				if (dgData.selectedItem != null) {
+					selectedMainId = dgData.selectedItem.id;
 				}
+			}
+			private function loadSelectionState():void{
+				if (selectedMainId>-1) {
+					dgData.selectedIndex = util.getItemPos(mainData, selectedMainId);			
+					bindSelected();
+				}
+			}
+			private function httpResultHandler(event:*):void{
+				saveSelectionState();
+				errors = util.getHttpRespondedErrors(event);
+				
+				mainData = util.extractItemCollection(event.result.mainData, mainDataUnitName);
+				if (mainData != null) {
+					mainData.filterFunction = mainFilterFunction;
+				}
+				loadSelectionState();
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;
@@ -73,7 +88,7 @@
 				mainSvc.send(formModel);
 			}
 			function filterRefresh():void{
-				mainData[mainDataUnitName].refresh();
+				mainData.refresh();
 			}
 			function activeToString(item:Object, column:DataGridColumn):String{				
 				return (item.active>0 ? "active" : "not active"); 
@@ -96,7 +111,7 @@
 			
 				<mx:DataGrid height="278" width="99%" 
 					id="dgData" 
-					dataProvider="{mainData[mainDataUnitName]}"
+					dataProvider="{mainData}"
 					itemClick="bindSelected()">
 					<mx:columns>
 						<mx:DataGridColumn headerText="sssИд.Номер" dataField="id" width="50"/>

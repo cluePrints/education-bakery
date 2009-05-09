@@ -38,8 +38,21 @@
 				formModel.mode="FETCH";
 				measuresSvc.send(formModel);				
 			}
-
+			private var selectedMainId:int=-1;
+			private function saveSelectionState():void{
+				if (dgData.selectedItem != null) {
+					selectedMainId = dgData.selectedItem.id;
+				}
+			}
+			private function loadSelectionState():void{
+				if (selectedMainId>-1) {
+					dgData.selectedIndex = util.getItemPos(measures, selectedMainId);			
+					bindSelected();
+				}
+			}
 			private function httpResultHandler(event:*):void{
+				saveSelectionState();
+				
 				errors = util.getHttpRespondedErrors(event);
 				measures = util.extractItemCollection(event.result.mainData, 'measure');
 				if (measures != null) {
@@ -50,6 +63,7 @@
 				deviceParameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
 				availableDeviceParameters  = util.getActiveItems(deviceParameters );
 				
+				loadSelectionState();
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;

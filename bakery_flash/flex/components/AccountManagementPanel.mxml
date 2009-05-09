@@ -35,7 +35,21 @@
 				formModel.mode="FETCH";
 				accountSvc.send(formModel);				
 			}
+			private var selectedMainId:int=-1;
+			private function saveSelectionState():void{
+				if (dgData.selectedItem != null) {
+					selectedMainId = dgData.selectedItem.id;
+				}
+			}
+			private function loadSelectionState():void{
+				if (selectedMainId>-1) {
+					dgData.selectedIndex = util.getItemPos(accounts, selectedMainId);			
+					bindSelected();
+				}
+			}
 			private function httpaccountResultHandler(event:*):void{
+				saveSelectionState();
+				
 				errors = util.getHttpRespondedErrors(event);
 				accounts = util.extractItemCollection(event.result.mainData, 'account');
 				if (accounts != null) {
@@ -43,6 +57,8 @@
 				}
 				contragents = util.extractItemCollection(event.result.contragents, 'contragent');
 				availableContragents = util.getActiveItems(contragents);
+				
+				loadSelectionState();
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;

@@ -40,11 +40,23 @@
 			public function init():void{
 				createNew();
 				formModel.mode="FETCH";
-				//ownerSvc.send(formModel);
-				warehouseSvc.send(formModel);
-				//addressSvc.send(formModel);				
+				warehouseSvc.send(formModel);				
+			}
+			private var selectedMainId:int=-1;
+			private function saveSelectionState():void{
+				if (dgData.selectedItem != null) {
+					selectedMainId = dgData.selectedItem.id;
+				}
+			}
+			private function loadSelectionState():void{
+				if (selectedMainId>-1) {
+					dgData.selectedIndex = util.getItemPos(warehouses, selectedMainId);			
+					bindSelected();
+				}
 			}
 			private function httpwarehouseResultHandler(event:*):void{
+				saveSelectionState();
+				
 				errors = util.getHttpRespondedErrors(event);
 				warehouses = util.extractItemCollection(event.result.mainData, 'warehouse');
 				
@@ -56,6 +68,7 @@
 				if (warehouses != null) {
 					warehouses.filterFunction = mainFilterFunction;
 				}
+				loadSelectionState();
 			} 
  
 			private function mainFilterFunction(item:*){

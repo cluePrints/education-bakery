@@ -117,7 +117,25 @@
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);				
 			}
-
+			private var selectedMainId:int=-1;
+			private var selectedChildId:int=-1;
+			private function saveSelectionState():void{
+				if (dgData.selectedItem != null) {
+					selectedMainId = dgData.selectedItem.id;
+				}
+				if (dgChildData.selectedItem != null) {
+					selectedChildId = dgChildData.selectedItem.id;
+				}
+			}
+			private function loadSelectionState():void{
+				if (selectedMainId>-1) {
+					dgData.selectedIndex = util.getItemPos(mainData, selectedMainId);			
+					bindSelected();
+				}
+				if (selectedChildId>-1) {
+					dgChildData.selectedIndex = util.getItemPos(selectedPriceListItems, selectedChildId);
+				}			
+			}
 			private function httpResultHandler(event:*):void{
 				errors = util.getHttpRespondedErrors(event);
 				units = util.extractItemCollection(event.result.units, 'unit');
@@ -139,7 +157,7 @@
 			private function httpChildResultHandler(event:*):void{
 				errors = util.getHttpRespondedErrors(event);
 				priceListItems = util.extractItemCollection(event.result.mainData, 'pricelistitem');
-				bindSelected(true);
+				bindSelected();
 			} 
 			private function mainFilterFunction(item:*){
 				var result:Boolean=true;
@@ -155,9 +173,9 @@
 			} 
 			private var previousSelected:int=-104;
 			
-			function bindSelected(refreshAnyWay:Boolean):void{	
+			function bindSelected():void{	
 				var item = dgData.selectedItem;			
-				if ((refreshAnyWay) || (dgData.selectedIndex >= 0) && (previousSelected != dgData.selectedIndex)) {
+				if (dgData.selectedIndex >= 0) {
 					previousSelected = dgData.selectedIndex;
 					cbActive.selected = (dgData.selectedItem.active == 1);
 					if (dgData.selectedItem.date != null) {
@@ -185,13 +203,13 @@
 				cbOwner.selectedIndex = -1;
 			}
 			function childCreateNew():void{
-				childModel.id="";
+				childModel.id=null;
 				cbChildActive.selected = true;
 				cbChildProductType.selectedIndex = -1;
 				tiChildPrice.text = "";
 			}
 			function cancel():void{
-				bindSelected(false);
+				bindSelected();
 			}
 			function saveSelected():void{
 				formModel.mode="EDIT";
@@ -212,7 +230,7 @@
 					<mx:DataGrid height="126" width="514" 
 						id="dgData" 
 						dataProvider="{mainData}"
-						itemClick="bindSelected(false)">
+						itemClick="bindSelected()">
 						<mx:columns>
 							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
 							<mx:DataGridColumn headerText="Контрагент" labelFunction="getContragentName" width="150"/>
