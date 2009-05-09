@@ -56,17 +56,21 @@ http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.
 
 
 ===GOOD bug report===
-_What effect on system state you've tried to achieve?_
-{{{I'm trying to start my MoneyMoves tab (admin/MoneyMoves.mxml r120)}}}
+{{{
+What effect on system state you've tried to achieve?
+I'm trying to start my MoneyMoves tab (admin/MoneyMoves.mxml r120
 
-_What steps you've taken to achieve that effect?_
-{{{I'm opening flex application using Flex builder 'Run application' action from menu, which is displayed on right mouse click on 'Bakery.mxml (r119)'.}}}
 
-_What effect on system state you've got? What is wrong?_
-{{{My moneyMoves tab signals 'Contragent name could not be null' every time at tab startup. But no entity update actions taken, thus validation should not be triggered.
-}}}
+What steps you've taken to achieve that effect?
+I'm opening flex application using Flex builder 'Run application' action from menu, which is displayed on right mouse click on 'Bakery.mxml (r119)'.
+
+
+What effect on system state you've got? What is wrong?
+My moneyMoves tab signals 'Contragent name could not be null' every time at tab startup. But no entity update actions taken, thus validation should not be triggered.
+
 Debug Info
-{{{At startup, tab sends such data:
+
+At startup, tab sends such data:
 mode=(FETCH)
 
 To service:
