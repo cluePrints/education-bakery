@@ -97,6 +97,7 @@
 				}
 	            
 				public function init():void{
+					childCreateNew();
 					createNew();				
 					mainSvc.cancel();
 					formModel.mode="FETCH";
@@ -169,12 +170,12 @@
 					}													
 				}
 				function createNew():void{
-					formModel.id="";
+					formModel.id=null;
 					cbActive.selected=true;
 					tiName.text="<undefined>";			
 				}
 				function childCreateNew():void{
-					childModel.id="";
+					childModel.id=null;
 					cbChildActive.selected=true;
 					cbChildMinimized.selected=true;
 					cbChildFixed.selected=false;

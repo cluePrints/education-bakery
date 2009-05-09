@@ -112,7 +112,8 @@
 			}
 			
 			public function init():void{
-				createNew();				
+				createNew();	
+				childCreateNew();			
 				mainSvc.cancel();
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);				
