@@ -85,7 +85,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 			Object propValue = null;
 			String strVal = request.getParameter(prop.getName());
 			if (strVal == null)
-				continue;
+				strVal = "";
 
 			strVal = URLDecoder.decode(strVal, "utf-8");			
 			try {

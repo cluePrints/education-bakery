@@ -22,6 +22,5 @@ public class DeviceSvc extends AbstractCommand {
 			HttpServletResponse response, ISvcController controller, AbstractFormMode mode) throws Exception {
 		SvcHelper.write(response.getWriter(), controller.getDAOFacade().getDeviceParameterDAO(), "deviceParameters");
 		SvcHelper.write(response.getWriter(), controller.getDAOFacade().getUnitDAO(), "units");
-		SvcHelper.writeAvailable(response.getWriter(), controller.getDAOFacade().getUnitDAO(), "unitsAvailable");
 	}
 }

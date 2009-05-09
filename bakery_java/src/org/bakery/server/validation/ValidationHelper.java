@@ -81,20 +81,22 @@ public class ValidationHelper {
 			errors
 					.put(target.getClass().getSimpleName() + "."
 							+ field.getName(),
-							"Неверный формат: допустимы только числа с плавающей точкой. Пример: 3.1");
+							"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ: 3.1");
 		}
 		if (Long.class.isAssignableFrom(type)
 				|| Integer.class.isAssignableFrom(type)) {
 			errors
 			.put(target.getClass().getSimpleName() + "."
 					+ field.getName(),
-					"Неверный формат: допустимы только целые числа. Пример: 6");
+					"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ: 6");
 		}
 	}
 
 	public static void validateStringLen(Object target,
 			PropertyDescriptor prop, Map<String, String> result)
 			throws Exception {
+		if ("textView".equalsIgnoreCase(prop.getName()))
+			return;
 		if (prop.getReadMethod().getReturnType().equals(String.class)) {
 			int maxLen = 50;
 			if (prop.getReadMethod().getAnnotation(MaxLength.class) != null)
@@ -102,8 +104,8 @@ public class ValidationHelper {
 						.value();
 			String value = (String) prop.getReadMethod().invoke(target);
 			if (value != null && value.length() > maxLen) {
-				reportError("Длина текстового поля не может превышать "
-						+ maxLen + " символов.", target, result, prop);
+				reportError("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "
+						+ maxLen + " пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.", target, result, prop);
 			}
 		}
 	}
