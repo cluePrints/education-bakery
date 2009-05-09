@@ -17,7 +17,7 @@
 			<id>{tiId.text}</id>	
 			<active>{cbActive.selected == true ? "1" : "0"}</active>	
 			<startDate>{dfStartDate.text}</startDate>
-			<order>(cbOrder.selectedItem.id)</order>
+			<order>({cbOrder.selectedItem.id})</order>
 			<recipe>{cbRecipe.selectedItem.id}</recipe>
 			
 			
@@ -164,7 +164,7 @@
 						required="true">												
 						<mx:ComboBox id="cbRecipe"
 							dataProvider = "{availableRecipe}"
-							labelField="name" 
+							labelField="textView" 
 							width="150"/>
 					</mx:FormItem>
 					
@@ -172,7 +172,7 @@
 						required="true">												
 						<mx:ComboBox id="cbOrder"
 							dataProvider = "{availableOrders}"
-							labelField="id" 
+							labelField="textView" 
 							width="150"/>
 					</mx:FormItem>
 					</mx:VBox>

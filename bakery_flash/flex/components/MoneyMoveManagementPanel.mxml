@@ -22,7 +22,7 @@
 			<date>{dfDate.text}</date>
 			<order>{cbOrder.selectedItem.id}</order>
 			<price>{cbPriceItem.selectedItem.id}</price>
-			<desc>{tiDesc.text}</desc>
+			<desc>{encodeURI(tiDesc.text)}</desc>
 			
 		</root>		
 	</mx:Model>	
@@ -186,14 +186,14 @@
 						required="true">												
 						<mx:ComboBox id="cbDestinationAccount"
 							dataProvider="{availableAccounts}"
-							labelField="name" 
+							labelField="textView" 
 							width="150"/>
 					</mx:FormItem>
 					<mx:FormItem label="Счет-источник:" 
 						required="true">												
 						<mx:ComboBox id="cbSourceAccount"
 							dataProvider="{availableAccounts}"
-							labelField="name" 
+							labelField="textView" 
 							width="150"/>
 					</mx:FormItem>
 					<mx:FormItem label="Размер:" required="true" >
@@ -212,7 +212,7 @@
 						required="true">												
 						<mx:ComboBox id="cbOrder"
 							dataProvider="{availableOrders}"
-							labelField="id" 
+							labelField="textView" 
 							width="150"/>
 					</mx:FormItem>
 					<mx:FormItem label="Описание:" >
@@ -224,7 +224,7 @@
 					<mx:FormItem label="Прайс" width="182">
 					<mx:ComboBox id="cbPriceItem"
 							dataProvider="{availablePriceItems}"
-							labelField="id" 
+							labelField="textView" 
 							width="100"/>
 					</mx:FormItem>
 				

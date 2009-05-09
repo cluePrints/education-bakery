@@ -117,6 +117,8 @@
                     <menuitem label="Списока счетов"/>
                   <menuitem label="Движения денег"/>
                    <menuitem label="Движения продуктов"/>
+                   <menuitem label="Списока складов"/>
+                   <menuitem label="Списока адесов"/>
                    
             </menuitem>
             <menuitem label="|  ПОМОЩЬ  |" type="check" >

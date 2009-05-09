@@ -1,45 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="640" height="518">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="902" height="634">
+<mx:HTTPService id="addressSvc" 
+		useProxy="false"
+		method="GET"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AddressSvc"
+		result="httpAddressResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+<mx:HTTPService id="warehouseSvc" 
+		useProxy="false"
+		method="GET"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.WarehouseSvc"
+		result="httpWarehouseResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+<mx:HTTPService id="contragentSvc" 
+		useProxy="false"
+		method="GET"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ContragentSvc"
+		result="httpContragentResultHandler(event)"
+		fault="httpFaultHandler(event)"/>	
+<mx:HTTPService id="accountSvc" 
+		useProxy="false"
+		method="GET"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AccountSvc"
+		result="httpAccountResultHandler(event)"
+		fault="httpFaultHandler(event)"/>						
 <mx:Script>
+<![CDATA[
+ import LogComp.Util;
+ private var mainData:*;
+ private var contragent:*;
+ private var warehouse:*;
+ private var contragentId:*;
+  private var addressTest:*;
+ private var address:*;
+ private var addressId:*; 
+ private var wahwhouseAddressId:*;
+ private var addressFlag:*;
+ var util:Util = new Util()
 function clearAll(){
 	itContragentName.text = "";
 	itContragentAddress.text = "";
 	itContragentWareHous.text = "";
 	itContragentWareHousAddress.text = "";
-	itContragentWareHousAddress.text = "";
+	itContragentAccountDesc.text = "";
 	itContragentAccount.text = "";
 }
-</mx:Script>
-	<mx:Label text="РЕГИСТРАЦИЯ НОВОГО КОНТРАГЕНТА"  fontSize="14" height="22" width="514" x="63" y="10" fontWeight="bold"/>
-	<mx:VBox x="44" y="57" height="174" width="521" fontWeight="bold">
+private function httpFaultHandler(event:Event):void{
+					 mx.controls.Alert.show(event.toString())	;
+			
+			} 
+public function getItemIdByName(items:*, name:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.name == name) {
+				result = unit.id;
+			}
+		} 
+		return result;
+	}
+	
+private function httpContragentResultHandler(event:*):void{
 		
-		<mx:FormItem label="Контрагент" required="true" width="90%" fontWeight="bold"  fontSize="12" >
-			<mx:TextInput id="itContragentName" width="95%" fontWeight="normal" >
+		contragent = event.result.mainData['contragent'];
+		contragentId = getItemIdByName(contragent,itContragentName.text);
+	
+		if(contragentId){
+			// save warehouse
+			formModelWarehouse.mode = "EDIT";
+			formModelWarehouse.owner = contragentId;
+			formModelWarehouse.address = wahwhouseAddressId;
+			warehouseSvc.cancel();
+			warehouseSvc.send(formModelWarehouse);
+			
+			//save account
+			formModelAccount.mode = "EDIT";
+			formModelAccount.owner = contragentId;
+			accountSvc.cancel();
+			accountSvc.send(formModelAccount);
+			
+			
+		}
+		
+			} 	
+private function httpWarehouseResultHandler(event:*):void{
+		saveResult();
+			} 			
+private function httpAddressResultHandler(event:*):void{
+		address = event.result.mainData['address'];
+		addressId = getItemIdByName(address,itContragentAddress.text);
+		wahwhouseAddressId = getItemIdByName(address,itContragentWareHousAddress.text);
+		if(addressFlag == 0 && addressId ){
+			formModelContragent.mode = "EDIT";
+			formModelContragent.address = addressId;
+			contragentSvc.cancel();
+			contragentSvc.send(formModelContragent);	
+			addressFlag = addressFlag+1;	
+		}	
+			} 
+private function httpAccountResultHandler(event:*){
+	saveResult();
+}			
+private function save(){
+		addressFlag = 0;
+		formModelAddress.mode="EDIT";
+		formModelWarehouseAddress.mode = "EDIT";
+		addressSvc.cancel();		
+		addressSvc.send(formModelAddress);
+		addressSvc.send(formModelWarehouseAddress);	
+		
+}
+private function saveResult(){
+	clearAll();
+	resultVbox.visible = true;
+
+}
+private function changeInput(comp1:*,comp2:*){
+	okFunction();
+	comp2.text = comp1.text;
+
+}
+private function okFunction(){
+	resultVbox.visible = false;
+}
+		]]>		
+</mx:Script>
+<mx:Model id="formModelContragent">		
+		<root>
+			<mode></mode>
+			<address></address>		
+			<active>{"1"}</active>
+			<child>{cbContragentChild.selected == true ? "1" : "0"}</child>
+			<name>{encodeURI(itContragentName.text)}</name>
+		</root>		
+	</mx:Model>	
+<mx:Model id="formModelAddress">		
+		<root>
+			<mode></mode>
+			<id>{}</id>		
+			<active>{"1"}</active>	
+			<name>{itContragentAddress.text}</name>
+		</root>		
+</mx:Model>	
+<mx:Model id="formModelWarehouseAddress">		
+		<root>
+			<mode></mode>
+			<id>{}</id>		
+			<active>{"1"}</active>	
+			<name>{itContragentWareHousAddress.text}</name>
+		</root>		
+</mx:Model>	
+<mx:Model id="formModelWarehouse">		
+		<root>
+			<mode></mode>
+			<owner></owner>
+			<address></address>
+			<id>{}</id>		
+			<active>{"1"}</active>
+			<name>{encodeURI(itContragentWareHous.text)}</name>
+		</root>		
+	</mx:Model>	
+	
+<mx:Model id="formModelAccount">		
+		<root>
+			<mode></mode>
+			<owner></owner>
+			<id>{}</id>	
+			<desc>{encodeURI(itContragentAccountDesc.text)}</desc>	
+			<active>{"1"}</active>
+			<name>{encodeURI(itContragentAccount.text)}</name>
+		</root>		
+	</mx:Model>				
+	<mx:Label text="		РЕГИСТРАЦИЯ НОВОГО КОНТРАГЕНТА"  fontSize="14" height="22" width="514" x="63" y="10" fontWeight="bold"/>
+	<mx:HBox>
+	<mx:VBox width="25" height="216">
+	</mx:VBox>
+	<mx:VBox x="44" y="57" height="263" width="682" fontWeight="bold">
+		<mx:VBox width="657" height="186">
+		<mx:FormItem label="Контрагент" required="true" width="90%" fontWeight="bold"  >
+			<mx:TextInput id="itContragentName" text="" width="95%" fontWeight="normal"  change="changeInput(itContragentName,resultContragent)">
 			</mx:TextInput>
 		</mx:FormItem>
-		<mx:FormItem label="Адресс" required="true" width="90%" fontWeight="bold" >
-			<mx:TextInput id="itContragentAddress" width="95%" fontWeight="normal"  >
+		<mx:FormItem label="Адрес" required="true" width="90%" fontWeight="bold" >
+			<mx:TextInput id="itContragentAddress" width="95%" fontWeight="normal" change="changeInput(itContragentAddress, resultContragentAddress )" >
 			</mx:TextInput>
 		</mx:FormItem>
 		<mx:FormItem label="Скалад" required="true" width="90%" fontWeight="bold"  >
-			<mx:TextInput id="itContragentWareHous" width="95%" fontWeight="normal"  >
+			<mx:TextInput id="itContragentWareHous" width="95%" fontWeight="normal" change="changeInput(itContragentWareHous,resultContragentWarehouse)"  >
 			</mx:TextInput>
 		</mx:FormItem>
-		<mx:FormItem label="Адресс склада" required="true" width="90%" fontWeight="bold"  >
-			<mx:TextInput id="itContragentWareHousAddress" width="95%" fontWeight="normal"  >
+		<mx:FormItem label="Адрес склада" required="true" width="90%" fontWeight="bold"  >
+			<mx:TextInput id="itContragentWareHousAddress" width="95%" fontWeight="normal" change="changeInput(itContragentWareHousAddress,resultWarehouseAddress)"  >
 			</mx:TextInput>
 		</mx:FormItem>
-		<mx:FormItem label="Номер счета" required="true" width="90%" fontWeight="bold" >
-			<mx:TextInput id="itContragentAccount" width="95%" fontWeight="normal"  >
+		<mx:FormItem label="Счет" required="true" width="90%" fontWeight="bold" >
+			<mx:TextInput id="itContragentAccount" width="95%" fontWeight="normal" change="changeInput(itContragentAccount,resultContragentAccount)"  >
+			</mx:TextInput>
+		</mx:FormItem>
+		<mx:FormItem label=" Описание счета" width="90%" fontWeight="bold" >
+			<mx:TextInput id="itContragentAccountDesc" width="95%" fontWeight="normal" change="changeInput(itContragentAccountDesc,resultContragentAccountDesc)"  >
 			</mx:TextInput>
 		</mx:FormItem>
 		<mx:FormItem label="child" width="90%" fontWeight="bold" >
 						<mx:CheckBox id="cbContragentChild"/>		
 		</mx:FormItem>
+		
 	</mx:VBox>
-	<mx:HBox x="44" y="239" width="521" height="66">
-		<mx:Button label="Сохранить" />
+	
+	<mx:HBox x="44" y="239" width="582" height="32">
+		<mx:Button label="Сохранить"  click="save()"/>
 		<mx:Button label="Очистить" click="clearAll()"/>
-		<mx:Button label="Выход" />
+		
 	</mx:HBox>
-</mx:Canvas>
+	</mx:VBox>
+	</mx:HBox>
+	<mx:HBox width="862" height="267">
+	<mx:VBox width="194" height="209">
+	</mx:VBox>
+	<mx:VBox  id="resultVbox"  width="647" visible="false">
+	<mx:Label text="КОНТРАГЕНТ УСПЕШНО СОХРАНЕН"  fontWeight="bold" />
+	<mx:HBox x="44" y="277" width="596" height="26" >
+		<mx:Label text="Контрагент" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="" width="388" height="22" id="resultContragent"/>
+	</mx:HBox>
+	<mx:HBox width="596" height="25">
+		<mx:Label text="Адрес" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="" width="375" height="22" id="resultContragentAddress"/>
+	</mx:HBox>
+	<mx:HBox x="44" y="277" width="596" height="27">
+		<mx:Label text="Склад" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="" width="388" height="22" id="resultContragentWarehouse"/>
+	</mx:HBox>
+	<mx:HBox x="44" y="277" width="596" height="26">
+		<mx:Label text="Адрес скалада" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="" width="394" height="22" id="resultWarehouseAddress"/>
+	</mx:HBox>
+	<mx:HBox x="44" y="277" width="596" height="32">
+		<mx:Label text="Счет" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="" width="383" height="22" id="resultContragentAccount"/>
+	</mx:HBox>
+	<mx:HBox x="44" y="277" width="596" height="32">
+		<mx:Label text="Описание счета" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="" width="383" height="22" id="resultContragentAccountDesc"/>
+	</mx:HBox>
+	
+	
+	<mx:Button  label="   ОК   " click="okFunction()" width="213"/>
+	
+	</mx:VBox>	
+	</mx:HBox>
+</mx:VBox>

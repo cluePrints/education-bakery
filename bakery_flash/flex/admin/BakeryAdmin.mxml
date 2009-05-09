@@ -16,6 +16,20 @@
 		]]>
 	</mx:Script>
 	<mx:TabNavigator width="1100" height="700">
+		<mx:Canvas label="Движение продуктов" width="100%" height="100%"
+			 x="10" y="51">
+			<comp:ProductMoveManagementPanel
+				
+				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductMoveSvc"
+				width="100%" height="100%"/>	
+		</mx:Canvas>
+		<mx:Canvas label="Планы производства" width="100%" height="100%"
+			 x="10" y="51">
+			<comp:ProductionPlanManagementPanel
+				
+				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductionPlanSvc"
+				width="100%" height="100%"/>	
+		</mx:Canvas>
 	<mx:Canvas label="Движение денег" width="100%" height="100%"
 			 x="10" y="51">
 			<comp:MoneyMoveManagementPanel
