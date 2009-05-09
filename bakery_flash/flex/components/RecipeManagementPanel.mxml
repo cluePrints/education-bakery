@@ -66,7 +66,7 @@
             
    			[Bindable] private var productTypes:ArrayCollection;            
             [Bindable] private var availableProductTypes:ArrayCollection;
-
+            [Bindable] private var choiceAvailableProductTypes:ArrayCollection;
             
 			[Bindable] private var recipeEffects:ArrayCollection;
 			[Bindable] private var selectedRecipeEffects:ArrayCollection = new ArrayCollection();     
@@ -225,6 +225,14 @@
 						}
 					}
 					selectedRecipeEffects.refresh();
+					
+										choiceAvailableProductTypes = util.arrayCopy(availableProductTypes);					
+					if ((selectedRecipeEffects!=null) && (selectedRecipeEffects.length>0)) {										
+						for each (var e in selectedRecipeEffects) {
+							choiceAvailableProductTypes = util.removeElementsWith(choiceAvailableProductTypes, 'id', e.productType);
+						}
+					}
+					choiceAvailableProductTypes.refresh();
 				}													
 			}
 			function createNew():void{
@@ -360,7 +368,7 @@
 				<mx:FormItem label="Ресурс:" width="296"
 					required="true">
 					<mx:ComboBox id="cbChildProductType"
-						dataProvider="{availableProductTypes}"
+						dataProvider="{choiceAvailableProductTypes}"
 						labelField="name" width="210"/>				
 				</mx:FormItem>
 				<mx:FormItem label="Потребляемый:">

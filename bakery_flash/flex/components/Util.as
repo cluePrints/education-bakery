@@ -117,5 +117,28 @@ public class Util{
 		}		
 		return errorCollection;
 	}
+	public function arrayCopy(dest:ArrayCollection):ArrayCollection{
+		var result:ArrayCollection = new ArrayCollection();
+		if ((dest !=null) && (dest.length>0)){
+			var i:int=0;
+			for (i=0; i<dest.length; i++){
+				result.addItem(dest.getItemAt(i));
+			}
+		}
+		return result;	
+	}
+	public function removeElementsWith(dest:ArrayCollection, fldName:String, fldValue:*):ArrayCollection{
+		var result:ArrayCollection = new ArrayCollection();
+		if ((dest !=null) && (dest.length>0)){
+			var i:int=0;
+			for (i=0; i<dest.length; i++){
+				var p = dest.getItemAt(i);
+				if ((p!=null) && (p[fldName]!=null) && (p[fldName]!=fldValue)){
+					result.addItem(p);
+				}
+			}
+		}
+		return result;
+	}
 }
 }

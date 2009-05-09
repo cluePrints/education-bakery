@@ -138,9 +138,14 @@
 					loadSelectionState();
 				} 
 				private function httpChildResultHandler(event:*):void{
+					saveSelectionState();
+					
 					errors = util.getHttpRespondedErrors(event);
-					deviceParameters = util.extractItemCollection(event.result.mainData, 'deviceparameter');
-					bindSelected();
+					mainData = util.extractItemCollection(event.result.devices, 'device');
+					deviceParameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
+					availableUnits = util.getActiveItems(units);
+					
+					loadSelectionState();
 				} 
 				private function mainFilterFunction(item:*){
 					var result:Boolean=true;
