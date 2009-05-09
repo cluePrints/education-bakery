@@ -14,7 +14,7 @@ import org.bakery.server.util.BakeryConstants;
 public class SvcHelper {
 	private static SimpleDateFormat df; 
 	static {
-		df = new SimpleDateFormat("dd/mm/yy");
+		df = new SimpleDateFormat("dd/MM/yy");
 	}
 	public static void writeAvailable(PrintWriter out, AbstractDAO dao, String sectionId) throws Exception{
 		List<BusinessEntity> entities = dao.getAvailable();
