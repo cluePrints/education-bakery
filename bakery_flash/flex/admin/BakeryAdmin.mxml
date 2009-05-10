@@ -21,7 +21,6 @@
 			show = "manageProductMove.init()">
 			<comp:ProductMoveManagementPanel
 				id="manageProductMove"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductMoveSvc"
 				width="100%" height="100%"/>	
 		</mx:Canvas>
 		<mx:Canvas label="Планы производства" width="100%" height="100%"
@@ -29,7 +28,6 @@
 			 show="manageProductPlan.init()">
 			<comp:ProductionPlanManagementPanel
 				id="manageProductPlan"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductionPlanSvc"
 				width="100%" height="100%"/>	
 		</mx:Canvas>
 	<mx:Canvas label="Движение денег" width="100%" height="100%"
@@ -38,7 +36,6 @@
 			 >
 			<comp:MoneyMoveManagementPanel
 				id="manageMoveMove"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MoneyMoveSvc"
 				width="100%" height="100%"/>	
 		</mx:Canvas>
 
@@ -47,31 +44,24 @@
 			show = "manageOrders.init()">
 			<comp:OrderManagementPanel
 				id="manageOrders"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.OrderSvc"
 				width="100%" height="100%"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Рецепты" width="100%" height="100%"
 			show="manageRecipes.init()">
 			<comp:RecipeManagementPanel
 				id="manageRecipes"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.RecipeSvc"
-				childDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.RecipeEffectSvc"
 				width="100%" height="100%"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Прайсы" width="100%" height="100%"
 			show="managePriceLists.init()">
 			<comp:PriceListManagementPanel
 				id="managePriceLists"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.PriceListSvc"
-				childDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.PriceListItemSvc"
-				 width="100%" height="100%"/>			
+				width="100%" height="100%"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Устр-ва" width="100%" height="100%"
 			show="manageDevices.init()">
 		<comp:DeviceManagementPanel
 				id="manageDevices"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.DeviceSvc"
-				childDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.DeviceParameterSvc"
 				 width="100%" height="100%"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Ед.изм." width="100%" height="100%"
@@ -80,7 +70,8 @@
 				id="manageUnits"
 				mainDataUnitName="unit"
 				mainDataUnitVisualName="единицами измерения"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.UnitSvc"
+				mainDataSvcUrl = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.UnitSvc"		
+
 				 width="100%" height="100%"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Адресса" width="100%" height="100%"
@@ -89,45 +80,38 @@
 				id="manageAddresses"
 				mainDataUnitName="address"
 				mainDataUnitVisualName="адресами"
-				mainDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AddressSvc"
+				mainDataSvcUrl = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AddressSvc"
+	
 				 width="100%" height="100%"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Типы продуктов" width="100%" height="100%"
 			show="manageProducts.init()">
 			<comp:ProductManagementPanel
 				id="manageProducts"
-				unitDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.UnitSvc"
-				productTypeDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductTypeSvc"
 				 width="100%" height="100%"/>
 		</mx:Canvas>
 		<mx:Canvas label="Контрагенты" width="100%" height="100%"
 			show="manageContragents.init()">
 			<comp:ContragentManagementPanel
 				id="manageContragents"
-				contragentDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ContragentSvc"
-				addressDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AddressSvc"
 				 width="100%" height="100%"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Счета" width="100%" height="100%"
 			show="manageAccounts.init()">
 			<comp:AccountManagementPanel
 				id="manageAccounts"
-				contragentDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ContragentSvc"
-				accountDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AccountSvc"
-				 width="1000" height="559"/>			
+				width="1000" height="559"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Склад" width="100%" height="100%"
 			show="manageWarehouses.init()">
 			<comp:WarehouseManagementPanel
 				id="manageWarehouses"				
-				warehouseDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.WarehouseSvc"
-				 width="100%" height="100%"/>			
+				width="100%" height="100%"/>			
 		</mx:Canvas>
 		<mx:Canvas label="Изм. зн. параметров" width="100%" height="100%"
 			show="manageMeasures.init()">
 			<comp:MeasuresManagementPanel
 				id="manageMeasures"
-				measuresDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MeasureSvc"
 				width="100%" height="100%"/>			
 		</mx:Canvas>
 	</mx:TabNavigator>			
