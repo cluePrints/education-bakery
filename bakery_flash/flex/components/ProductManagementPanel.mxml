@@ -121,7 +121,7 @@
 			<mode>"EDIT"</mode>
 			<unit>{cbUnits.selectedItem.id}</unit>	
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
-			<name>{encodeURI(tiName.text)}</name>
+			<name>{encodeURIComponent(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 		<mx:Label text="Панель управления типами продуктов" fontWeight="bold" fontSize="14"/>

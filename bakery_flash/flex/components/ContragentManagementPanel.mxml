@@ -117,7 +117,7 @@
 			<address>{cbAddresses.selectedItem.id}</address>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<child>{cbChild.selected == true ? "1" : "0"}</child>
-			<name>{encodeURI(tiName.text)}</name>
+			<name>{encodeURIComponent(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 					

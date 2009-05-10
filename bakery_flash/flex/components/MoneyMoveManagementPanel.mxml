@@ -22,7 +22,7 @@
 			<date>{dfDate.text}</date>
 			<order>{cbOrder.selectedItem.id}</order>
 			<price>{cbPriceItem.selectedItem.id}</price>
-			<desc>{encodeURI(tiDesc.text)}</desc>
+			<desc>{encodeURIComponent(tiDesc.text)}</desc>
 			
 		</root>		
 	</mx:Model>	

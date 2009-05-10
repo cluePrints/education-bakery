@@ -102,7 +102,7 @@
 			<id>{tiId.text}</id>		
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 				
-			<name>{encodeURI(tiName.text)}</name>
+			<name>{encodeURIComponent(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 		<mx:Label text="{&quot;Панель управления &quot;+ mainDataUnitVisualName}" fontWeight="bold" fontSize="14"/>

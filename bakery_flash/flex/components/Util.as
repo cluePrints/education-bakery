@@ -140,5 +140,33 @@ public class Util{
 		}
 		return result;
 	}
+	public var numberAllowedChars:ArrayCollection = new ArrayCollection(
+			['0','1','2','3','4','5','6','7','8','9','.']
+	);
+	public function isValidNumber(a:String):Boolean {
+		var valid:Boolean = true;
+		var signumUsed:Boolean=false;
+		var dotUsed:Boolean=false;
+		var i:int=0;
+		for (i=0; i<a.length; i++) {
+			if (!numberAllowedChars.contains(a.charAt(i)) && (a.charAt(i)!='+') && (a.charAt(i)!='-')) {
+				valid = false;	
+			}
+			if ((a.charAt(i)=='.') && (dotUsed)){
+				valid = false
+			}
+			if ((a.charAt(i)=='-') || (a.charAt(i)=='+') && signumUsed){
+				valid = false;
+			}
+			if ((a.charAt(i)=='-') || (a.charAt(i)=='+')) {
+				signumUsed = true;
+			}
+			
+			if (a.charAt(i)=='.'){
+				dotUsed=true;
+			}
+		}
+		return valid;
+	}
 }
 }

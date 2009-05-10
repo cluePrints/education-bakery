@@ -11,7 +11,7 @@
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<date>{dfDate.text}</date>
 			<owner>{cbOwner.selectedItem.id}</owner>			
-			<comment>{encodeURI(tiComment.text)}</comment>				
+			<comment>{encodeURIComponent(tiComment.text)}</comment>				
 		</root>		
 	</mx:Model>		
 	
@@ -25,7 +25,7 @@
 			
 			<parent></parent>
 			
-			<price>{encodeURI(tiChildPrice.text)}</price>
+			<price>{encodeURIComponent(tiChildPrice.text)}</price>
 			<product>{cbChildProductType.selectedItem.id}</product>
 		</root>					
 	</mx:Model>

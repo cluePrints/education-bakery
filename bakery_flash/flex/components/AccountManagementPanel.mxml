@@ -115,9 +115,9 @@
 			<mode>EDIT</mode>
 			<owner>{cbContragents.selectedItem.id}</owner>
 			<id></id>	
-			<desc>{encodeURI(tiDesc.text)}</desc>	
+			<desc>{encodeURIComponent(tiDesc.text)}</desc>	
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
-			<name>{encodeURI(tiName.text)}</name>
+			<name>{encodeURIComponent(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 	

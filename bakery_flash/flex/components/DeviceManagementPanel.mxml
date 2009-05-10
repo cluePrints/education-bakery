@@ -9,7 +9,7 @@
 				
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 				
-			<name>{encodeURI(tiName.text)}</name>
+			<name>{encodeURIComponent(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
 	<mx:Model id="childModel">
@@ -23,8 +23,8 @@
 			
 			<device>{dgData.selectedItem.id}</device>
 			
-			<name>{encodeURI(tiChildName.text)}</name>
-			<bestValue>{encodeURI(tiChildBestValue.text)}</bestValue>
+			<name>{encodeURIComponent(tiChildName.text)}</name>
+			<bestValue>{encodeURIComponent(tiChildBestValue.text)}</bestValue>
 			<unit>{cbChildUnit.selectedItem.id}</unit>
 		</root>					
 	</mx:Model>
