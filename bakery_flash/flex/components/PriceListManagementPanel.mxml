@@ -2,7 +2,8 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:comp="components.*"
-	creationComplete="init()" width="974" height="595">
+	xmlns:util="components.util.*"
+	creationComplete="init()" width="100%" height="100%">
 	<!-- represents selected main item: PriceList -->
 	<mx:Model id="formModel">		
 		<root>
@@ -226,10 +227,29 @@
 
 		]]>
 	</mx:Script>	
-		<mx:VBox>			
-			<mx:Label text="Панель управления прайсами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+		<mx:VBox>
+			<mx:HBox
+				horizontalAlign="center">
+				<mx:Label text="Панель управления прайсами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+				<util:ContextHelpButton>
+					<util:helpText>
+					<![CDATA[
+Прайс-лист (в дальнейшем просто <b>Прайс</b>) - документ, указывающий изменение цен
+на указанные в нем товары(<B>Элементы прайса</B>) с указаной в нем даты (<B>Дата начала действия</B>).
+При наличии в базе данных прайс-листа от контрагента, этот прайс-лист от этого контрагента считается
+действительным до того, как он будет помечен нерелевантным (<B>Неактивным</B>). После этого, действия
+по заключению договоров с использованием цен указаных в нем невозможны.
+
+Соответственно, при заключении договора существует возможность указать, в соответствии с каким 
+прайс-листом указаны цены.
+
+Ценовая политика завода регламентируется прайс-листами <B>дочернего контрагента</B>.
+]]>
+				</util:helpText>					
+			</util:ContextHelpButton>				
+			</mx:HBox>			
 			<mx:HBox width="895" height="273">
-				<mx:VBox height="254" width="516" horizontalAlign="center" >
+				<mx:VBox width="100%" horizontalAlign="center" >
 				<mx:Label  text=" Заголовки прайсов " fontWeight="bold"/>
 					<mx:DataGrid height="126" width="514" 
 						id="dgData" 
@@ -243,32 +263,38 @@
 							<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="55"/>						
 						</mx:columns>
 					</mx:DataGrid>
-					<mx:HBox width="507" height="57">
-					<mx:VBox horizontalAlign="left" height="54" width="283">
+					<mx:HBox width="100%">
+					<mx:VBox horizontalAlign="left" width="100%">
 						
 					<mx:FormItem label="Контрагент:" 
-							required="true">												
+							required="true"
+							width="100%">												
 							<mx:ComboBox id="cbOwner"
 								dataProvider="{availableContragents}"
-								labelField="name" width="180"/>
+								labelField="name" 
+								width="100%"/>
 						</mx:FormItem>	
-						<mx:HBox width="260">
-						<mx:FormItem label="Активно:"
-							required="true">
+					<mx:FormItem label="Комментарий:">												
+						<mx:TextArea id="tiComment" width="100%"/>
+					</mx:FormItem>
+						</mx:VBox>
+						<mx:VBox width="100%">
+						<mx:FormItem 
+							label="Активно:"
+							required="true"
+							width="100%">
 							<mx:CheckBox id="cbActive"/>
 						</mx:FormItem>
 						
 						<mx:FormItem label="Дата:" 
-							required="true">												
+							required="true"
+							width="100%">												
 							<mx:DateField id="dfDate"
+								width="95%"
 								text=""
 								formatString="DD/MM/YY"/>
 						</mx:FormItem>
-						</mx:HBox>
 						</mx:VBox>
-						<mx:FormItem label="Комментарий:">												
-							<mx:TextInput id="tiComment" width="94" height="25"/>
-						</mx:FormItem>
 						</mx:HBox>
 					
 					<mx:HBox horizontalAlign="center" height="30">
@@ -321,12 +347,16 @@
 						</mx:columns>
 					</mx:DataGrid>				
 			</mx:VBox>
-			<mx:VBox height="166">
-				<mx:FormItem label="Продукт:" width="218"
+			<mx:VBox
+				height="100%"
+				width="100%">
+				<mx:FormItem 
+					label="Продукт:" 
+					width="100%"
 					required="true">
 					<mx:ComboBox id="cbChildProductType"
 						dataProvider="{availableProductTypes}"
-						labelField="name" width="140"/>				
+						labelField="name" width="100%"/>				
 				</mx:FormItem>
 				<mx:FormItem label="Цена:"
 					required="true">

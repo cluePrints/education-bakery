@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:util="components.util.*"
 	creationComplete="init()" width="1080" height="548">
 
 		
@@ -141,8 +142,28 @@
 			
 		]]>
 	</mx:Script>			
-	
-		<mx:Label text="Панель управления производственными планами" fontWeight="bold" fontSize="14"/>
+		<mx:HBox>
+			<mx:Label text="Панель управления производственными планами" fontWeight="bold" fontSize="14"/>
+			<util:ContextHelpButton>
+				<util:helpText>					
+					<![CDATA[
+После составления заказа на покупку, продукция может быть отгружена сразу (в случае наличия на складе).
+Поскольку хлебо-булочные изделия являются скоропортящимся товаром, то их производят в случае наличия
+предварительно оплаченых заказов. 
+
+Производство некоторого типа продукции определенным образом задействует технологические мощности завода.
+Сущность предметной области, описывающая задействованную продукцию, зависимости между измеренными значениями
+определенных технологических параметров, количествами потребленных ресурсов и произведенной продукции называется
+<B>Рецепт</B>.   
+
+<B>Производственный план</B> - сущность предметной области, указывающая, на каких производственных
+мощностях (<B>Устройствах</B>) и в соответствии с какими правилами (<b>рецепт</b>) должны быть произведены 
+продукты для продажи.						
+
+Наиболее типичным случаем является создание по одному производственному плану на каждый заказанный тип продукта.]]>
+			</util:helpText>					
+			</util:ContextHelpButton>
+		</mx:HBox>		
 		<mx:VBox  width="100%">
 		<mx:HBox x="0" y="0" width="1057" height="460">
 			<mx:VBox height="407" width="745" horizontalAlign="center" >
@@ -160,22 +181,25 @@
 					</mx:columns>
 				</mx:DataGrid>
 				<mx:HBox width="100%" height="82">
-					<mx:VBox height="100%" width="234">
+					<mx:VBox height="100%"
+						width="100%">
 					
-						<mx:FormItem label="Рецепт:" 
+					<mx:FormItem label="Рецепт:"
+						width="100%" 
 						required="true">												
 						<mx:ComboBox id="cbRecipe"
 							dataProvider = "{availableRecipe}"
 							labelField="textView" 
-							width="150"/>
+							width="100%"/>
 					</mx:FormItem>
 					
-					<mx:FormItem label="Заказ:" 
+					<mx:FormItem label="Заказ:"
+						width="100%" 
 						required="true">												
 						<mx:ComboBox id="cbOrder"
 							dataProvider = "{availableOrders}"
 							labelField="textView" 
-							width="150"/>
+							width="100%"/>
 					</mx:FormItem>
 					</mx:VBox>
 					<mx:VBox height="100%" width="180">

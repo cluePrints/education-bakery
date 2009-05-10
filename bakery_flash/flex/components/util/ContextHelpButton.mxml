@@ -2,7 +2,9 @@
 <mx:Button xmlns:mx="http://www.adobe.com/2006/mxml"
 	icon="@Embed(source='img/lamp.png')"
 	toolTip="Подсказка"
-	click="showHelpScreen()">
+	click="showHelpScreen()"
+	width="15"
+	height="21">
 	<mx:Script>
 		<![CDATA[
 			import mx.managers.PopUpManager;

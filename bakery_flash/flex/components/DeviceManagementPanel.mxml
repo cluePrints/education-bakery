@@ -2,6 +2,7 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:comp="components.*"
+	xmlns:util="components.util.*"
 	creationComplete="init()" width="978" height="551">
 	<mx:Model id="formModel">		
 		<root>
@@ -203,8 +204,41 @@
 				}
 	
 			]]>
-		</mx:Script>				
+		</mx:Script>		
+			<mx:HBox>
+				
+					
 			<mx:Label text="Панель управления устройствами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+			<util:ContextHelpButton>
+				<util:helpText>
+					<![CDATA[
+Сущность <B>устройство</B> представляет производственное оборудование, используемое для 
+создания продукции из ингридиентов.
+
+Каждое устройство обладает набором переменных величин, характеризующих его состояние в определенный
+момент времени (<B>Параметры устройства</B>). Измеренное значение параметра в определенный момент 
+называется <B>Измерение</B>.
+
+Каждый параметр обладает следующими характеристиками:
+<li>Наименование</li> - краткое название параметра
+
+<li>Рекомендуемое значение</li> - значение, которое параметр должен принимать в лучшем случае.
+Например, для параметра "Напряжение" для устройства "Лампочка" рекомендуемым значением будет 220.
+
+<li>Минимизируется</li> - направление, в котором следует менять значение параметра, если не 
+может быть выдержано рекомендуемое.
+Пример: для лампочки, очевидно, стоит выбрать минимизацию - при большем напряжении она перегорит.
+
+<li>Фиксирован</li> - если параметр фиксирован, это значит, что он не подлежит изменению нами.
+Пример: "среднее колебание напряжения питания за час" мы изменять не можем, но параметр 
+"напряжение питания" может быть изменен напрямую, следовательно не фиксирован.
+
+<li>Активность</li> - неактивным параметр может быть из-за того, что мы не можем контролировать
+его должным образом. Соответственно <B>рецепты</B>, зависимые от него тожем не могут выполнятся. 
+]]>
+				</util:helpText>					
+			</util:ContextHelpButton>
+			</mx:HBox>
 			<mx:HBox width="925" height="214">
 				<mx:VBox height="212" width="527" horizontalAlign="center" >
 				<mx:Label text="Устройства"  fontWeight="bold"/>
@@ -285,16 +319,22 @@
 			</mx:VBox>
 			<mx:VBox height="199" width="286">
 				<mx:FormItem label="Наименование:"
-					required="true">
-					<mx:TextInput id="tiChildName"/>				
+					required="true"
+					width="100%">
+					<mx:TextInput id="tiChildName"
+						width="100%"/>				
 				</mx:FormItem>
 				<mx:FormItem label="Рек. зн:"
-					required="true">
-					<mx:TextInput id="tiChildBestValue"/>				
+					required="true"
+					width="100%">
+					<mx:TextInput id="tiChildBestValue"
+						width="100%"/>				
 				</mx:FormItem>
 				<mx:FormItem label="Ед.изм:"
-					required="true">
-					<mx:ComboBox id="cbChildUnit" labelField="name" dataProvider="{availableUnits}"/>								
+					required="true"
+					width="100%">
+					<mx:ComboBox id="cbChildUnit" labelField="name" dataProvider="{availableUnits}"
+						width="100%"/>								
 				</mx:FormItem>
 				<mx:HBox width="272" height="24">
 					<mx:FormItem label="Фиксирован:" visible="true">
