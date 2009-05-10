@@ -7,7 +7,7 @@
 		<mx:HTTPService id="mainSvc" 
 		useProxy="false"
 		method="GET"
-		url="{mainDataSvcUrl}"
+		
 		result="httpResultHandler(event)"
 		fault="httpFaultHandler(event)"/>
 		
@@ -35,6 +35,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import components.Util;
+			import components.SvcUrl;
 			public var mainDataSvcUrl:String;
 			public var mainDataUnitName:String;
 			public var mainDataUnitVisualName:String;
@@ -44,9 +45,11 @@
             [Bindable] private var availableContragents:ArrayCollection;
             [Bindable] private var errors:ArrayCollection = new ArrayCollection();
              var util:Util = new Util();
+            var  svcUrl:SvcUrl = new SvcUrl;
 			public function init():void{
 				createNew();				
 				mainSvc.cancel();
+				mainSvc.url = svcUrl.orderSvcUrl;
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);
 					

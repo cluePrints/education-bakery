@@ -38,6 +38,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import components.Util;
+			import components.SvcUrl;
 			public var mainDataSvcUrl:String;
 			public var mainDataUnitName:String;
 			public var mainDataUnitVisualName:String;
@@ -50,11 +51,12 @@
             [Bindable] private var priceItems:*;   
             [Bindable] private var availablePriceItems:ArrayCollection;
             [Bindable] private var errors:ArrayCollection = new ArrayCollection();
-            	var util:Util = new Util();	
+            	var util:Util = new Util();
+            	var svcUrl:SvcUrl = new SvcUrl();	
 			public function init():void{
 				createNew();				
 				mainSvc.cancel();
-			
+				mainSvc.url = svcUrl.moneyMoveSvcUrl;
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);
 					

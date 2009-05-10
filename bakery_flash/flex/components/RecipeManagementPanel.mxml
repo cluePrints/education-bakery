@@ -32,13 +32,13 @@
 	<mx:HTTPService id="mainSvc" 
 		useProxy="false"
 		method="GET"
-		url="{mainDataSvcUrl}"
+		
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:HTTPService id="childSvc" 
 		useProxy="false"
 		method="GET"
-		url="{childDataSvcUrl}"
+		
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:VBox horizontalAlign="center" width="100%">	
@@ -55,6 +55,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import components.Util;
+			import components.SvcUrl;
 			public var mainDataSvcUrl:String;
 			public var childDataSvcUrl:String;
 			public var hideEffect:*;
@@ -76,7 +77,7 @@
 	        private var errors:ArrayCollection = new ArrayCollection();          
 			
 			var util:Util = new Util();
-			
+			var svcUrl:SvcUrl = new SvcUrl();
 			function childBindSelected(){
 				var item = dgChildData.selectedItem;
 				if (item != null){
@@ -105,7 +106,9 @@
 			
 			public function init():void{
 				createNew();		
-				childCreateNew();		
+				childCreateNew();
+				mainSvc.url = svcUrl.mainRecipeSvcUrl;
+				childSvc.url = svcUrl.childRecipeSvcUrl;		
 				mainSvc.cancel();
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);				

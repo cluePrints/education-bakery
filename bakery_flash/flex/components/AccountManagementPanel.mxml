@@ -5,7 +5,7 @@
 	<mx:HTTPService id="accountSvc" 
 		useProxy="false"
 		method="POST"
-		url="{accountDataSvcUrl}"
+		
 		result="httpaccountResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
@@ -16,7 +16,7 @@
 			import flash.sampler.getInvocationCount;
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
-			
+			import components.SvcUrl;
 			public var contragentDataSvcUrl:String;
 			public var accountDataSvcUrl:String;
 			
@@ -29,7 +29,9 @@
 			[Bindable]
 			private var errors:ArrayCollection = new ArrayCollection();
 			var util:Util = new Util();
+			var scvUrl:SvcUrl = new SvcUrl();
 			public function init():void{
+				accountSvc.url = scvUrl.accountDataSvcUrl;
 				createNew();
 				accountSvc.cancel();
 				formModel.mode="FETCH";

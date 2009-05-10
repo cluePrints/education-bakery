@@ -5,7 +5,7 @@
 	<mx:HTTPService id="measuresSvc" 
 		useProxy="false"
 		method="POST"
-		url="{measuresDataSvcUrl}"
+		
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
@@ -17,6 +17,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import components.Util;
+			import components.SvcUrl;
 			public var measuresDataSvcUrl:String;
 			
 			[Bindable]
@@ -31,9 +32,10 @@
             private var availableDeviceParameters:ArrayCollection = new ArrayCollection();
 			[Bindable]
 			private var errors:ArrayCollection = new ArrayCollection();
-			
+			var svcUrl:SvcUrl = new SvcUrl();
 			public var util:Util = new Util();
 			public function init():void{
+				measuresSvc.url = svcUrl.measuresDataSvcUrl;
 				createNew();
 				formModel.mode="FETCH";
 				measuresSvc.send(formModel);				

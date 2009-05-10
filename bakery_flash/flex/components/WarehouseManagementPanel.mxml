@@ -6,7 +6,7 @@
 	<mx:HTTPService id="warehouseSvc" 
 		useProxy="false"
 		method="POST"
-		url="{warehouseDataSvcUrl}"
+		
 		result="httpwarehouseResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
@@ -17,12 +17,12 @@
 			import flash.sampler.getInvocationCount;
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
-			
+			import components.SvcUrl;
 			public var ownerDataSvcUrl:String;
 			public var warehouseDataSvcUrl:String;
 			public var addressDataSvcUrl:String;
 			
-			
+			var svcUrl:SvcUrl = new SvcUrl();
 			var util:Util = new Util();			
 			[Bindable]
             private var warehouses:ArrayCollection = new ArrayCollection();
@@ -38,6 +38,7 @@
             private var errors:ArrayCollection = new ArrayCollection();
 			
 			public function init():void{
+				warehouseSvc.url = svcUrl.warehouseDataSvcUrl;
 				createNew();
 				formModel.mode="FETCH";
 				warehouseSvc.send(formModel);				

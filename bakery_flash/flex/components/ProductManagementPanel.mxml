@@ -6,7 +6,7 @@
 	<mx:HTTPService id="productTypeSvc" 
 		useProxy="false"
 		method="POST"
-		url="{productTypeDataSvcUrl}"
+		
 		result="httpproducttypeResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
@@ -17,7 +17,7 @@
 			import flash.sampler.getInvocationCount;
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
-			
+			import components.SvcUrl;
 			public var unitDataSvcUrl:String;
 			public var productTypeDataSvcUrl:String;
 			
@@ -30,9 +30,11 @@
 						
 			[Bindable]
 	        private var errors:ArrayCollection = new ArrayCollection();    
-	        
+	        var svcUrl:SvcUrl = new SvcUrl();
 			public function init():void{
+				productTypeSvc.url = svcUrl.productTypeDataSvcUrl;
 				createNew();
+				
 				productTypeSvc.cancel();
 				formModel.mode="FETCH";
 				productTypeSvc.send(formModel);				

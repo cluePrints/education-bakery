@@ -5,7 +5,7 @@
 	<mx:HTTPService id="contragentSvc" 
 		useProxy="false"
 		method="POST"
-		url="{contragentDataSvcUrl}"
+		
 		result="httpContragentResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
@@ -17,6 +17,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import components.Util;
+			import components.SvcUrl;
 			public var addressDataSvcUrl:String;
 			public var contragentDataSvcUrl:String;
 			
@@ -30,7 +31,10 @@
 			private var errors:ArrayCollection = new ArrayCollection();
 			
 			public var util:Util = new Util();
+			public var scvUrl:SvcUrl = new SvcUrl();
 			public function init():void{
+				
+				contragentSvc.url = scvUrl.contragentDataSvcUrl;
 				createNew();
 				formModel.mode="FETCH";
 				contragentSvc.send(formModel);				

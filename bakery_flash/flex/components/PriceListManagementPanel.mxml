@@ -32,13 +32,13 @@
 	<mx:HTTPService id="mainSvc" 
 		useProxy="false"
 		method="GET"
-		url="{mainDataSvcUrl}"
+		
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:HTTPService id="childSvc" 
 		useProxy="false"
 		method="GET"
-		url="{childDataSvcUrl}"
+		
 		result="httpChildResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:VBox horizontalAlign="center">	
@@ -53,6 +53,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import components.Util;
+			import components.SvcUrl;
 			public var mainDataSvcUrl:String;
 			public var childDataSvcUrl:String;
 			public var hideEffect:*;
@@ -78,7 +79,7 @@
 			
 			// XXX: It's dumb, change it
 			var util:Util = new Util();
-			
+			var svcUrl:SvcUrl = new SvcUrl();
 			function childBindSelected():void{
 				var item = dgChildData.selectedItem;
 				if (item != null){
@@ -112,6 +113,8 @@
 			}
 			
 			public function init():void{
+				mainSvc.url = svcUrl.mainPriceListSvcUrl;	
+				childModel.url = svcUrl.childPriceListSvcUrl;
 				createNew();	
 				childCreateNew();			
 				mainSvc.cancel();
