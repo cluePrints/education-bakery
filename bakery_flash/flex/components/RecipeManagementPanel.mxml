@@ -41,7 +41,7 @@
 		url="{childDataSvcUrl}"
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
-	<mx:VBox horizontalAlign="center" width="95%">	
+	<mx:VBox horizontalAlign="center" width="100%">	
 	<mx:Script>
 		<![CDATA[
 			import mx.validators.NumberValidator;
@@ -414,8 +414,8 @@
 			</util:helpText>					
 			</util:ContextHelpButton>						
 		</mx:HBox>
-		<mx:HBox width="956" height="245">
-			<mx:VBox height="236" width="462" horizontalAlign="left" >
+		<mx:HBox width="95%" height="100%">
+			<mx:VBox width="462" horizontalAlign="left" >
 					<mx:DataGrid height="99" width="456" 
 						id="dgData" 
 						dataProvider="{mainData}"
@@ -424,37 +424,46 @@
 							<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="65"/>
 							<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
 							<mx:DataGridColumn headerText="Вр.созд." dataField="time" width="60"/>
-							<mx:DataGridColumn headerText="Формула" dataField="formula" width="100"/>
+							<mx:DataGridColumn headerText="Описание" dataField="formula" width="100"/>
 							<mx:DataGridColumn headerText="Активн." labelFunction="util.activeToString" width="55"/>
 						</mx:columns>
 					</mx:DataGrid>
-					<mx:HBox width="411">
-					<mx:VBox horizontalAlign="left" height="123" width="398">
-					<mx:HBox width="386">
+					<mx:VBox horizontalAlign="left" 
+						 width="100%"
+						 height="143">
+
 						<mx:FormItem label="Активно:"
 							required="true" width="110">
 							<mx:CheckBox id="cbActive"/>
 						</mx:FormItem>
-						<mx:FormItem label="Время:" 
-							required="true" width="262">
-							<mx:TextInput id="tiTime"/>
+						<mx:FormItem
+							direction="horizontal"
+							label="Время:" 
+							required="true" 
+							width="100%">
+							<mx:TextInput id="tiTime" width="100%"/>
+							<util:ContextHelpButton helpText="Время выполнения в миллисекундах. &lt;BR&gt;Должно целым числом больше нуля."/>
 						</mx:FormItem>
-						</mx:HBox>
-						<mx:FormItem label="Название:" width="241"
+						<mx:FormItem
+							label="Название:"
+							direction="horizontal"
+							width="100%"
 							required="true">												
-							<mx:TextInput id="tiName" width="142" height="25"/>
+							<mx:TextInput id="tiName" width="100%" height="25"/>							
 						</mx:FormItem>
-						<mx:FormItem label="Формула:" width="311">												
-							<mx:TextInput id="tiFormula" width="222" height="25"/>
+						<mx:FormItem
+							direction="horizontal"
+							label="Описание:"
+							width="100%">												
+							<mx:TextArea id="tiFormula" width="100%" height="25"/>
+							<util:ContextHelpButton helpText="Описание рецепта"/>
 						</mx:FormItem>
 						<mx:HBox width="260">
 						<mx:Button label="Сохранить" click="saveSelected()"/>							
 						<mx:Button label="Отмена" click="cancel()"/>
 						<mx:Button label="Создать" click="createNew()"/>
-						</mx:HBox>
-						</mx:VBox>				
-					
-				</mx:HBox>
+					</mx:HBox>
+				</mx:VBox>				
 			</mx:VBox>			
 			<mx:HBox width="477" height="240">
 				<mx:VBox width="204" height="234" horizontalAlign="center">
@@ -472,6 +481,17 @@
 				<mx:VBox width="47" height="223" verticalAlign="center">													
 					<mx:Button label="&lt;" click="addDeviceParameter()"/>
 					<mx:Button label="&gt;" click="removeDeviceParameter()"/>
+					<util:ContextHelpButton>
+					<util:helpText>
+<![CDATA[
+В правой таблице находится список всех доступных для выбора параметров.
+В левой таблице находится список параметров, от которых зависит производственный процесс,
+описываемый этим рецептом.
+
+Один производственный процесс может использовать только одно устройство!  
+]]>
+			</util:helpText>					
+					</util:ContextHelpButton>
 				</mx:VBox>
 				<mx:VBox width="203" height="236" horizontalAlign="center">
 					<mx:Label text="Все актуальные параметры"/>
@@ -511,6 +531,41 @@
 					</mx:DataGrid>				
 			<mx:VBox height="90%" width="50%"
 				verticalAlign="bottom">
+				<mx:VBox
+					height="100%"
+					width="100%"
+					verticalAlign="top">					
+					<mx:HBox 
+						width="100%"
+						horizontalAlign="right">						
+						<util:ContextHelpButton>
+<util:helpText>
+<![CDATA[
+Данная часть окна используется для управления потребленными ресурсами и произведенными продуктами.
+
+Суммарная себестоимость произведенной продукции должна быть не меньше суммарной стоимости 
+потребленных ресурсов.	
+
+Поле "Формула" используется для введения количества произведенной продукции\потребленных ресурсов.
+<b>Возможные значения поля:</b>
+<li>Постоянное значение</li>Число действительного типа. 
+   
+<li>Выражение, зависящее от производственных параметров</li>Линейное выражение, зависящее от производственных параметров, которые включены в список
+ параметров, влияющих на протекание технологического процесса, описываемого этим рецептом.
+ 	При этом, допустимыми операциями являются '+', '-', '*'.
+ 	 
+ 	Значение производственного параметра, имеющего идентификатор в базе, равный <B>X</B> на
+ момент начала производственного цикла в формуле должно иметь вид '{<B>X</B>}'.  
+
+<B>Пример №1:</B>
+25.75+{3}-0.008*{11}
+
+<B>Пример №2:</B>
+23.28]]>					
+</util:helpText>
+						</util:ContextHelpButton>
+					</mx:HBox>
+				</mx:VBox>										
 				<mx:FormItem label="Ресурс:"
 					width="90%"
 					required="true">

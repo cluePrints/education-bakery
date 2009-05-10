@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300"
-	>
+	creationComplete="showAdminDesc()">
 	<mx:Script>
 		<![CDATA[
 			import qa.QualityMain;
@@ -18,6 +18,14 @@
 					Alert.show('Пожалуйста, выберите роль');
 				}
 			}			
+			private function showAdminDesc():void{
+				taDesc.htmlText="" + 
+"<B>Рабочее место администратора системы</B><BR/>" + 
+"Позволяет:<BR/>" + 
+" - Просмотривать и измененять содержимое базы данных.<BR/>"+
+" - Создавать и восстановливать состояние из контрольных точек БД.<BR/>" + 
+" - Изменение 'текущего времени' системы."
+			}
 		]]>
 	</mx:Script>
 	<mx:VBox width="100%"
@@ -25,7 +33,7 @@
 			horizontalAlign="center"
 			verticalAlign="middle"
 			id="rootCanvas">
-		<mx:VBox width="30%" height="30%"
+		<mx:VBox width="50%" height="50%"
 			horizontalAlign="center"
 			verticalAlign="middle"
 			backgroundColor="#CCCCCC">
@@ -38,12 +46,14 @@
 					 width="100%"
 					 height="70%">								
 					<mx:VBox
-						width="100%"
+						width="50%"
 						height="100%">				
 						
 						<mx:RadioButtonGroup id="workPlace"/>						
 						<mx:Label text="Выберите роль:"/>							
-						<mx:RadioButton label="Администратор системы" groupName="workPlace" value="admin"/>
+						<mx:RadioButton label="Администратор системы" groupName="workPlace" value="admin"
+							selected="true"
+							click="showAdminDesc()"/>
 						<mx:RadioButton label="Менеджер по качеству" groupName="workPlace" value="qa"/>
 						<mx:RadioButton label="Менеджер по продажам" groupName="workPlace" value="market"/>
 					</mx:VBox>
