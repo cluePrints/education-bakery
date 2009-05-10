@@ -79,7 +79,7 @@
 			// XXX: It's dumb, change it
 			var util:Util = new Util();
 			
-			function childBindSelected(){
+			function childBindSelected():void{
 				var item = dgChildData.selectedItem;
 				if (item != null){
 					cbChildActive.selected = (item.active == 1);
@@ -88,7 +88,7 @@
 					tiChildPrice.text = item.price;
 				}
 			}				
-			function childSave(){
+			function childSave():void{
 				childSvc.cancel();
 				childSvc.send(childModel);
 			}

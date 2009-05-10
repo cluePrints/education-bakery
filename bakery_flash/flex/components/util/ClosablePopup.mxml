@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="left"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	verticalAlign="top"
+	backgroundColor="#FFFFFF">
+	<mx:HBox
+		width="100%"
+		horizontalAlign="right">
+		<mx:Button
+			label="X"
+			click="myCloseFunc()">			
+		</mx:Button>	
+	</mx:HBox>
+	<mx:VBox
+		horizontalAlign="top"
+		verticalAlign="left"
+		id="placeholder">				
+	</mx:VBox>
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+
+			private function myCloseFunc():void{
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</mx:Script>
+</mx:VBox>

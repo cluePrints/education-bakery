@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
 	xmlns:commmon="commonWindow.*"
-	xmlns:dev="qualityManager.simpledevicereport.*">
+	xmlns:dev="qualityManager.simpledevicereport.*"
+	xmlns:util="components.util.*">	
 	<commmon:StartWindow width="100%"
 		height="100%">		
-		
-	</commmon:StartWindow>
+	</commmon:StartWindow>						
 </mx:Application>
