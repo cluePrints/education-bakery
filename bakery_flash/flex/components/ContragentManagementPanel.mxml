@@ -138,7 +138,7 @@
 						<mx:DataGridColumn headerText="Имя" dataField="name" width="150"/>
 						<mx:DataGridColumn headerText="Адресс" labelFunction="getContragentAddressName" width="150"/>
 						<mx:DataGridColumn headerText="Child" labelFunction="util.childToString" width="50"/>
-						<mx:DataGridColumn dataField="Активный" labelFunction="util.activeToString" width="80"/>
+						<mx:DataGridColumn labelFunction="util.activeToString" width="80"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
