@@ -115,7 +115,7 @@
 			
 			public function init():void{
 				mainSvc.url = svcUrl.mainPriceListSvcUrl;	
-				childModel.url = svcUrl.childPriceListSvcUrl;
+				childSvc.url = svcUrl.childPriceListSvcUrl;
 				createNew();	
 				childCreateNew();			
 				mainSvc.cancel();
