@@ -116,7 +116,7 @@
 					<mx:columns>
 						<mx:DataGridColumn headerText="sssИд.Номер" dataField="id" width="50"/>
 						<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
-						<mx:DataGridColumn dataField="Активность" labelFunction="activeToString" width="55"/>
+						<mx:DataGridColumn labelFunction="activeToString" width="55"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>			
