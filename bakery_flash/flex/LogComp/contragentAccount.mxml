@@ -1,81 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="520" height="384" fontSize="24" creationComplete="init()">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="996" height="554" fontSize="24" creationComplete="init()">
 <mx:HTTPService id="moneyMoveSvc" 
 		useProxy="false"
 		method="POST"
 		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MoneyMoveSvc"
 		result="httpResultHandler(event)"
 		fault="httpFaultHandler(event)"/>
+<mx:HTTPService id="contragentSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ContragentSvc"
+		result="httpContragentResultHandler(event)"
+		fault="httpFaultHandler(event)"/>	
+<mx:HTTPService id="orderSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.OrderSvc"
+		result="httpOrderResultHandler(event)"
+		fault="httpFaultHandler(event)"/>		
 
-<mx:Script>
+<mx:Script>	
+
+
+
 <![CDATA[
 	import LogComp.Util;
+	import mx.collections.ArrayCollection;
+	
 	 private var mainData:*;
-	 private var orders:*; 
-	 private var contragent:*; 
-	 private var accounts:*;
+	  private var destinationAccount:*;
+	  private var sourceAccount:*;
+	  private var amount:*;
+	  private var price:*;
+	  private var desc:*;
+	[Bindable] private var orders:ArrayCollection; 
+	[Bindable] private var contragent:ArrayCollection; 
+	[Bindable] private var accounts:ArrayCollection;
 	 var util:Util = new Util();
+	 
+	 function httpOrderResultHandler(event:*){
+	 
+	 
+	 }
+	public function getItemById(items:*, _id:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.id == _id) {
+				result = unit;
+			}
+		} 
+		return result;
+	}
+	function getItemIdByOrder(items:*, __id:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.order == __id) {
+				result = unit;
+			}
+		} 
+		return result;
+	}
+	 function httpContragentResultHandler(event:*){
+	 	contragent = event.result.mainData['contragent'];
+	 	
+	 }
 	function init(){
 		formModel.mode = "FETCH";
+		formModelContragent.mode = "FETCH";
+		
 		moneyMoveSvc.cancel();
 		moneyMoveSvc.send(formModel);
+		contragentSvc.cancel();
+		contragentSvc.send(formModelContragent);
 	}
 	function httpResultHandler(event:*){
-		
+		if(event.result.mainData!=null){
+		mainData = event.result.mainData['moneymove'];
+		}
 		accounts = util.extractItemCollection(event.result.accounts, 'account');
 		orders = util.extractItemCollection(event.result.orders, 'order');
-	mx.controls.Alert.show(accounts+"     "+orders);
+		
+		orderName.selectedIndex = 0;
+		writeAll();
+		
+	
 	}
-	 function httpFaultHandler(event:Event):void{
+	function httpFaultHandler(event:Event):void{
 					 mx.controls.Alert.show(event.toString())	;
 			
 			} 
 	function clearAll(){
-		contragentName.selectedIndex = 0;
+		clearAllText();
 		orderName.selectedIndex = 0;
 		date.text = "";
 	}
+	function writeAll(){
+		clearAllText();
+		var contragentItem = getItemById(contragent,orderName.selectedItem.consumer);
+		var item = getItemIdByOrder(mainData,orderName.selectedItem.id)
+		if(item == null ||  contragentItem == null){
+			//error
+		}else{
+		
+		lbSourceAccount.text = item.sourceAccount ;
+		lbDestinationAccount.text = item.destinationAccount;
+		lbAmount.text = item.amount;
+		lbPrice.text = item.price;
+		lbId.text = item.id;
+		lbDesc.text = item.desc;
+		lbContragent.text = contragentItem.textView;
+		}
+		
+	}
+	function sendOrder(){
+		orderSvc.cancel();
+		formModelOrder.id = orderName.selectedItem.id;
+		formModelOrder.mode = "EDIT";
+		formModelOrder.active = true;
+		formModelOrder.provider = orderName.selectedItem.provider;
+		formModelOrder.consumer = orderName.selectedItem.consumer;
+		formModelOrder.creationDate = orderName.selectedItem.creationDate;
+		formModelOrder.doneDate = orderName.selectedItem.doneDate;
+		orderSvc.send(formModelOrder);
+		
+	}
+	function saveSelected():void{
+	
+				formModel.mode="EDIT";
+				moneyMoveSvc.cancel();			
+				moneyMoveSvc.send(formModel);
+				sendOrder();
+			}
+	function clearAllText(){
+		lbSourceAccount.text = "" ;
+		lbDestinationAccount.text = "";
+		lbAmount.text = "";
+		lbPrice.text = ""
+		lbId.text = "";
+		lbDesc.text = "";
+		lbContragent.text = "";
+	}
 		]]>
 </mx:Script>
+<mx:Model id="formModelContragent">		
+		<root>
+			<mode></mode>
+			<address>{}</address>		
+			<active>{}</active>
+			<child>{}</child>
+			<name>{}</name>
+		</root>		
+	</mx:Model>	
 	<mx:Model id="formModel">		
 		<root>
 			<mode></mode>
-			<id>{}</id>
-			<destinationAccount>{}</destinationAccount>
-			<sourceAccount>{}</sourceAccount>
-			<amount>{}</amount>		
-			<active>{}</active>	
-			<date>{}</date>
-			<order>{}</order>
-			<price>{}</price>
-			<desc>{}</desc>
+			<id>{lbId.text}</id>
+			<destinationAccount>{lbDestinationAccount.text}</destinationAccount>
+			<sourceAccount>{lbSourceAccount.text}</sourceAccount>
+			<amount>{lbAmount.text}</amount>		
+			<active>{"1"}</active>	
+			<date>{date.text}</date>
+			<order>{orderName.selectedItem.id}</order>
+			<price>{lbPrice.text}</price>
+			<desc>{lbDesc.text}</desc>
 			
 		</root>		
 	</mx:Model>	
-	<mx:Label text="ОПЛАТА СЧЕТА КОНТРАГЕНТОМ" x="58.5" y="10" fontSize="14" fontWeight="bold"/>
-	<mx:VBox x="10" y="53" height="100%" width="510">
-	<mx:FormItem label="Контрагент" width="90%" fontWeight="bold" fontSize="10">
-		<mx:ComboBox id="contragentName" 
-		dataProvider="{accounts}"
-		labelField = "owner"	
-		 width="95%" 
-		 fontWeight="normal"/>
-	</mx:FormItem>
-	<mx:FormItem label="Заказ" width="90%" fontWeight="bold" fontSize="10">
+<mx:Model id="formModelOrder">		
+		<root>
+			<mode></mode>
+			<provider>{}</provider>
+			<consumer>{}</consumer>
+			<id>{}</id>		
+			<active>{"1"}</active>	
+			<creationDate>{}</creationDate>
+			<doneDate>{}</doneDate>
+			
+		</root>		
+	</mx:Model>		
+	<mx:Label text="ОПЛАТА СЧЕТА" x="58.5" y="10" fontSize="14" fontWeight="bold"/>
+	<mx:VBox x="10" y="53" height="341" width="976">
+	
+	<mx:FormItem label="Заказ" width="95%" fontWeight="bold" fontSize="11">
 		<mx:ComboBox id="orderName"
 			dataProvider="{orders}"
 			labelField = "textView"
-			 width="95%"
+			 width="450"
+			 change = "writeAll()"
+			
 			 fontWeight="normal"/>
 	</mx:FormItem>
-	<mx:FormItem label="Дата перевода" width="90%" fontWeight="bold" fontSize="10">
-		<mx:DateField id="date" fontWeight="normal" formatString="DD/MM/YY"/>
+	<mx:VBox width="100%" height="161">
+	<mx:HBox width="100%">
+		<mx:Label text="В соответствии с выбранным заказом будет осуществлен перевод средств контрагентом:" fontSize="11" fontWeight="bold"/>
+		<mx:Label text="" id="lbContragent" fontSize="12" width="100%"/>
+	</mx:HBox>
+	<mx:HBox width="835">
+		<mx:Label text="Со счета №: " fontSize="11" width="111" fontWeight="bold"/>
+		<mx:Label text=" " id="lbSourceAccount"  fontSize="12" width="100%"/>
+		<mx:Label text="на счет №: " fontSize="11" width="89" fontWeight="bold"/>
+		<mx:Label text=" " id="lbDestinationAccount"  fontSize="12" width="100%"/>
+	</mx:HBox> 
+	<mx:HBox width="100%">
+		<mx:Label text="Ид.Номер перевода:" fontSize="11" width="165" fontWeight="bold"/>
+		<mx:Label text=" " id="lbId"  fontSize="12" width="100%"/>
+	</mx:HBox>
+	<mx:HBox width="100%">
+		<mx:Label text="Размер:" fontSize="11" width="68" fontWeight="bold"/>
+		<mx:Label text=" " id="lbAmount"  fontSize="12" width="100%"/>
+	</mx:HBox>
+	
+	 
+	<mx:HBox width="100%">
+		<mx:Label text="Цена:" fontSize="11" width="48" fontWeight="bold"/>
+		<mx:Label text=" " id="lbPrice"  fontSize="12" width="133"/>
+	</mx:HBox>
+	<mx:HBox width="100%">
+		<mx:Label text="Описание:" fontSize="11" width="73" fontWeight="bold"/>
+		<mx:Label text=" " id="lbDesc"  fontSize="12" width="100%"/>
+	</mx:HBox>
+	
+	
+	</mx:VBox>
+	<mx:FormItem label="Дата перевода" width="90%" fontWeight="bold" fontSize="11">
+		<mx:DateField id="date" fontWeight="normal" formatString="DD/MM/YY" width="167"/>
 		
 	</mx:FormItem>
 	<mx:HBox width="100%">
-		<mx:Button label="Перечислить"  fontSize="10"/>
-		<mx:Button label="Очистить"  click="clearAll()" fontSize="10"/>
-		<mx:Button label="Выход" fontSize="10"/>
+		<mx:Button label="Перечислить"  fontSize="12" click="saveSelected()"/>
+		<mx:Button label="Очистить"  click="clearAll()" fontSize="12"/>
+
 	</mx:HBox>
 	</mx:VBox>
 </mx:Canvas>

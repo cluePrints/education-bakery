@@ -1,61 +1,481 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="902" height="632">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="1018" height="640" creationComplete="init()">
+
+<mx:HTTPService id="contragentSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ContragentSvc"
+		result="httpContragentResultHandler(event)"
+		fault="httpFaultHandler(event)"/>	
+<mx:HTTPService id="productSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductTypeSvc"	
+		result="httpProductResultHandler(event)"
+		fault="httpFaultHandler(event)"/>		
+<mx:HTTPService id="orderSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.OrderSvc"	
+		result="httpOrderResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+<mx:HTTPService id="productMoveSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductMoveSvc"	
+		result="httpProductMoveResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+<mx:HTTPService id="moneyMoveSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MoneyMoveSvc"	
+		result="httpMoneyMoveResultHandler(event)"
+		fault="httpFaultHandler(event)"/>						
 <mx:Script>
-	function clearAll(){
-		orderSize.text = "";
+<![CDATA[
+	
+	import mx.collections.ArrayCollection;
+	import LogComp.Util;
+	private var orderType:*;
+	private var mainData:*;
+	private var units:*;
+	private var orderId:*;
+	private var moneyMoveItem:*;
+	[Bindable] private var contragent:ArrayCollection;
+	[Bindable] private var product:ArrayCollection;
+	[Bindable] private var childContragent:ArrayCollection;
+	[Bindable] private var allContragent:ArrayCollection;
+	[Bindable] private var account:ArrayCollection;
+	[Bindable] private var providerAccountArr:ArrayCollection;
+	[Bindable] private var customerAccountArr:ArrayCollection;
+	[Bindable] private var warehouse:ArrayCollection;
+	[Bindable] private var providerWarehouseArr:ArrayCollection;
+	[Bindable] private var customerWarehouseArr:ArrayCollection;
+	[Bindable] private var productPriceArr:*;
+	[Bindable] private var productPriceList:ArrayCollection;
+	
+	 var util:Util = new Util();
+	 function httpMoneyMoveResultHandler(event:*){
+	 	var item:*;
+	 	var main:*;
+	 	main = event.result.mainData['moneymove'];
+	 	item = util.extractItemCollection(event.result.accounts,'account');
+	 	account = util.getActiveItems(item);
+	 	customerAccountArr = getAccountByOwner(account,contragentCustomer.selectedItem.id);
+	 	providerAccountArr = getAccountByOwner(account,contragentProvider.selectedItem.id);
+	 	productPriceList = util.extractItemCollection(event.result.priceListItems,"pricelistitem");
+	 	productPriceArr = getPriceForProduct(productPriceList,productNameForOrder.selectedItem.id);
+	 	if(productPriceArr != null){
+	 	productPrice.text = productPriceArr.price;
+	 	}
+	 	
+	 	if(formModelMoneyMove.mode == "EDIT"){
+	 	moneyMoveItem = getMoneyMoveByOrder(main,orderId.id);
+	 	
+	 	//productMove
+			saveProductMove();
+			productMoveSvc.cancel();
+			productMoveSvc.send(formModelProductMove);
+	 	}
+	 }
+	 function httpProductMoveResultHandler(event:*){
+	 	var item:*;
+	 	item = util.extractItemCollection(event.result.warehouses,'warehouse');
+	 	warehouse = util.getActiveItems(item);
+	 	customerWarehouseArr = getAccountByOwner(warehouse,contragentCustomer.selectedItem.id);
+	 	providerWarehouseArr = getAccountByOwner(warehouse,contragentProvider.selectedItem.id);
+	 	 
+	 	
+	 	if(formModelProductMove.mode == "EDIT"){
+	 		clearAllText();
+	 		mx.controls.Alert.show("	ДОГОВОР УСПЕШНО СОХРАНЕН!    ");
+	 	}
+	 	
+	 	
+	 }
+	 function httpOrderResultHandler(event:*){
+	 	var item = event.result.mainData['order'];
+	 	
+	 	orderId = getOrder(item,contragentProvider.selectedItem.id,contragentCustomer.selectedItem.id,dfCreationDate.text,dfDoneDate.text);
+	 	
+		 	//moneyMove
+			saveMoneyMove();
+			moneyMoveSvc.cancel();
+			moneyMoveSvc.send(formModelMoneyMove);
+	 	
+	 }
+	 
+	 
+	function httpProductResultHandler(event:*){
+		product = util.getActiveItems(event.result.mainData['producttype']);
+		units = util.extractItemCollection(event.result.units,'unit');
+	}
+	function httpContragentResultHandler(event:*){
+		mainData = event.result.mainData;
+		allContragent = mainData['contragent'];
+		childContragent = getChildItems(allContragent);
+		contragent = getContragentItems(allContragent);
 		
+	}
+	function httpFaultHandler(event:Event):void{
+					 mx.controls.Alert.show(event.toString())	;
+			
+			} 
+	function init(){
+		clearAllText();
+		
+		formModelContragent.mode = "FETCH";
+		formModelProduct.mode = "FETCH";
+		formModelMoneyMove.mode = "FETCH";
+		formModelProductMove.mode = "FETCH";
+		
+		moneyMoveSvc.cancel();
+		contragentSvc.cancel();
+		productMoveSvc.cancel();
+		contragentSvc.send(formModelContragent);
+		productSvc.cancel();
+		productSvc.send(formModelProduct);
+		moneyMoveSvc.send(formModelMoneyMove);
+		productMoveSvc.send(formModelProductMove);
+	}		
+
+	function changeOrderType(){
+		if(orderType_1.selected == true){
+			orderType_2.selected = false;
+			contragentCustomer.dataProvider = contragent;
+			contragentProvider.dataProvider = childContragent;
+			getAccount();
+		}
+		if(orderType_2.selected == true){
+			orderType_1.selected = false;
+			contragentCustomer.dataProvider = childContragent;
+			contragentProvider.dataProvider = contragent;
+			getAccount();
+			
+		}
+	}
+	
+	public function getPriceForProduct(items:ArrayCollection,productId:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.product == productId) {
+				result = unit;
+			}
+		} 
+		return result;	
+	}
+	public function getAccountByOwner(items:ArrayCollection,contrId:*):ArrayCollection{
+		var result = new ArrayCollection();		
+		for each (var item in items){
+			if (item.hasOwnProperty('owner')){
+				if (item.owner == contrId){
+				result.addItem(item);
+				}
+			}			
+		} 		
+		return result;		
+	}
+	public function getChildItems(items:ArrayCollection):ArrayCollection{
+		var result = new ArrayCollection();		
+		for each (var item in items){
+			if (item.hasOwnProperty('child')){
+				if (item.child == true){
+					result.addItem(item);
+				}
+			}			
+		} 		
+		return result;		
+	}
+	public function getContragentItems(items:ArrayCollection):ArrayCollection{
+		var result = new ArrayCollection();		
+		for each (var item in items){
+			if (item.hasOwnProperty('child')){
+				if (item.child == false){
+					result.addItem(item);
+				}
+			}			
+		} 		
+		return result;		
+	}
+	public function getItemById(items:*, _id:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.id == _id) {
+				result = unit;
+			}
+		} 
+		return result;
+	}
+	public function getOrder(items:*,provName:*,cusName:*,creatinDate:*,doneDate:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.provider == provName && unit.consumer == cusName && unit.creationDate == creatinDate && unit.doneDate == doneDate && unit.active == false) {
+				result = unit;
+			}
+		} 
+		return result;
+	}
+	public function getMoneyMoveByOrder(items:*, _id:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.order == _id) {
+				result = unit;
+			}
+		} 
+		return result;
+	}
+	function showUnit(){
+		var item = getItemById(units,productNameForOrder.selectedItem.id);
+		if(item != null){
+		productUnits.text = item.textView;
+		}
+		productPriceArr = getPriceForProduct(productPriceList,productNameForOrder.selectedItem.id);
+	 	productPrice.text = productPriceArr.price;
+	 	getAllPrice();
+	}
+	function saveOrder(){
+		
+		formModelOrder.mode = "EDIT";
+		orderSvc.cancel();
+		orderSvc.send(formModelOrder);
+		
+		
+	}
+	function getAccount(){
+		//accounts
+		customerAccountArr = getAccountByOwner(account,contragentCustomer.selectedItem.id);
+	 	providerAccountArr = getAccountByOwner(account,contragentProvider.selectedItem.id);
+	 	//warehouse
+	 	customerWarehouseArr = getAccountByOwner(warehouse,contragentCustomer.selectedItem.id);
+	 	providerWarehouseArr = getAccountByOwner(warehouse,contragentProvider.selectedItem.id);
+	 
+	}
+	function getAllPrice(){
+		var num1:int;
+		var num2:int;
+		num1 = int(orderSize.text);
+		num2 = int(productPrice.text);
+		
+		AllPrice.text = ( num1* num2).toString();
+	
+	}
+	function clearAllText(){
+		productPrice.text = "";
+		dfCreationDate.text = "";
+		dfDoneDate.text = "";
+		productUnits.text = "";
+		AllPrice.text = "";
+		productUnits.text = ""
+		orderSize.text = "";
 		contragentProvider.selectedIndex = 0;
 		productNameForOrder.selectedIndex = 0;
+		
+		
 	}
+	function saveMoneyMove(){
+		formModelMoneyMove.mode = "EDIT";
+		formModelMoneyMove.destinationAccount = providerAccount.selectedItem.id;
+		formModelMoneyMove.sourceAccount = customerAccount.selectedItem.id;
+		formModelMoneyMove.amount = orderSize.text;
+		formModelMoneyMove.order = orderId.id;
+		formModelMoneyMove.price = productPrice.text;
+	
+		
+	}
+	function saveProductMove(){
+		formModelProductMove.mode = "EDIT";
+		formModelProductMove.sourceWarehouse = providerWarehouse.selectedItem.id;
+		formModelProductMove.destinationWarehouse = сustomerWarehouse.selectedItem.id;
+		formModelProductMove.moneyMove = moneyMoveItem.id;
+	
+	
+	}
+		]]>
 </mx:Script>
-	<mx:Label  text= "НОВЫЙ ДОГОВОР" fontSize="14" y="10" x="134" width="204" fontWeight="bold"/>
-	<mx:VBox x="5" y="41" height="463" width="100%">
+<mx:Model id="formModelContragent">		
+		<root>
+			<mode></mode>
+			<id>{}</id>
+			<address>{}</address>		
+			<active>{}</active>
+			<child>{}</child>
+			<name>{}</name>
+		</root>		
+</mx:Model>	
+<mx:Model id="formModelProduct">		
+		<root>
+			<id>{}</id>
+			<mode></mode>
+			<unit>{}</unit>	
+			<active>{}</active>
+			<name>{}</name>
+		</root>	
+</mx:Model>	
+<mx:Model id="formModelOrder">		
+		<root>
+			<mode>"EDIT"</mode>
+			<provider>{contragentProvider.selectedItem.id}</provider>
+			<consumer>{contragentCustomer.selectedItem.id}</consumer>
+			<id>{}</id>		
+			<active>{"0"}</active>	
+			<creationDate>{dfCreationDate.text}</creationDate>
+			<doneDate>{dfDoneDate.text}</doneDate>
+			
+		</root>		
+	</mx:Model>	
+	
+	<mx:Model id="formModelMoneyMove">		
+		<root>
+			<mode></mode>
+			<id>{}</id>
+			<destinationAccount>{}</destinationAccount>
+			<sourceAccount>{}</sourceAccount>
+			<amount>{}</amount>		
+			<active>{}</active>	
+			<date>{}</date>
+			<order>{}</order>
+			<price>{}</price>
+			<desc>{}</desc>
+			
+		</root>		
+	</mx:Model>	
+	<mx:Model id="formModelProductMove">		
+		<root>
+			<mode></mode>
+			<id>{}</id>
+			<sourceWarehouse>{}</sourceWarehouse>
+			<destinationWarehouse>{}</destinationWarehouse>
+			<moneyMove>{}</moneyMove>		
+			<active>{"0"}</active>	
+			<date>{}</date>
+			
+		</root>		
+	</mx:Model>	
+	<mx:Label  text= "НОВЫЙ ДОГОВОР" id="headerText" fontSize="14" y="69" x="315" width="515" fontWeight="bold"/>
+	<mx:VBox x="10" y="113" height="370" width="100%" id="mainVBox">
 	<mx:HBox>
 	<mx:FormItem label="Договор на поставку" required="true" width="65%" fontWeight="bold" >
-			<mx:CheckBox selected="true" fontWeight="normal" />
+			<mx:CheckBox selected="true" fontWeight="normal" id="orderType_1" change ="changeOrderType()"/>
 		</mx:FormItem>
 		<mx:FormItem label="Договор на покупку" required="true" width="65%" fontWeight="bold" >
-			<mx:CheckBox selected="false" fontWeight="normal" />
+			<mx:CheckBox selected="false" fontWeight="normal"  change ="changeOrderType()" id="orderType_2" />
 		</mx:FormItem>
 		</mx:HBox>
 		<mx:FormItem label="Заказчик" required="true" width="65%" fontWeight="bold" >
-			<mx:ComboBox text="" id="contragentCustomer" width="95%" fontWeight="normal" />
+			<mx:ComboBox text="" 
+				 id="contragentCustomer"
+				 width="95%"
+				 dataProvider = "{contragent}"
+				 labelField = "textView"
+				 fontWeight="normal" 
+				 change="getAccount()"
+				 
+				 />
 		</mx:FormItem>
 		<mx:FormItem label="Поставщик" required="true" width="65%" fontWeight="bold" >
-			<mx:ComboBox text="" id="contragentProvider" width="95%" fontWeight="normal" />
+			<mx:ComboBox text=""
+				 id="contragentProvider" 
+				 dataProvider = "{childContragent}"
+				 labelField = "textView"
+				 width="95%"
+				  change="getAccount()"
+				 fontWeight="normal" />
 		</mx:FormItem>
 		
-		<mx:FormItem label="Дата поставки" required="true" width="95%" fontWeight="bold" >
-			<mx:DateField id="orderDoneDate" fontWeight="normal"  >
+		<mx:FormItem label="Счет заказчика" required="true" width="65%" fontWeight="bold" >
+			<mx:ComboBox text="" 
+				 id="customerAccount"
+				 width="95%"
+				 dataProvider = "{customerAccountArr}"
+				 labelField="textView"
+				 fontWeight="normal" 
+				 
+				 />
+		</mx:FormItem>
+		<mx:FormItem label="Счет Поставщика" required="true" width="65%" fontWeight="bold" >
+			<mx:ComboBox text=""
+				 id="providerAccount" 
+				 dataProvider = "{providerAccountArr}"
+				 labelField="textView"
+				 width="95%"
+				 fontWeight="normal" />
+		</mx:FormItem>
+		
+		<mx:FormItem label="Склад заказчика" required="true" width="65%" fontWeight="bold" >
+			<mx:ComboBox text="" 
+				 id="сustomerWarehouse"
+				 width="95%"
+				 dataProvider = "{customerWarehouseArr}"
+				 labelField="textView"
+				 fontWeight="normal" 
+				 
+				 />
+		</mx:FormItem>
+		<mx:FormItem label="Склад Поставщика" required="true" width="65%" fontWeight="bold" >
+			<mx:ComboBox text=""
+				 id="providerWarehouse" 
+				 dataProvider = "{providerWarehouseArr}"
+				 labelField="textView"
+				 width="95%"
+				 fontWeight="normal" />
+		</mx:FormItem>
+		
+		<mx:FormItem label="Дата заказа:" 
+						required="true">												
+						<mx:DateField id="dfCreationDate"
+							text=""
+							formatString="DD/MM/YY"/>
+						</mx:FormItem>
+						<mx:FormItem label="Дата выполнения:" 
+						required="true">												
+						<mx:DateField id="dfDoneDate"
+							text=""
+							formatString="DD/MM/YY"/>
+						</mx:FormItem>
+		<mx:VBox width="880" height="52">
+			
+			<mx:HBox width="706" height="50">
+			<mx:VBox>
+		<mx:FormItem label="Продукция" required="true" width="397" fontWeight="bold">
+			<mx:ComboBox id="productNameForOrder" 
+				width="95%" 
+				fontWeight="normal"
+				dataProvider="{product}"
+				labelField="textView" 
 				
-			</mx:DateField>
+				change="showUnit()" />
 		</mx:FormItem>
-		<mx:VBox width="880" height="314">
-			<mx:DataGrid width="818" height="241">
-				<mx:columns>
-					<mx:DataGridColumn headerText="Продукт" />
-					<mx:DataGridColumn headerText="Цена" />
-					<mx:DataGridColumn headerText="Количество" />
-					<mx:DataGridColumn headerText="един.изм" />
-					<mx:DataGridColumn headerText="Склад-заказчика" />
-					
-				</mx:columns>
-			</mx:DataGrid>
-			<mx:HBox>
-		<mx:FormItem label="Продукция" required="true" width="55%" fontWeight="bold">
-			<mx:ComboBox id="productNameForOrder" width="95%" fontWeight="normal"  />
+		<mx:FormItem label="Ед.измерения" fontWeight="bold">
+			<mx:Label text="" id="productUnits"/>
 		</mx:FormItem>
-		<mx:FormItem label="Размер заказа" required="true" width="55%" fontWeight="bold" >
-			<mx:TextInput text="" id="orderSize" width="95%" fontWeight="normal" />
+		</mx:VBox>
+		<mx:VBox width="281">
+		<mx:FormItem label="Размер заказа" required="true" width="248" fontWeight="bold"  >
+			<mx:TextInput text="" id="orderSize" width="159" fontWeight="normal" change="getAllPrice()" />
 		</mx:FormItem>
-		<mx:Button label="Добавить в заказ" />
-		<mx:Button label="Удалить" />
+		<mx:FormItem label="Цена" fontWeight="bold">
+			<mx:Label text="" id="productPrice"/>
+		</mx:FormItem>
+			</mx:VBox>
 		</mx:HBox>
 		</mx:VBox>
+		<mx:HBox>
+			<mx:Label text="Общая сумма по договору:" fontWeight="bold"/>
+			<mx:Label text="" id="AllPrice" />
+			
+		</mx:HBox>
 		<mx:HBox width="100%" height="33">
-		<mx:Button label="Сохранить договор" />
-		<mx:Button label="Очистить"  click="clearAll()"/>
-		<mx:Button label="Выход"/>
+		<mx:Button label="Сохранить договор" click="saveOrder()"/>
+		<mx:Button label="Очистить"  click="clearAllText()"/>
+		
 		</mx:HBox>
 	</mx:VBox>
 </mx:Canvas>
