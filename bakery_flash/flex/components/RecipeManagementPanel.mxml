@@ -3,7 +3,9 @@
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:comp="components.*"
 	xmlns:util="components.util.*"
-	creationComplete="init()" width="974" height="595">
+	creationComplete="init()" width="974" 
+	verticalAlign="top"
+	height="100%">
 	<!-- represents selected main item: Recipe -->
 	<mx:Model id="formModel">		
 		<root>
@@ -23,24 +25,40 @@
 			
 			<id></id>
 			<consumed>{cbChildConsumed.selected == true ? "1" : "0"}</consumed>
-			<recipe>{dgData.selectedItem.id}</recipe>
-			
-			<resultFormula>{encodeURIComponent(tiChildResultFormula.text)}</resultFormula>
+			<recipe>{dgData.selectedItem.id}</recipe>		
 			<productType>{cbChildProductType.selectedItem.id}</productType>
+		</root>					
+	</mx:Model>
+			
+	<!-- represents selected subSubItem: RecipeEffectPart -->
+	<!-- this approach seems to be less and less confident:) -->
+	<mx:Model id="childPartModel">
+		<root>
+			<mode>EDIT</mode>
+			
+			<id></id>
+			<recipeEffect></recipeEffect>
+			<multiplicator>{tiEffectPartMultiplicator.text}</multiplicator>
+			<parameter>{cbEffectPartParam.selectedItem.id}</parameter>
 		</root>					
 	</mx:Model>
 	<mx:HTTPService id="mainSvc" 
 		useProxy="false"
-		method="GET"
-		
+		method="GET"		
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:HTTPService id="childSvc" 
 		useProxy="false"
-		method="GET"
-		
+		method="GET"		
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
+	<mx:HTTPService id="childPartSvc" 
+		useProxy="false"
+		method="GET"
+		url="{svcUrl.recipeEffectPartSvcUrl}"		
+		result="httpResultHandler(event)"
+		fault="util.httpFaultHandler(event)"/>
+
 	<mx:VBox horizontalAlign="center" width="100%">	
 	<mx:Script>
 		<![CDATA[
@@ -62,16 +80,19 @@
 			[Bindable]
             private var mainData:ArrayCollection = new ArrayCollection();                  
 
-			[Bindable] private var devices:ArrayCollection;
-			[Bindable] private var availableParameters:ArrayCollection;
-			[Bindable] private var parameters:ArrayCollection;
+			[Bindable] private var devices:ArrayCollection = new ArrayCollection();
+			[Bindable] private var availableParameters:ArrayCollection = new ArrayCollection();
+			[Bindable] private var parameters:ArrayCollection = new ArrayCollection();
 			[Bindable] private var selectedParameters:ArrayCollection = new ArrayCollection();
             
-   			[Bindable] private var productTypes:ArrayCollection;            
-            [Bindable] private var availableProductTypes:ArrayCollection;
+   			[Bindable] private var productTypes:ArrayCollection = new ArrayCollection();           
+            [Bindable] private var availableProductTypes:ArrayCollection = new ArrayCollection();
             
-			[Bindable] private var recipeEffects:ArrayCollection;
-			[Bindable] private var selectedRecipeEffects:ArrayCollection = new ArrayCollection();     
+			[Bindable] private var recipeEffects:ArrayCollection = new ArrayCollection();
+			[Bindable] private var selectedRecipeEffects:ArrayCollection = new ArrayCollection();
+			
+			[Bindable] private var recipeEffectParts:ArrayCollection = new ArrayCollection();
+			[Bindable] private var selectedRecipeEffectParts:ArrayCollection = new ArrayCollection();          
 											
 			[Bindable]
 	        private var errors:ArrayCollection = new ArrayCollection();          
@@ -82,9 +103,17 @@
 				var item = dgChildData.selectedItem;
 				if (item != null){
 					childModel.id = item.id;
+					childPartModel.recipeEffect = dgChildData.selectedItem.id;
 					cbChildProductType.selectedIndex = util.getItemPos(availableProductTypes, item.productType);					
-					tiChildResultFormula.text = item.resultFormula;
 					cbChildConsumed.selected = (item.consumed ==1);
+					
+					selectedRecipeEffectParts.removeAll();
+					for each (var recipeEffectPart in recipeEffectParts){
+						if (recipeEffectPart.recipeEffect == dgChildData.selectedItem.id){
+							selectedRecipeEffectParts.addItem(recipeEffectPart);
+						}
+					}
+					selectedRecipeEffectParts.refresh();	
 				}
 			}				
 			function childSave(){
@@ -107,6 +136,7 @@
 			public function init():void{
 				createNew();		
 				childCreateNew();
+				childPartCreateNew();
 				mainSvc.url = svcUrl.mainRecipeSvcUrl;
 				childSvc.url = svcUrl.childRecipeSvcUrl;		
 				mainSvc.cancel();
@@ -122,6 +152,7 @@
 				recipeEffects = util.extractItemCollection(event.result.recipeEffects, 'recipeeffect');
 				parameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
 				devices = util.extractItemCollection(event.result.devices, 'device');
+				recipeEffectParts = util.extractItemCollection(event.result.recipeEffectParts, 'recipeeffectpart');
 				            	            
 				availableProductTypes = util.getActiveItems(productTypes);
 				availableParameters = util.getActiveItems(parameters);
@@ -135,8 +166,7 @@
 					availableParameters.refresh();
 				}
 													            
-				mainData = util.extractItemCollection(event.result.mainData, 'recipe');
-				
+				mainData = util.extractItemCollection(event.result.recipes, 'recipe');				
 				
 				loadSelectionState();
 			} 
@@ -150,8 +180,8 @@
 				if (dgChildData.selectedItem != null) {
 					selectedParamId = dgChildData.selectedItem.id;
 				}
-				if (dgCurrentParameters.selectedItem != null) {
-					selectedEffectId = dgCurrentParameters.selectedItem.id;
+				if (dgChildPartEffects.selectedItem != null) {
+					selectedEffectId = dgChildPartEffects.selectedItem.id;
 				}
 			}
 			private function singleDeviceFilterFunction(item:*):Boolean{
@@ -187,10 +217,15 @@
 					bindSelected();
 				}
 				if (selectedParamId>-1) {
-					dgChildData.selectedIndex = util.getItemPos(selectedParameters, selectedParamId);
+					dgChildData.selectedIndex = util.getItemPos(selectedRecipeEffects, selectedParamId);
+					childBindSelected();
 				}			
+				if (selectedEffectId>-1) {
+					dgChildPartEffects.selectedIndex = selectedEffectId;
+					childPartBind();
+				}
 			}
-			function bindSelected():void{				
+			private function bindSelected():void{				
 				if ((dgData.selectedIndex >= 0)) {
 					cbActive.selected = (dgData.selectedItem.active == 1);
 																			
@@ -212,6 +247,7 @@
 								item.paramname = param.name;
 								item.devicename = device.name;
 								item.id = param.id;
+								item.textView = param.textView;
 								selectedParameters.addItem(item);
 							}
 						} else {
@@ -224,7 +260,8 @@
 								item.parameter = param;
 								item.device = device;
 								item.paramname = param.name;
-								item.devicename = device.name;							
+								item.devicename = device.name;	
+								item.textView = param.textView;						
 								selectedParameters.addItem(item);
 							}
 						}
@@ -240,40 +277,69 @@
 							selectedRecipeEffects.addItem(recipeEffect);
 						}
 					}
-					selectedRecipeEffects.refresh();				
+					selectedRecipeEffects.refresh();												
 				}													
 			}
-			function createNew():void{
+			private function createNew():void{
 				formModel.id="";
 				cbActive.selected=true;				
 				formModel.mode="NEW";			
 				tiFormula.text="";
 				tiName.text="";
 			}
-			function childCreateNew():void{
+			private function childCreateNew():void{
 				childModel.id=null;			
 				cbChildProductType.selectedIndex = -1;				
-				tiChildResultFormula.text = "";
 			}
-			function cancel():void{
+			private function childPartCreateNew():void{
+				childPartModel.id=null;			
+				cbEffectPartParam.selectedIndex=-1;
+				tiEffectPartMultiplicator.text="1";
+			}
+			private function childPartSave():void{
+				childPartModel.mode="EDIT";
+				childPartSvc.cancel();
+				childPartSvc.send(childPartModel);
+			}
+			private function childPartDelete():void{
+				childPartModel.mode="DELETE";
+				childPartSvc.cancel();
+				childPartSvc.send(childPartModel);
+			}
+			private function childPartBind():void{
+				if ((dgChildPartEffects.selectedItem != null)) {
+					var item = dgChildPartEffects.selectedItem;
+					childPartModel.id = item.id;
+					if (dgChildData.selectedItem != null) {
+						childPartModel.recipeEffect = dgChildData.selectedItem.id;
+					} else {
+						childPartModel.recipeEffect = null;
+					}
+					tiEffectPartMultiplicator.text = item.multiplicator;
+					cbEffectPartParam.selectedIndex = util.getItemPos(selectedParameters, item.parameter);								
+				}
+			}
+			private function cancel():void{
 				formModel.id="";
 				bindSelected();
 			}
-			function saveSelected():void{
+			private function saveSelected():void{
 				formModel.mode="EDIT";
 				mainSvc.cancel();	
 				mainSvc.send(formModel);
 			}
-			function addDeviceParameter():void{			
+			private function addDeviceParameter():void{			
 				if (dgAvailableParameters.selectedIndex>-1) {
 					formModel.mode="SPECIAL_ADD";
-					formModel.id = dgData.selectedItem.id;
+					if (dgData.selectedItem!= null) {					
+						formModel.id = dgData.selectedItem.id;
+					}
 					formModel.spec_id = dgAvailableParameters.selectedItem.id;
 					mainSvc.cancel();
 					mainSvc.send(formModel);		
 				}	
 			}
-			function removeDeviceParameter():void{
+			private function removeDeviceParameter():void{
 				if (dgCurrentParameters.selectedIndex>-1) {
 					formModel.id = dgData.selectedItem.id;
 					formModel.spec_id = dgCurrentParameters.selectedItem.parameter.id;
@@ -282,89 +348,20 @@
 					mainSvc.send(formModel);							
 				}
 			}
-			private function validateChild():void{
-				var valid:Boolean = true;
-				/**
-				 * Format is A*{P1}+B*{P2}-C*{P3}+D
-				 * 
-				 * A,B,C,D - real numbers;
-				 * 
-				 * Example:
-				 * 		'{18}+2.223{14}-{19}+2.228'
-				 * 
-				 * Impl:
-				 *  1. check if all {xx} are at selected list
-				 *  2. replace each {xx} by number, '1', for instance
-				 *  3. check if at the left of each number (whitespaces should be passed) there is
-				 * 		- start of line
-				 * 		- '+'
-				 * 		- '-'
-				 * 		- '*'
-				 *  4. check if at ther right of each number there is 
-				 * 		- EOF
-				 * 		- '+'
-				 * 		- '-'
-				 * 		- '*'
-				 * 	5. check if after each '+','-','*' there is valid number
-				 * 	6. check if before each '+','-','*' there is valid number;
-				 * 
-				 * Each parameter could be used only at once.
-				 **/
-
-				var unusedParameters:ArrayCollection = util.arrayCopy(selectedParameters);
-				var tmp:String = tiChildResultFormula.text;
-				var i:int=0;
-				var j:int=0;
-				var t:String;
-				/* TODO: trim string */
-				// 1				
-				while (i<tmp.length) {
-					t=tmp.charAt(i);
-					if (t=='{')	{
-						j=tmp.indexOf('}',i);
-						if (j<0){
-							valid=false;
-							break;
-						}
-						var pNumAsStr = tmp.substring(i+1, j);
-						if (!util.isValidNumber(pNumAsStr)){
-							valid=false;
-							break;
-						}
-						var pNumAsNum = parseFloat(pNumAsStr);
-						if (util.getItemPos(selectedParameters, pNumAsNum)<0){
-							valid=false;
-							break;
-						} else {
-							i=j;
-						}	
-						t =tmp.charAt(i+1);								
-						if ((t!='') && (t!=' ') && (t!='-') && (t!='+')){
-							valid=false;
-							break;
-						}	
-					} else if (util.numberAllowedChars.contains(t)){
-						//start of number. at the right(after whitespaces) should be: +,-,*,{
-						while (util.numberAllowedChars.contains(tmp.charAt(i)) && (i<tmp.length)){
-							i++;
-						}
-						while (tmp.charAt(i)==' ') {
-							i++;
-						}
-						if ((i<tmp.length) && (tmp.charAt(i)!='-') && (tmp.charAt(i)!='+') && (tmp.charAt(i)!='*')&& (tmp.charAt(i)!='{')) {
-							valid = false;
-							break;
-						}				
-						if (tmp.charAt(i)=='{'){
-							i--;
-						}																			
-					} else if (t=' ') {
-						// skip
+			private function getParameterName(item:Object, column:DataGridColumn):String{				
+				if (item.parameter == null){
+					return "1"
+				} else {
+					var param = util.getItemById(parameters, item.parameter);
+					if (param == null) {
+						return "";
+					} else {
+						return param.textView;
 					}
-								
-					i++;
 				}
-				
+			}
+			private function validateChild():void{
+				var valid:Boolean = true;								
 				 
 				if (valid) {
 					btnChildSave.enabled=true;
@@ -481,7 +478,8 @@
 						</mx:columns>
 					</mx:DataGrid>
 				</mx:VBox>
-				<mx:VBox width="47" height="223" verticalAlign="center">													
+				<mx:VBox width="47" height="223" verticalAlign="center"
+					horizontalAlign="center">													
 					<mx:Button label="&lt;" click="addDeviceParameter()"/>
 					<mx:Button label="&gt;" click="removeDeviceParameter()"/>
 					<util:ContextHelpButton>
@@ -513,15 +511,16 @@
 	<mx:VBox
 		width="98%"
 		verticalAlign="bottom"
+		height="100%"
 		horizontalAlign="center">		
 		<mx:Text
 			htmlText="&lt;B&gt;Потребляемые и производимые ресурсы:&lt;/B&gt;"
 			/>				
 		<mx:HBox 
 			width="100%"
-			height="212"
+			height="100%"
 			verticalAlign="bottom">		
-					<mx:DataGrid height="207" width="99%" 
+					<mx:DataGrid height="100%" width="99%" 
 						id="dgChildData"
 						dataProvider="{selectedRecipeEffects}"
 						itemClick="childBindSelected()">
@@ -571,20 +570,64 @@
 				</mx:VBox>										
 				<mx:FormItem label="Ресурс:"
 					width="90%"
-					required="true">
+					required="true"
+					direction="horizontal">
 					<mx:ComboBox id="cbChildProductType"
 						dataProvider="{availableProductTypes}"
 						labelField="name" width="100%"/>				
 				</mx:FormItem>
 				<mx:FormItem label="Потребляемый:"
+					direction="horizontal"
 					width="90%">
 					<mx:CheckBox id="cbChildConsumed"/>
 				</mx:FormItem>
 				<mx:FormItem label="Формула:"
+					direction="horizontal"
 					required="true"
 					width="90%">
-					<mx:TextArea id="tiChildResultFormula" width="100%"
-						change="validateChild()"/>				
+					<mx:DataGrid
+						dataProvider="{selectedRecipeEffectParts}" width="158"
+						click="childPartBind()"
+						id="dgChildPartEffects">
+						<mx:columns>
+							<mx:DataGridColumn headerText="Множитель" dataField="multiplicator" width="30"/>
+							<mx:DataGridColumn headerText="Параметр" labelFunction="getParameterName"/>
+						</mx:columns>
+					</mx:DataGrid>
+					<mx:VBox 
+						height="100%"
+						width="100%">
+						<mx:FormItem
+							width="100%"
+							label="Параметр">												
+							<mx:ComboBox
+								id="cbEffectPartParam"
+								labelField="textView"
+								dataProvider="{selectedParameters}"
+								width="100%">
+							</mx:ComboBox>
+						</mx:FormItem>
+						<mx:FormItem
+							label="Множитель">												
+							<mx:TextInput
+								id="tiEffectPartMultiplicator"/>
+						</mx:FormItem>
+						<mx:HBox width="100%">											
+							<mx:Button
+								label="Сохранить"
+								click="childPartSave()">							
+							</mx:Button>
+							<mx:Button
+								label="Удалить"
+								click="childPartDelete()">							
+							</mx:Button>
+							<mx:Button
+								label="Новый"
+								click="childPartCreateNew()">							
+							</mx:Button>
+						</mx:HBox>
+					</mx:VBox>
+			
 				</mx:FormItem>
 				<mx:HBox
 					width="90%"

@@ -78,7 +78,7 @@ public class Util{
 	public function extractItemCollection(proxy:*, collectionName:String):ArrayCollection{
 		var result:ArrayCollection = null;
 		if (proxy != null){
-			if (proxy.hasOwnProperty(collectionName)){
+			if (proxy[collectionName] != null){
 				if (proxy[collectionName] != null){
 					if (proxy[collectionName] instanceof ArrayCollection) {
 						result = proxy[collectionName];

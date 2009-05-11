@@ -20,7 +20,7 @@ public class SvcUrl{
 	public var productTypeDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductTypeSvc"		
 	public var warehouseDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.WarehouseSvc"			 
 	public var measuresDataSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MeasureSvc"			
-		
+	public var recipeEffectPartSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.RecipeEffectPartSvc"
 		
 					
 
