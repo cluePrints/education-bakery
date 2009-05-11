@@ -29,10 +29,9 @@ public class SvcController extends AbstractController implements ISvcController{
 			String svcClassName = svcName;
 			Class svcClass = Class.forName(svcClassName);
 			AbstractCommand command = (AbstractCommand) svcClass.newInstance();
-			command.init(this);
-			SvcHelper.writeCurrentDate(DAOFacade, response.getWriter());
-			
+			command.init(this);						
 			command.execute(request, response, this);
+			SvcHelper.writeCurrentDate(DAOFacade, response.getWriter());
 
 		} catch (Exception ex) {			
 			signalInternalError(response.getWriter(), ex);

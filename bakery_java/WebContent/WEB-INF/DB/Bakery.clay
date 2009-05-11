@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <clay-model clay-version="1.4.2">
-<database-model alias="" author="" begin-script="SET NAMES 'utf8';&#13;&#10;SET CHARACTER SET utf8;&#13;&#10;drop schema if exists bakery;&#13;&#10;create schema bakery;&#13;&#10;use bakery;" end-script="" name="Bakery" remarks="" sql-dialect-id="jp.azzurri.clay.dialect.MySQL_5_0_Dialect" uid="117d8d5:11ed453eca4:-8000" version="1.0">
+<database-model alias="" author="" begin-script="#DEFAULT CHARSET=utf8&#13;&#10;drop schema if exists bakery;&#13;&#10;create schema bakery;&#13;&#10;use bakery;" end-script="" name="Bakery" remarks="" sql-dialect-id="jp.azzurri.clay.dialect.MySQL_5_0_Dialect" uid="117d8d5:11ed453eca4:-8000" version="1.0">
 <database-model-description/>
 <schema-list>
 <schema alias="" name="BAKERY" remarks="" uid="117d8d5:11ed453eca4:-7ffd">

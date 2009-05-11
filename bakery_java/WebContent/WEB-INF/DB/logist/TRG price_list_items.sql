@@ -28,6 +28,7 @@ DELIMITER;
 DELIMITER |
 DROP TRIGGER IF EXISTS before_ins_price_list_items|
 CREATE TRIGGER before_ins_price_list_items
+  DECLARE c INTEGER DEFAULT null;
   BEFORE INSERT ON price_list_items FOR EACH ROW
   BEGIN
   	IF NEW.price_list_item_price<=0 THEN

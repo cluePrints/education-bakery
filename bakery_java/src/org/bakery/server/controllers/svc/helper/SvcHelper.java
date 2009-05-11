@@ -13,65 +13,79 @@ import org.bakery.server.persistence.DAOFacade;
 import org.bakery.server.util.BakeryConstants;
 
 public class SvcHelper {
-	private static SimpleDateFormat df; 
+	private static SimpleDateFormat df;
 	static {
 		df = new SimpleDateFormat("dd/MM/yy");
 	}
-	public static void writeAvailable(PrintWriter out, AbstractDAO dao, String sectionId) throws Exception{
+
+	public static void writeAvailable(PrintWriter out, AbstractDAO dao,
+			String sectionId) throws Exception {
 		List<BusinessEntity> entities = dao.getAvailable();
-		out.write("\n<"+sectionId+">\n");
+		out.write("\n<" + sectionId + ">\n");
 		for (BusinessEntity e : entities) {
 			out.write(e.toXml());
 		}
-		out.write("\n</"+sectionId+">\n");
+		out.write("\n</" + sectionId + ">\n");
 		out.flush();
 	}
-	
-	public static void write(PrintWriter out, AbstractDAO dao, String sectionId) throws Exception{
-		List<BusinessEntity> entities = dao.searchByName("%", BakeryConstants.DEFAULT_SEARCH_START_FROM, BakeryConstants.DEFAULT_SEARCH_MAX_RESULTS);
-		out.write("\n<"+sectionId+">\n");
+
+	public static void write(PrintWriter out, AbstractDAO dao, String sectionId)
+			throws Exception {
+		List<BusinessEntity> entities = dao.searchByName("%",
+				BakeryConstants.DEFAULT_SEARCH_START_FROM,
+				BakeryConstants.DEFAULT_SEARCH_MAX_RESULTS);
+		out.write("\n<" + sectionId + ">\n");
 		for (BusinessEntity e : entities) {
 			out.write(e.toXml());
 		}
-		out.write("\n</"+sectionId+">\n");
+		out.write("\n</" + sectionId + ">\n");
 		out.flush();
-	}	
-	
+	}
+
 	public static void writeCurrentDate(DAOFacade facade, PrintWriter out) {
-		Date d = facade.getAccountDAO().getCurrentDate();
+		Date d;
+		try {
+			d = facade.getAccountDAO().getCurrentDate();
+		} catch (Exception e) {
+			d = null;
+		}
+
+		if (d == null)
+			d = new Date();
 		out.write("\n<currentDate>");
 		out.write(dateToString(d));
 		out.write("\n</currentDate>");
 	}
-	
-	public static String replaceXMLDeclinedCharacters(String input){
-		String result = 
-		"<![CDATA[" + input.replaceAll("]]>", "]]>]]><![CDATA[") + "]]>";
+
+	public static String replaceXMLDeclinedCharacters(String input) {
+		String result = "<![CDATA["
+				+ input.replaceAll("]]>", "]]>]]><![CDATA[") + "]]>";
 		return result;
 	}
-	public static void writeErrors(PrintWriter wr, Map<String, String> errors){
+
+	public static void writeErrors(PrintWriter wr, Map<String, String> errors) {
 		if ((errors == null) || (errors.isEmpty()))
 			return;
 		Iterator<Map.Entry<String, String>> it = errors.entrySet().iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			Map.Entry<String, String> e = it.next();
 			wr.write("\n<errors>");
 			wr.write("\n  <entity>");
-			wr.write("\n    "+replaceXMLDeclinedCharacters(e.getKey()));
+			wr.write("\n    " + replaceXMLDeclinedCharacters(e.getKey()));
 			wr.write("\n  </entity>");
 			wr.write("\n  <message>");
-			wr.write("\n    "+replaceXMLDeclinedCharacters(e.getValue()));
+			wr.write("\n    " + replaceXMLDeclinedCharacters(e.getValue()));
 			wr.write("\n  </message>");
 			wr.write("\n</errors>");
 		}
 		wr.flush();
 	}
-	
-	public static Date parseDate(String s) throws Exception{
+
+	public static Date parseDate(String s) throws Exception {
 		return df.parse(s);
 	}
-	
-	public static String dateToString(Date d){
+
+	public static String dateToString(Date d) {
 		return df.format(d);
 	}
 }

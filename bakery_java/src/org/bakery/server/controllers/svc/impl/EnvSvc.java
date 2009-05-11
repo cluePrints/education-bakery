@@ -6,9 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bakery.server.controllers.svc.ISvcController;
 import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
-import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.fake.Environment;
-import org.bakery.server.persistence.DAOFacade;
 
 public class EnvSvc extends AbstractCommand {
 
