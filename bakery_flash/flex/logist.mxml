@@ -4,17 +4,18 @@
 	xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" >
 <mx:Script>
 	<![CDATA[
+		import components.SimpleManagementPanel;
+		import components.WarehouseManagementPanel;
+		import components.OrderManagementPanel;
+		import components.ProductManagementPanel;
+		import components.PriceListManagementPanel;
+		import components.AccountManagementPanel;
+		import components.ProductMoveManagementPanel;
+		import components.MoneyMoveManagementPanel;
 		import LogComp.contragentAccount;
 		import LogComp.writeNewOrder;
 		import LogComp.registration;
 		import LogComp.ResultProduction;
-		import LogComp.ProductList;
-		import LogComp.ProductMoveList;
-		import LogComp.MoneyMoveList;
-		import LogComp.AccountList;
-		import LogComp.OrderList;
-		import LogComp.PriceList;
-		import LogComp.ContragentList;
 		import LogComp.Help;
 		import LogComp.About;
 		import components.ContragentManagementPanel;
@@ -63,25 +64,31 @@
 			var newComp = new contragentAccount();
 				break		
 			case 10:
-			var newComp = new ContragentList();
+			var newComp = new ContragentManagementPanel();
 				break;
 			case 11:
-			var newComp = new OrderList();
+			var newComp = new OrderManagementPanel();
 				break;
 			case 12:
-			var newComp = new ProductList();
+			var newComp = new ProductManagementPanel();
 				break;	
 			case 13:
-			var newComp = new PriceList();
+			var newComp = new PriceListManagementPanel();
 				break;
 			case 14:
-			var newComp = new AccountList();
+			var newComp = new AccountManagementPanel();
 				break;
 			case 15:
-			var newComp = new MoneyMoveList();
+			var newComp = new MoneyMoveManagementPanel();
 				break;
 			case 16:
-			var newComp = new ProductMoveList();
+			var newComp = new ProductMoveManagementPanel();
+				break;	
+			case 17:
+			var newComp = new WarehouseManagementPanel();
+				break;	
+			case 18:
+			var newComp = new SimpleManagementPanel();
 				break;			
 			case 20:
 			var newComp = new About();
