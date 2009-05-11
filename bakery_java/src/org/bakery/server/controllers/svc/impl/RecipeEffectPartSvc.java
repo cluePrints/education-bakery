@@ -9,13 +9,13 @@ import org.bakery.server.controllers.svc.ISvcController;
 import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
-import org.bakery.server.domain.production.RecipeEffect;
+import org.bakery.server.domain.production.RecipeEffectPart;
 
-public class RecipeEffectSvc extends AbstractCommand{
+public class RecipeEffectPartSvc extends AbstractCommand{
 	@Override
 	public void init(SvcController controller) throws Exception {
-		setMainDAO(controller.getDAOFacade().getRecipeEffectDAO());
-		setCommand(new RecipeEffect());
+		setMainDAO(controller.getDAOFacade().getRecipeEffectPartDAO());
+		setCommand(new RecipeEffectPart());
 	}
 	@Override
 	protected void executeInternal(HttpServletRequest request,

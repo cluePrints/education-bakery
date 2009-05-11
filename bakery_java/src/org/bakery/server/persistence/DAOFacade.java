@@ -18,6 +18,7 @@ public class DAOFacade {
 	private AbstractDAO productionPlanDAO;
 	private AbstractDAO recipeEffectDAO;
 	private AbstractDAO measureDAO;
+	private AbstractDAO recipeEffectPartDAO;
 	public AbstractDAO getAddressDAO() {
 		return addressDAO;
 	}
@@ -119,5 +120,11 @@ public class DAOFacade {
 	}
 	public void setMeasureDAO(AbstractDAO measureDAO) {
 		this.measureDAO = measureDAO;
+	}
+	public AbstractDAO getRecipeEffectPartDAO() {
+		return recipeEffectPartDAO;
+	}
+	public void setRecipeEffectPartDAO(AbstractDAO recipeEffectPartDAO) {
+		this.recipeEffectPartDAO = recipeEffectPartDAO;
 	}
 }

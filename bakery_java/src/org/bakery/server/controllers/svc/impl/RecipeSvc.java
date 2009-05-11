@@ -43,6 +43,8 @@ public class RecipeSvc extends AbstractCommand{
 		SvcHelper.write(out, controller.getDAOFacade().getDeviceParameterDAO(), "deviceParameters");
 		SvcHelper.write(out, controller.getDAOFacade().getDeviceDAO(), "devices");
 		SvcHelper.write(out, controller.getDAOFacade().getRecipeEffectDAO(), "recipeEffects");
+		SvcHelper.write(out, controller.getDAOFacade().getRecipeDAO(), "recipes");
+		SvcHelper.write(out, controller.getDAOFacade().getRecipeEffectPartDAO(), "recipeEffectParts");
 	}
 	
 	private void addParameter(Long recipe_id, Long param_id) throws Exception{

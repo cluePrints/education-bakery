@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.production.RecipeEffectPart"
+		table="recipe_effect_parts">
+		<id name="id"
+			column="recipe_effect_part_id">
+			<generator class="increment"/>
+		</id>
+		<many-to-one
+			outer-join="true"
+			name="recipeEffect"
+			column="recip_effect_id"/>
+		<property
+			not-null="true"
+			name="multiplicator"
+			column="recip_effect_part_multiplicator"/>
+		<many-to-one
+			outer-join="true"
+			name="parameter"
+			column="device_parameter_id"/>
+	</class>
+</hibernate-mapping>

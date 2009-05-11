@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <clay-model clay-version="1.4.2">
-<database-model alias="" author="" begin-script="" end-script="" name="Bakery" remarks="" sql-dialect-id="jp.azzurri.clay.dialect.MySQL_5_0_Dialect" uid="117d8d5:11ed453eca4:-8000" version="1.0">
+<database-model alias="" author="" begin-script="SET NAMES 'utf8';&#13;&#10;SET CHARACTER SET utf8;&#13;&#10;drop schema if exists bakery;&#13;&#10;create schema bakery;&#13;&#10;use bakery;" end-script="" name="Bakery" remarks="" sql-dialect-id="jp.azzurri.clay.dialect.MySQL_5_0_Dialect" uid="117d8d5:11ed453eca4:-8000" version="1.0">
 <database-model-description/>
 <schema-list>
 <schema alias="" name="BAKERY" remarks="" uid="117d8d5:11ed453eca4:-7ffd">
@@ -742,14 +742,6 @@
 <variant type-name-pattern="INTEGER ZEROFILL"/>
 </data-type>
 </column>
-<column alias="" auto-increment="false" column-size="250" decimal-digits="0" default-value="" domain="DOMAIN_COMMENT" mandatory="true" name="recip_effect_result_formula" remarks="" uid="117d8d5:11ed453eca4:-7757">
-<column-description>Некое выражение, зависимое от составляющих</column-description>
-<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
-<variant precision-max="255" precision-min="0" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
-<variant type-name-pattern="CHAR"/>
-<variant precision-max="255" precision-min="0" precision-variable="%n" type-name-pattern="CHAR(%n) BINARY"/>
-</data-type>
-</column>
 <column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="recip_effect_recip" remarks="" uid="117d8d5:11ed453eca4:-7741">
 <column-description/>
 <data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
@@ -1035,7 +1027,7 @@ SELECT current_date FROM env_parameters e ORDER BY id DESC limit 0,1</table-desc
 <variant type-name-pattern="INTEGER ZEROFILL"/>
 </data-type>
 </column>
-<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="current_date" remarks="" uid="4198e:1212f4b1c2d:-7fe9">
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="current_datetime" remarks="" uid="4198e:1212f4b1c2d:-7fe9">
 <column-description/>
 <data-type jdbc-type="93" literal-prefix="'" literal-suffix="'" name="DATETIME" selected-variant-pattern="DATETIME">
 <variant type-name-pattern="DATETIME"/>
@@ -1533,6 +1525,90 @@ SELECT current_date FROM env_parameters e ORDER BY id DESC limit 0,1</table-desc
 <fk-fig-bendpoint-list/>
 </foreign-key-figure>
 <foreign-key-column column-name="plan_id" referenced-key-column-name="plan_id"/>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="recipe_effect_parts" remarks="" uid="4198e:1212f4b1c2d:-7fce">
+<table-description>Слагаемые формулы рецепта</table-description>
+<table-figure-bounds height="-1" width="-1" x="1207" y="593"/>
+<column-list>
+<column alias="" auto-increment="true" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="recipe_effect_part_id" remarks="" uid="4198e:1212f4b1c2d:-7fc8">
+<column-description/>
+<data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n)"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED ZEROFILL"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) ZEROFILL"/>
+<variant type-name-pattern="INTEGER UNSIGNED"/>
+<variant type-name-pattern="INTEGER UNSIGNED ZEROFILL"/>
+<variant type-name-pattern="INTEGER ZEROFILL"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="recip_effect_id" remarks="" uid="4198e:1212f4b1c2d:-7faf">
+<column-description/>
+<data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n)"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED ZEROFILL"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) ZEROFILL"/>
+<variant type-name-pattern="INTEGER UNSIGNED"/>
+<variant type-name-pattern="INTEGER UNSIGNED ZEROFILL"/>
+<variant type-name-pattern="INTEGER ZEROFILL"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="recip_effect_part_multiplicator" remarks="" uid="4198e:1212f4b1c2d:-7f72">
+<column-description/>
+<data-type jdbc-type="7" name="FLOAT" selected-variant-pattern="FLOAT">
+<variant type-name-pattern="FLOAT"/>
+<variant precision-max="53" precision-min="0" precision-variable="%n" type-name-pattern="FLOAT(%n)"/>
+<variant precision-max="53" precision-min="0" precision-variable="%n" type-name-pattern="FLOAT(%n) UNSIGNED"/>
+<variant precision-max="53" precision-min="0" precision-variable="%n" type-name-pattern="FLOAT(%n) UNSIGNED ZEROFILL"/>
+<variant precision-max="53" precision-min="0" precision-variable="%n" type-name-pattern="FLOAT(%n) ZEROFILL"/>
+<variant precision-max="53" precision-min="0" precision-variable="%p" scale-max="30" scale-min="0" scale-variable="%s" type-name-pattern="FLOAT(%p, %s)"/>
+<variant precision-max="53" precision-min="0" precision-variable="%p" scale-max="30" scale-min="0" scale-variable="%s" type-name-pattern="FLOAT(%p, %s) UNSIGNED"/>
+<variant precision-max="53" precision-min="0" precision-variable="%p" scale-max="30" scale-min="0" scale-variable="%s" type-name-pattern="FLOAT(%p, %s) UNSIGNED ZEROFILL"/>
+<variant precision-max="53" precision-min="0" precision-variable="%p" scale-max="30" scale-min="0" scale-variable="%s" type-name-pattern="FLOAT(%p, %s) ZEROFILL"/>
+<variant type-name-pattern="FLOAT UNSIGNED"/>
+<variant type-name-pattern="FLOAT UNSIGNED ZEROFILL"/>
+<variant type-name-pattern="FLOAT ZEROFILL"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="device_parameter_id" remarks="" uid="4198e:1212f4b1c2d:-7f4a">
+<column-description/>
+<data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n)"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED ZEROFILL"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) ZEROFILL"/>
+<variant type-name-pattern="INTEGER UNSIGNED"/>
+<variant type-name-pattern="INTEGER UNSIGNED ZEROFILL"/>
+<variant type-name-pattern="INTEGER ZEROFILL"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_RECIPE_EFFECT_PARTS" remarks="" uid="4198e:1212f4b1c2d:-7fcd">
+<primary-key-description/>
+<primary-key-column name="recipe_effect_part_id"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_recipe_effect_parts_1" on-delete="" on-update="" referenced-key="PK_RECIP_EFFECTS" referenced-table="recip_effects" referenced-table-schema="BAKERY" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="" uid="4198e:1212f4b1c2d:-7fb0">
+<foreign-key-description/>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="recip_effect_id" referenced-key-column-name="recip_effect_id"/>
+</foreign-key>
+<foreign-key alias="" name="FK_recipe_effect_parts_2" on-delete="" on-update="" referenced-key="PK_DEVICE_PARAMETERS" referenced-table="device_parameters" referenced-table-schema="BAKERY" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="" uid="4198e:1212f4b1c2d:-7f4b">
+<foreign-key-description/>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="device_parameter_id" referenced-key-column-name="device_parameter_id"/>
 </foreign-key>
 </foreign-key-list>
 <index-list/>

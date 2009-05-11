@@ -1,5 +1,8 @@
 package org.bakery.server.domain.production;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.validation.CouldNotBeEmpty;
 /**
@@ -20,18 +23,13 @@ public class RecipeEffect extends BusinessEntity{
 	 * Is it consumed, or generated effect
 	 */
 	private int consumed=0;
-	
-	/**
-	 * Expression to calculate amount, dependent on parameters
-	 * 
-	 * for example "2*{P1} + 4*{E19}", 1 & 19 are id's of dependent parameters and effects
-	 */
-	private String resultFormula;
-	
+		
 	/**
 	 * Product type, used, or produced
 	 */
 	private ProductType productType;
+	
+	private Set<RecipeEffectPart> formulaParts=new HashSet<RecipeEffectPart>();
 	
 	@CouldNotBeEmpty(message="Рецепт, к которому относится этот потребляемый\\производимый эффект должен быть указан.")
 	public Recipe getRecipe() {
@@ -47,19 +45,17 @@ public class RecipeEffect extends BusinessEntity{
 		this.consumed = consumed;
 	}
 	
-	@CouldNotBeEmpty(message="Формула вычисления результата должна быть задана.")
-	public String getResultFormula() {
-		return resultFormula;
-	}
-	public void setResultFormula(String resultFormula) {
-		this.resultFormula = resultFormula;
-	}
-	
 	@CouldNotBeEmpty(message="Должен быть указан потребляемый\\производимый тип продукта.")
 	public ProductType getProductType() {
 		return productType;
 	}
 	public void setProductType(ProductType productType) {
 		this.productType = productType;
+	}
+	public Set<RecipeEffectPart> getFormulaParts() {
+		return formulaParts;
+	}
+	public void setFormulaParts(Set<RecipeEffectPart> formulaParts) {
+		this.formulaParts = formulaParts;
 	}
 }

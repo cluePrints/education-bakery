@@ -16,7 +16,9 @@ public class DAOTest extends AbstractSpringTest{
 	protected DAOFacade DAOFacade;	
 
 	public void testDAOs() throws Exception {
-		List m = DAOFacade.getProductMoveDAO().searchByName("%", 0, 100);
+		List m = DAOFacade.getRecipeEffectPartDAO().searchByName("%", 0, 100);
+		m = DAOFacade.getRecipeEffectDAO().searchByName("%", 0, 100);
+		m = DAOFacade.getProductMoveDAO().searchByName("%", 0, 100);
 		System.out.println(m.size());
 		((ProductMove) m.get(0)).toString();
 		

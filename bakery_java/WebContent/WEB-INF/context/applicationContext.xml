@@ -309,7 +309,9 @@
 					value="org.bakery.server.domain.production.RecipeEffect" />
 				<property name="querySearchByName">
 					<value>
-						from RecipeEffect dp where resultFormula like :searchName 
+						from RecipeEffect re
+							left join fetch re.productType pt 
+						where pt.name like :searchName 
 					</value>
 				</property>
 				<property name="queryGetAvailable">
@@ -319,7 +321,26 @@
 				</property>
 			</bean>
 		</property>
-			<property name="productionPlanDAO">
+		<property name="recipeEffectPartDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.production.RecipeEffectPart" />
+				<property name="querySearchByName">
+					<value>
+						from RecipeEffectPart dp 
+							left join fetch dp.recipeEffect re
+								left join fetch re.productType pt 
+						where pt.name like :searchName 
+					</value>
+				</property>
+				<property name="queryGetAvailable">
+					<value>
+						from RecipeEffect dp
+					</value>
+				</property>
+			</bean>
+		</property>
+		<property name="productionPlanDAO">
 			<bean parent="abstractDAO">
 				<property name="targetClassName"
 					value="org.bakery.server.domain.accounting.ProductionPlan" />
@@ -371,6 +392,9 @@
 				</value>
 				<value>
 					org/bakery/server/domain/production/RecipeEffect.hbm.xml
+				</value>
+				<value>
+					org/bakery/server/domain/production/RecipeEffectPart.hbm.xml
 				</value>
 
 				<value>
