@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.persistence.AbstractDAO;
+import org.bakery.server.persistence.DAOFacade;
 import org.bakery.server.util.BakeryConstants;
 
 public class SvcHelper {
@@ -36,6 +37,12 @@ public class SvcHelper {
 		out.flush();
 	}	
 	
+	public static void writeCurrentDate(DAOFacade facade, PrintWriter out) {
+		Date d = facade.getAccountDAO().getCurrentDate();
+		out.write("\n<currentDate>");
+		out.write(dateToString(d));
+		out.write("\n</currentDate>");
+	}
 	
 	public static String replaceXMLDeclinedCharacters(String input){
 		String result = 

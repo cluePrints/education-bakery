@@ -150,7 +150,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 							beanValidationErrors);
 					// XXX: get current date from server!
 					ValidationHelper.validateGreaterThen(command, prop,
-							beanValidationErrors, new Date());
+							beanValidationErrors, mainDAO.getCurrentDate());
 				}
 			}
 		}

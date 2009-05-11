@@ -1,9 +1,11 @@
 package org.bakery.server.persistence;
 
+import java.util.Date;
 import java.util.List;
 
 import org.bakery.server.domain.BusinessEntity;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -199,5 +201,13 @@ public class AbstractDAO implements DAOInterface {
 	}
 	public void setQueryFetchByParent(String queryFetchByParent) {
 		this.queryFetchByParent = queryFetchByParent;
+	}
+	
+	public Date getCurrentDate(){
+		Session session = sessionFactory.openSession();
+		SQLQuery q = session.createSQLQuery("SELECT current_datetime FROM env_parameters ORDER BY id DESC LIMIT 0,1");
+		Date d = (Date) q.uniqueResult();
+		session.close();
+		return d;
 	}
 }

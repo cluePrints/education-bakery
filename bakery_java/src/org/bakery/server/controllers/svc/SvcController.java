@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.bakery.server.controllers.svc.impl.AbstractCommand;
 import org.bakery.server.persistence.DAOFacade;
 import org.bakery.server.util.LoggingUtils;
@@ -29,6 +30,8 @@ public class SvcController extends AbstractController implements ISvcController{
 			Class svcClass = Class.forName(svcClassName);
 			AbstractCommand command = (AbstractCommand) svcClass.newInstance();
 			command.init(this);
+			SvcHelper.writeCurrentDate(DAOFacade, response.getWriter());
+			
 			command.execute(request, response, this);
 
 		} catch (Exception ex) {			

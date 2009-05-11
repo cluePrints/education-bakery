@@ -363,6 +363,23 @@
 				</property>
 			</bean>
 		</property>
+		<property name="environmentDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.fake.Environment" />
+				<property name="querySearchByName">
+					<value>
+						from Environment e						
+						where not (:searchName = null) 
+					</value>
+				</property>
+				<property name="queryGetAvailable">
+					<value>
+						from Environment e
+					</value>
+				</property>
+			</bean>
+		</property>		
 	</bean>
 	<bean id="abstractDAO"
 		class="org.bakery.server.persistence.AbstractDAO" abstract="true">
@@ -378,6 +395,10 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="mappingResources">
 			<list>
+				<value>
+					org/bakery/server/domain/fake/Environment.hbm.xml
+				</value>
+			
 				<value>
 					org/bakery/server/domain/production/Unit.hbm.xml
 				</value>
