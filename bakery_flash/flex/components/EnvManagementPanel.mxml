@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()" width="845" height="478">
+	<mx:HTTPService id="mainSvc" 
+		useProxy="false"
+		method="GET"
+		url="{svcUrl.environmentSvcUrl}"
+		result="httpResultHandler(event)"
+		fault="util.httpFaultHandler(event)"/>
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.automation.codec.ArrayPropertyCodec;
+			var svcUrl:SvcUrl = new SvcUrl();
+			var util:Util = new Util();
+			var errors:ArrayCollection = new ArrayCollection();
+			public function init():void{
+				formModel.id=null;
+				formModel.mode='FETCH';
+				mainSvc.send(formModel);
+				formModel.mode='EDIT';
+			}
+			private function httpResultHandler(event:*):void{	
+				errors = util.getHttpRespondedErrors(event);
+				
+				dfCurrentDate.text = event.result.currentDate;
+			} 
+			private function saveSelected():void{
+				formModel.mode='EDIT';
+				mainSvc.cancel();
+				mainSvc.send(formModel);				
+			}
+		]]>
+	</mx:Script>			
+	<mx:Model id="formModel">		
+		<root>
+			<mode>EDIT</mode>			
+			<id></id>		
+			<currDate>{dfCurrentDate.text}</currDate>
+		</root>		
+	</mx:Model>		
+		<mx:Label text="Окружение системы" fontWeight="bold" fontSize="18"/>
+		<mx:HBox x="0" y="0" width="833" height="291">
+			<mx:VBox height="285" width="50%" horizontalAlign="center" >
+				<mx:FormItem
+					label="&quot;Текущая дата системы&quot;">
+					<mx:DateField
+						id="dfCurrentDate"
+						text=""
+						formatString="DD/MM/YY"/>	
+				</mx:FormItem>
+				
+				<mx:Button label="Сохранить" click="saveSelected()"/>
+			
+			</mx:VBox>			
+		</mx:HBox>
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="100%">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:VBox>

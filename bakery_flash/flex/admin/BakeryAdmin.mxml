@@ -114,5 +114,11 @@
 				id="manageMeasures"
 				width="100%" height="100%"/>			
 		</mx:Canvas>
+		<mx:Canvas label="Окружение" width="100%" height="100%"
+			show="env.init()">
+			<comp:EnvManagementPanel
+				id="env"
+				width="100%" height="100%"/>			
+		</mx:Canvas>
 	</mx:TabNavigator>			
 </mx:Box>
