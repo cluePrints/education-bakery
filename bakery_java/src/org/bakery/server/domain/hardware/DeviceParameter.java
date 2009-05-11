@@ -59,7 +59,7 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 		this.minimize = minimize;
 	}
 	
-	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")
+	@CouldNotBeEmpty(message="Рекомендованное значение параметра должно быть задано.")
 	public Double getBestValue() {
 		return bestValue;
 	}
