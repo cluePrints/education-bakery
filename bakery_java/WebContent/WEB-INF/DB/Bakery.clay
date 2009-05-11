@@ -1015,19 +1015,36 @@
 </foreign-key-list>
 <index-list/>
 </table>
-<table alias="" name="TABLE_13" remarks="" uid="117d8d5:11ed453eca4:-751d">
-<table-description/>
-<table-figure-bounds height="-1" width="-1" x="1700" y="1233"/>
+<table alias="" name="env_parameters" remarks="" uid="117d8d5:11ed453eca4:-751d">
+<table-description>Тут сосредоточены всякие параметры, которые составляют окружение программы.&#13;
+Нужно брать последнюю версию:)&#13;
+&#13;
+SELECT current_date FROM env_parameters e ORDER BY id DESC limit 0,1</table-description>
+<table-figure-bounds height="-1" width="-1" x="1286" y="792"/>
 <column-list>
-<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="COLUMN_1" remarks="" uid="1d6ea02:11ed5d38443:-7fe5">
+<column alias="" auto-increment="true" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="id" remarks="" uid="1d6ea02:11ed5d38443:-7fe5">
 <column-description/>
-<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
-<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n)"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED ZEROFILL"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) ZEROFILL"/>
+<variant type-name-pattern="INTEGER UNSIGNED"/>
+<variant type-name-pattern="INTEGER UNSIGNED ZEROFILL"/>
+<variant type-name-pattern="INTEGER ZEROFILL"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="current_date" remarks="" uid="4198e:1212f4b1c2d:-7fe9">
+<column-description/>
+<data-type jdbc-type="93" literal-prefix="'" literal-suffix="'" name="DATETIME" selected-variant-pattern="DATETIME">
+<variant type-name-pattern="DATETIME"/>
 </data-type>
 </column>
 </column-list>
-<primary-key alias="" name="PK_TABLE_13" remarks="" uid="117d8d5:11ed453eca4:-751c">
+<primary-key alias="" name="PK_ENV_PARAMETERS" remarks="" uid="117d8d5:11ed453eca4:-751c">
 <primary-key-description/>
+<primary-key-column name="id"/>
 </primary-key>
 <unique-key-list/>
 <foreign-key-list/>

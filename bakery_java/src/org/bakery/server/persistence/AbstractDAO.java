@@ -71,11 +71,9 @@ public class AbstractDAO implements DAOInterface {
 		Session session = sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
 		try {
-			Object obj = session.get(targetClass, id);
+			Object obj = session.load(targetClass, id);
 			if (obj != null) {
-				BusinessEntity e = (BusinessEntity) obj;
-				e.setActive(0);
-				session.saveOrUpdate(e);
+				session.delete(obj);
 			}
 			tx.commit();
 		} catch (Exception ex) {

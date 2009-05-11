@@ -30,8 +30,8 @@
 		</set>
 		<set name="parameters"
 			fetch="join"
-			cascade="all"
 			outer-join="true"
+			inverse="true"
 			table="recip_parameters">
 				<key column="recip_id"/>
             	<many-to-many column="device_parameter_id"

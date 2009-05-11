@@ -25,7 +25,7 @@ public class PriceListItem extends BusinessEntity {
 		super();
 	}
 	
-	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
+	@CouldNotBeEmpty(message="Родительский прайс-лист должен быть выбран.")
 	public PriceList getParent() {
 		return parent;
 	}
@@ -34,8 +34,8 @@ public class PriceListItem extends BusinessEntity {
 	}
 	
 	@GreaterThen(lowerLimit=0, including=false,
-				message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
-	@CouldNotBeEmpty(message="пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.")
+				message="Цена должна быть положительным числом.")
+	@CouldNotBeEmpty(message="Цена за единицу товара должна быть задана.")
 	public Double getPrice() {
 		return price;
 	}

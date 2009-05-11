@@ -81,14 +81,14 @@ public class ValidationHelper {
 			errors
 					.put(target.getClass().getSimpleName() + "."
 							+ field.getName(),
-							"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ: 3.1");
+							"Значение поля должно быть действительным числом. Пример: 3.1");
 		}
 		if (Long.class.isAssignableFrom(type)
 				|| Integer.class.isAssignableFrom(type)) {
 			errors
 			.put(target.getClass().getSimpleName() + "."
 					+ field.getName(),
-					"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ: 6");
+					"Значение поля должно быть целім числом. Пример: 6");
 		}
 	}
 
@@ -104,8 +104,8 @@ public class ValidationHelper {
 						.value();
 			String value = (String) prop.getReadMethod().invoke(target);
 			if (value != null && value.length() > maxLen) {
-				reportError("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "
-						+ maxLen + " пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.", target, result, prop);
+				reportError("Максимальная длина содержимого текстового поля не может превішать "
+						+ maxLen + " символов.", target, result, prop);
 			}
 		}
 	}
