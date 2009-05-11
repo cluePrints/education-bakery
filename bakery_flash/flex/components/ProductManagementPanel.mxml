@@ -138,7 +138,7 @@
 						<mx:DataGridColumn headerText="Ид.Номер" dataField="id" width="80"/>
 						<mx:DataGridColumn headerText="Название" dataField="name" width="150"/>
 						<mx:DataGridColumn headerText="ед.измерения" labelFunction="getProductTypeUnitName" width="150"/>
-						<mx:DataGridColumn dataField="Активный" labelFunction="util.activeToString" width="80"/>
+						<mx:DataGridColumn labelFunction="util.activeToString" width="80"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</mx:VBox>
