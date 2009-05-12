@@ -253,7 +253,7 @@
 							width="150"/>
 					</mx:FormItem>
 					<mx:FormItem label="Описание:" >
-						<mx:TextInput id="tiDesc">
+						<mx:TextInput id="tiDesc" width="100">
 						</mx:TextInput>
 					</mx:FormItem>
 				</mx:VBox>
