@@ -2,7 +2,7 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:util="components.util.*"
-	creationComplete="init()" width="1080" height="548">
+	creationComplete="init()" width="95%" height="95%">
 
 		
 		<mx:HTTPService id="mainSvc" 

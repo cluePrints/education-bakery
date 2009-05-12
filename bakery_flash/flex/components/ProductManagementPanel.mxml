@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="900" height="454">
+	creationComplete="init()" width="95%" height="95%">
 		
 	<mx:HTTPService id="productTypeSvc" 
 		useProxy="false"
@@ -125,8 +125,18 @@
 			<active>{cbActive.selected == true ? "1" : "0"}</active>
 			<name>{encodeURIComponent(tiName.text)}</name>
 		</root>		
-	</mx:Model>		
+	</mx:Model>	
+	<mx:HBox>	
 		<mx:Label text="Панель управления типами продуктов" fontWeight="bold" fontSize="14"/>
+			<util:ContextHelpButton>	
+			<util:helpText>
+				 <![CDATA[
+					Панель предназначена  для работы(создания, простотра, редактирования) с существующими в системе продуктами. 
+			 		Система работает только с активными продуктами.
+			 	]]>
+			</util:helpText>
+		</util:ContextHelpButton>
+	</mx:HBox>
 		<mx:VBox width="100%">
 		<mx:HBox x="0" y="0" width="891" height="412">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >

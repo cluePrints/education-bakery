@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="1068" height="518">
+	creationComplete="init()" width="95%" height="95%" xmlns:util="components.util.*">
 
 		
 		<mx:HTTPService id="mainSvc" 
@@ -149,8 +149,19 @@
 			
 		]]>
 	</mx:Script>			
-	
+	<mx:HBox>
 		<mx:Label text="Панель управления движением продуктов" fontWeight="bold" fontSize="14"/>
+				<util:ContextHelpButton>	
+			<util:helpText>
+				 <![CDATA[
+				Панель предназначена для работы с движение продуктов.
+				Движение продуктов это действие, которое соответствует перемещению товара со склада поставщика на склад заказчика.
+				Движени продуктов создается в соответствии с договором(заказом) между поставщиком и заказчиком.
+				Осуществление отгрузки товара со склада поставщика отобраежется проставление даты  в движении денег, что соответсвует выполнению заказа. 
+			 	]]>
+			</util:helpText>
+		</util:ContextHelpButton>
+	</mx:HBox>	
 		<mx:VBox  width="100%">
 		<mx:HBox x="0" y="0" width="1050" height="490">
 			<mx:VBox height="387" width="762" horizontalAlign="center" >

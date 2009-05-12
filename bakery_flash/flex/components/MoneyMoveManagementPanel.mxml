@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="1080" height="548">
+	creationComplete="init()" width="100%" height="95%" xmlns:util="components.util.*">
 
 		
 		<mx:HTTPService id="mainSvc" 
@@ -74,6 +74,7 @@
 				availableAccounts = util.getActiveItems(accounts);
 				
 				orders = util.extractItemCollection(event.result.orders, 'order');
+				
 				availableOrders = util.getActiveItems(orders);	
 			
 				priceItems = util.extractItemCollection(event.result.priceListItems, 'pricelistitem');
@@ -160,11 +161,25 @@
 			
 		]]>
 	</mx:Script>			
-	
+	<mx:HBox>
 		<mx:Label text="Панель управления движением денег" fontWeight="bold" fontSize="14"/>
+	<util:ContextHelpButton>
+		<util:helpText>
+			 <![CDATA[
+			 Панель отображающая движени денег(денежные переводы).
+			 Перевод денег с одного счета на второй отображает оплату.
+			 Если перевод не содержит даты - значит деньги еще не были перечислены, и перевод неактивен.
+			 Как только конт-т проплатит необходимую сумму в двидении проставляется дата оплаты и движение становится активным.
+			 Каждому двидению денег соответствует заказ, на основе которого собственно и формируется сумма перевода и счета с которого и на который будут перечислены средства.
+			 Заказ не будет выполнем до тех пор пока движение денег по этому заказу не станет активным( пока не появится дата проплаты).
+					]]>
+		</util:helpText>
+	</util:ContextHelpButton>
+	
+	</mx:HBox>
 		<mx:VBox  width="100%">
 		<mx:HBox x="0" y="0" width="1057" height="460">
-			<mx:VBox height="433" width="767" horizontalAlign="center" >
+			<mx:VBox height="433" width="779" horizontalAlign="center" >
 			
 				<mx:DataGrid height="282" width="756" 
 					id="dgData" 
@@ -174,7 +189,7 @@
 						<mx:DataGridColumn headerText="Ид.Номер"  dataField="id"  width="55"/>
 						<mx:DataGridColumn headerText="Счет назначения"  dataField="destinationAccount"  labelFunction="getDestAccountName" width="100"/>
 						<mx:DataGridColumn headerText="Счет-источник"  dataField="sourceAccount" labelFunction="getSourceAccountName" width="100"/>
-						<mx:DataGridColumn headerText="Размер" dataField="amount"   width="50"/>
+						<mx:DataGridColumn headerText="К-во един. продукта" dataField="amount"   width="70"/>
 						<mx:DataGridColumn headerText="Дата перевода " dataField="date" width="80"/>
 						<mx:DataGridColumn headerText="Заказ" dataField="order" width="60"/>
 						<mx:DataGridColumn headerText="Прайс" dataField="price" width="60"/>
@@ -198,8 +213,8 @@
 							labelField="textView" 
 							width="150"/>
 					</mx:FormItem>
-					<mx:FormItem label="Размер:" required="true" >
-						<mx:TextInput id="tiAmount">
+					<mx:FormItem label="Количество единиц продукта:" required="true"  width="264">
+						<mx:TextInput id="tiAmount" width="75">
 						</mx:TextInput>
 					</mx:FormItem>
 				</mx:VBox>

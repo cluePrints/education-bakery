@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="914" height="522">
+	creationComplete="init()" width="95%" height="95%" xmlns:util="components.util.*">
 
 		
 		<mx:HTTPService id="mainSvc" 
@@ -139,8 +139,23 @@
 			}
 		]]>
 	</mx:Script>			
-	
+		<mx:HBox>
 		<mx:Label text="Панель управления заказами" fontWeight="bold" fontSize="14"/>
+		<util:ContextHelpButton>	
+			<util:helpText>
+				 <![CDATA[
+				 Панель предназначена для работы с заказами.
+				 Заказ представлет собой документ, направляемый заказчиком (покупателем) поставщику (продавцу), 
+				 в котором выражено твердое намерение получить определенную продукцию (товар, услуги)и опердены все условия.
+				 При заключении нового договора(создании заказа) контрагентом в системе создаются соответствующие данному заказу
+				 движения денег и продуктов, дальнейшие действия над которомы определяют состояние зказа.
+				 Заказ включается в план производства только  в том случае если движение денег по нему активно(осуществлен перевод средств)
+				 Заказ выполнен если в движении продуктов есть дата отгрузки товара потребителю(заказчику).
+				 
+			 	]]>
+			</util:helpText>
+		</util:ContextHelpButton>	
+		</mx:HBox>
 		<mx:VBox height="491" width="100%">
 		<mx:HBox x="0" y="0" width="914" height="388">
 			<mx:VBox height="378" width="606" horizontalAlign="center" >
