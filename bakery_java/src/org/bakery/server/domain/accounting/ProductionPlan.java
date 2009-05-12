@@ -29,7 +29,7 @@ public class ProductionPlan extends BusinessEntity {
 	/**
 	 * Start date
 	 */
-	private Date startDate=(Date) NULL_DATE.clone();
+	private Date startDate=null;
 
 	@CouldNotBeEmpty(message="Заказ, к которому относится производственный план не указан.")
 	public Order getOrder() {
@@ -48,7 +48,6 @@ public class ProductionPlan extends BusinessEntity {
 	}
 	
 	@GreaterThen(message="Производственный план можно создать только для будущего периода.")
-	@CouldNotBeEmpty(message="Дата начала выполнения производственного плана должна быть задана.")
 	public Date getStartDate() {
 		return startDate;
 	}

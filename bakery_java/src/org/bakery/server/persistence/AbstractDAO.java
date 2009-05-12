@@ -204,10 +204,17 @@ public class AbstractDAO implements DAOInterface {
 	}
 	
 	public Date getCurrentDate(){
-		Session session = sessionFactory.openSession();
-		SQLQuery q = session.createSQLQuery("SELECT current_datetime FROM env_parameters ORDER BY id DESC LIMIT 0,1");
-		Date d = (Date) q.uniqueResult();
-		session.close();
+		Date d;
+		try{
+			Session session = sessionFactory.openSession();
+			SQLQuery q = session.createSQLQuery("SELECT current_datetime FROM env_parameters ORDER BY id DESC LIMIT 0,1");
+			d = (Date) q.uniqueResult();
+			session.close();
+		} catch (Exception e) {
+			d = new Date();
+		}
+		if (d==null)
+			d=new Date();
 		return d;
 	}
 }

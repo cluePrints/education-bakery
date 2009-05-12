@@ -23,7 +23,7 @@ public class MoneyMove extends BusinessEntity {
 	private static final long serialVersionUID=1L;
 	private Double amount;
 	private String desc;
-	private Date date=(Date) NULL_DATE.clone();
+	private Date date=null;
 	private Account destinationAccount=new Account();
 	private Account sourceAccount=new Account();
 	private Order order=new Order();
@@ -49,13 +49,13 @@ public class MoneyMove extends BusinessEntity {
 		if (active<=0) {
 			this.date = new Date();
 		} else {			
-			this.date = (Date) NULL_DATE.clone();
+			this.date = null;
 		}
 	}
 	
 	@Override
 	public int getActive() {
-		return (NULL_DATE.equals(this.date) || date == null) ? 1 : 0;
+		return (date == null) ? 1 : 0;
 	}
 	
 	

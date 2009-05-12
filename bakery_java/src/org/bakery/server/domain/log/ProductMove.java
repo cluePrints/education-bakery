@@ -5,7 +5,6 @@ import java.util.Date;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.production.Warehouse;
 import org.bakery.server.validation.CouldNotBeEmpty;
-import org.bakery.server.validation.GreaterThen;
 /**
  * Is representation of move between two warehouses. 
  * Product is moved as a reaction on some money move.
@@ -17,7 +16,7 @@ public class ProductMove extends BusinessEntity {
 	private static final long serialVersionUID=1L;
 	private Warehouse sourceWarehouse=new Warehouse();
 	private Warehouse destinationWarehouse=new Warehouse();
-	private Date date=(Date) NULL_DATE.clone();
+	private Date date=null;
 	private MoneyMove moneyMove=new MoneyMove();
 	@Override
 	public String toString() {
@@ -30,13 +29,13 @@ public class ProductMove extends BusinessEntity {
 		if (active<=0) {
 			this.date = new Date();
 		} else {			
-			this.date = (Date) NULL_DATE.clone();
+			this.date = null;
 		}
 	}
 	
 	@Override
 	public int getActive() {
-		return (NULL_DATE.equals(this.date) || date == null) ? 1 : 0;
+		return (date == null) ? 1 : 0;
 	}
 	public Warehouse getSourceWarehouse() {
 		return sourceWarehouse;

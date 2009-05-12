@@ -14,7 +14,7 @@ import org.bakery.server.validation.CouldNotBeEmpty;
  */
 public class PriceList extends BusinessEntity {
 	private static final long serialVersionUID=1L;
-	private Date date=(Date) NULL_DATE.clone();
+	private Date date;
 	private String comment;
 	private Contragent owner=new Contragent();
 

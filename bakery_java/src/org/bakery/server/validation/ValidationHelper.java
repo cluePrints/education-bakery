@@ -38,6 +38,8 @@ public class ValidationHelper {
 
 	public static void validateGreaterThen(Object target, PropertyDescriptor field, Map<String, String> errors, Date dateLimit) throws Exception{
 		if (field.getReadMethod().getAnnotation(GreaterThen.class) != null) {
+			if (field.getReadMethod().invoke(target) == null)
+				return;
 			if (Date.class.isAssignableFrom(field.getReadMethod().getReturnType())){
 				if (dateLimit.getTime() > ((Date) field.getReadMethod().invoke(target)).getTime() ){
 					errors.put(target.getClass().getSimpleName() + "."

@@ -42,22 +42,7 @@ public abstract class BusinessEntity implements Serializable {
 	
 	public String getTextView(){
 		return toString();
-	}
-	
-	public static final Date NULL_DATE = new Date(0){	
-		private static final long serialVersionUID = 1L;
-		public boolean equals(Date d) {
-			if (d==null) return false;
-			return this.getTime() == d.getTime();
-		}
-		public String toString(){
-			if (this.getTime() == 0) {
-				return " ";
-			} else {
-				return super.toString();
-			}
-		}	
-	};	
+	}	
 	
 	public String toXml() throws IntrospectionException, InvocationTargetException, IllegalAccessException{
 		final String G=">";

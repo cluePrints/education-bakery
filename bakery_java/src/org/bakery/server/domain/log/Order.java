@@ -41,12 +41,12 @@ public class Order extends BusinessEntity {
 	/**
 	 * Date of order creation
 	 */
-	private Date creationDate=(Date) NULL_DATE.clone();
+	private Date creationDate=null;
 	
 	/**
 	 * Date when order was done 
 	 */
-	private Date doneDate=(Date) NULL_DATE.clone();
+	private Date doneDate=null;
 	
 	/**
 	 * Money moves, linked with this order. When total money moves processed are equal to the cost of
@@ -59,7 +59,7 @@ public class Order extends BusinessEntity {
 	@Override
 	public String toString() {
 		String result=provider + "->" + consumer + ", "+creationDate;
-		if (NULL_DATE.equals(doneDate)){
+		if (doneDate == null){
 			result+="*";
 		} else {
 			result+=doneDate;

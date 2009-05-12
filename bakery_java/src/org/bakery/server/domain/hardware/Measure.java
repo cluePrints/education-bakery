@@ -26,7 +26,7 @@ public class Measure extends BusinessEntity {
 	/**
 	 * Date & Time of a measure
 	 */
-	private Date time=(Date) NULL_DATE.clone();
+	private Date time=null;
 
 	@CouldNotBeEmpty(message="Значение измерения должно быть задано.")
 	public Double getValue() {
