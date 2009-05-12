@@ -53,11 +53,13 @@
 	[Bindable] private var customerWarehouseArr:ArrayCollection;
 	[Bindable] private var productPriceArr:*;
 	[Bindable] private var productPriceList:ArrayCollection;
+	 [Bindable] private var errors:ArrayCollection = new ArrayCollection();
 	
 	 var util:Util = new Util();
 	 function httpMoneyMoveResultHandler(event:*){
 	 	var item:*;
 	 	var main:*;
+	 	errors = util.getHttpRespondedErrors(event);
 	 	main = event.result.mainData['moneymove'];
 	 	item = util.extractItemCollection(event.result.accounts,'account');
 	 	account = util.getActiveItems(item);
@@ -72,14 +74,17 @@
 	 	if(formModelMoneyMove.mode == "EDIT"){
 	 	moneyMoveItem = getMoneyMoveByOrder(main,orderId.id);
 	 	
+	 	if(moneyMoveItem){
 	 	//productMove
 			saveProductMove();
 			productMoveSvc.cancel();
 			productMoveSvc.send(formModelProductMove);
+			}
 	 	}
 	 }
 	 function httpProductMoveResultHandler(event:*){
 	 	var item:*;
+	 	errors = util.getHttpRespondedErrors(event);
 	 	item = util.extractItemCollection(event.result.warehouses,'warehouse');
 	 	warehouse = util.getActiveItems(item);
 	 	customerWarehouseArr = getAccountByOwner(warehouse,contragentCustomer.selectedItem.id);
@@ -95,22 +100,24 @@
 	 }
 	 function httpOrderResultHandler(event:*){
 	 	var item = event.result.mainData['order'];
-	 	
+	 	errors = util.getHttpRespondedErrors(event);
 	 	orderId = getOrder(item,contragentProvider.selectedItem.id,contragentCustomer.selectedItem.id,dfCreationDate.text,dfDoneDate.text);
-	 	
+	 	if(orderId){
 		 	//moneyMove
 			saveMoneyMove();
 			moneyMoveSvc.cancel();
 			moneyMoveSvc.send(formModelMoneyMove);
-	 	
+	 	}
 	 }
 	 
 	 
 	function httpProductResultHandler(event:*){
+		errors = util.getHttpRespondedErrors(event);
 		product = util.getActiveItems(event.result.mainData['producttype']);
 		units = util.extractItemCollection(event.result.units,'unit');
 	}
 	function httpContragentResultHandler(event:*){
+		errors = util.getHttpRespondedErrors(event);
 		mainData = event.result.mainData;
 		allContragent = mainData['contragent'];
 		childContragent = getChildItems(allContragent);
@@ -292,8 +299,19 @@
 	}
 	function saveProductMove(){
 		formModelProductMove.mode = "EDIT";
+		if(providerWarehouse.selectedItem ){
 		formModelProductMove.sourceWarehouse = providerWarehouse.selectedItem.id;
+		}
+		else{
+			
+			formModelProductMove.sourceWarehouse ='';
+		}
+		if(сustomerWarehouse.selectedItem){	
 		formModelProductMove.destinationWarehouse = сustomerWarehouse.selectedItem.id;
+		}else{
+			
+		formModelProductMove.destinationWarehouse = '';
+		}
 		formModelProductMove.moneyMove = moneyMoveItem.id;
 	
 	
@@ -369,7 +387,7 @@
 			<mx:CheckBox selected="false" fontWeight="normal"  change ="changeOrderType()" id="orderType_2" />
 		</mx:FormItem>
 		</mx:HBox>
-		<mx:FormItem label="Заказчик" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Потребитель" required="true" width="65%" fontWeight="bold" >
 			<mx:ComboBox text="" 
 				 id="contragentCustomer"
 				 width="95%"
@@ -390,7 +408,7 @@
 				 fontWeight="normal" />
 		</mx:FormItem>
 		
-		<mx:FormItem label="Счет заказчика" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Счет потребителя" required="true" width="65%" fontWeight="bold" >
 			<mx:ComboBox text="" 
 				 id="customerAccount"
 				 width="95%"
@@ -400,7 +418,7 @@
 				 
 				 />
 		</mx:FormItem>
-		<mx:FormItem label="Счет Поставщика" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Счет поставщика" required="true" width="65%" fontWeight="bold" >
 			<mx:ComboBox text=""
 				 id="providerAccount" 
 				 dataProvider = "{providerAccountArr}"
@@ -409,7 +427,7 @@
 				 fontWeight="normal" />
 		</mx:FormItem>
 		
-		<mx:FormItem label="Склад заказчика" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Склад потребителя" required="true" width="65%" fontWeight="bold" >
 			<mx:ComboBox text="" 
 				 id="сustomerWarehouse"
 				 width="95%"
@@ -458,7 +476,7 @@
 		</mx:FormItem>
 		</mx:VBox>
 		<mx:VBox width="281">
-		<mx:FormItem label="Размер заказа" required="true" width="248" fontWeight="bold"  >
+		<mx:FormItem label="Количество едениц в заказе" required="true" width="248" fontWeight="bold"  >
 			<mx:TextInput text="" id="orderSize" width="159" fontWeight="normal" change="getAllPrice()" />
 		</mx:FormItem>
 		<mx:FormItem label="Цена" fontWeight="bold">
@@ -478,4 +496,12 @@
 		
 		</mx:HBox>
 	</mx:VBox>
+	<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="989" height="84" x="19" y="491" id="errorTable">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
 </mx:Canvas>
