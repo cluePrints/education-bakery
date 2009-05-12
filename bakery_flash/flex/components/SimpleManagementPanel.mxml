@@ -16,7 +16,7 @@
 			import flash.sampler.getInvocationCount;
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
-			
+			 private var todayDate:*;
 			public var mainDataSvcUrl:String;
 			public var mainDataUnitName:String;
 			public var mainDataUnitVisualName:String;
@@ -47,6 +47,8 @@
 			private function httpResultHandler(event:*):void{
 				saveSelectionState();
 				errors = util.getHttpRespondedErrors(event);
+					todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				
 				mainData = util.extractItemCollection(event.result.mainData, mainDataUnitName);
 				if (mainData != null) {
@@ -105,7 +107,11 @@
 			<name>{encodeURIComponent(tiName.text)}</name>
 		</root>		
 	</mx:Model>		
+	<mx:HBox>
 		<mx:Label text="{&quot;Панель управления &quot;+ mainDataUnitVisualName}" fontWeight="bold" fontSize="14"/>
+		<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
+		</mx:HBox>	
 		<mx:HBox x="0" y="0" width="959" height="323">
 			<mx:VBox height="283" width="651" horizontalAlign="center" >
 			

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="100%" height="100%" xmlns:util="components.util.*">		
+	creationComplete="init()" width="100%" height="100%"
+	 xmlns:util="components.util.*"
+	>		
 	<mx:HTTPService id="accountSvc" 
 		useProxy="false"
 		method="POST"
@@ -28,6 +30,7 @@
             private var contragents:ArrayCollection= new ArrayCollection();
 			[Bindable]
 			private var errors:ArrayCollection = new ArrayCollection();
+			private var todayDate:*;
 			var util:Util = new Util();
 			var scvUrl:SvcUrl = new SvcUrl();
 			public function init():void{
@@ -51,7 +54,8 @@
 			}
 			private function httpaccountResultHandler(event:*):void{
 				saveSelectionState();
-				
+				todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				errors = util.getHttpRespondedErrors(event);
 				accounts = util.extractItemCollection(event.result.mainData, 'account');
 				if (accounts != null) {
@@ -125,6 +129,7 @@
 	
 		
 		<mx:HBox>	
+		
 		<mx:Label text="Панель управления счетами" fontWeight="bold" fontSize="14"/>
 		<util:ContextHelpButton>
 			<util:helpText>
@@ -135,6 +140,9 @@
 				]]>
 			</util:helpText>
 		</util:ContextHelpButton>
+		
+		<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
 		</mx:HBox>
 		<mx:VBox width="100%">
 		<mx:HBox x="0" y="0" width="882" height="345">

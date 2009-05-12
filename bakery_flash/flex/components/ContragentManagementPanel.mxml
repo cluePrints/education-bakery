@@ -29,7 +29,7 @@
             private var addresses:ArrayCollection = new ArrayCollection();
 			[Bindable]
 			private var errors:ArrayCollection = new ArrayCollection();
-			
+			private var todayDate:*;
 			public var util:Util = new Util();
 			public var scvUrl:SvcUrl = new SvcUrl();
 			public function init():void{
@@ -53,6 +53,8 @@
 			}
 			private function httpContragentResultHandler(event:*):void{
 				saveSelectionState();
+				todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				
 				errors = util.getHttpRespondedErrors(event);
 				contragents = util.extractItemCollection(event.result.mainData, 'contragent');
@@ -135,6 +137,9 @@
 				]]>
 			</util:helpText>
 		</util:ContextHelpButton>
+		
+		<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
 		</mx:HBox>
 		<mx:VBox width="100%">
 		<mx:HBox x="0" y="0">

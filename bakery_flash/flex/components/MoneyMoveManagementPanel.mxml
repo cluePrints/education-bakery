@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="100%" height="95%" xmlns:util="components.util.*">
+	creationComplete="init()" width="100%" height="100%" xmlns:util="components.util.*">
 
 		
 		<mx:HTTPService id="mainSvc" 
@@ -51,6 +51,7 @@
             [Bindable] private var priceItems:*;   
             [Bindable] private var availablePriceItems:ArrayCollection;
             [Bindable] private var errors:ArrayCollection = new ArrayCollection();
+            private var todayDate:*;
             	var util:Util = new Util();
             	var svcUrl:SvcUrl = new SvcUrl();	
 			public function init():void{
@@ -69,7 +70,8 @@
 			 
 			private function httpResultHandler(event:*):void{	
 				errors = util.getHttpRespondedErrors(event);
-				
+				todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				accounts = util.extractItemCollection(event.result.accounts, 'account');	
 				availableAccounts = util.getActiveItems(accounts);
 				
@@ -157,7 +159,24 @@
 					return tmp.name;
 				}					
 			}
-			
+			function getOrderName(item:Object, column:DataGridColumn):String{
+				
+				var tmp = util.getItemById(orders, item.id);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.textView;
+				}	
+			}
+			function getPriceName(item:Object, column:DataGridColumn):String{
+				
+				var tmp = util.getItemById(priceItems, item.id);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.textView;
+				}	
+			}
 			
 		]]>
 	</mx:Script>			
@@ -175,10 +194,11 @@
 					]]>
 		</util:helpText>
 	</util:ContextHelpButton>
-	
+	<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
 	</mx:HBox>
 		<mx:VBox  width="100%">
-		<mx:HBox x="0" y="0" width="1057" height="460">
+		<mx:HBox x="0" y="0" width="98%" height="460">
 			<mx:VBox height="433" width="779" horizontalAlign="center" >
 			
 				<mx:DataGrid height="282" width="756" 
@@ -191,8 +211,8 @@
 						<mx:DataGridColumn headerText="Счет-источник"  dataField="sourceAccount" labelFunction="getSourceAccountName" width="100"/>
 						<mx:DataGridColumn headerText="К-во един. продукта" dataField="amount"   width="70"/>
 						<mx:DataGridColumn headerText="Дата перевода " dataField="date" width="80"/>
-						<mx:DataGridColumn headerText="Заказ" dataField="order" width="60"/>
-						<mx:DataGridColumn headerText="Прайс" dataField="price" width="60"/>
+						<mx:DataGridColumn headerText="Заказ" dataField="order" labelFunction="getOrderName" width="60"/>
+						<mx:DataGridColumn headerText="Прайс" dataField="price" labelFunction="getPriceName" width="60"/>
 						<mx:DataGridColumn headerText="Описание" dataField="desc" width="70"/>
 						<mx:DataGridColumn dataField="Оплачен" labelFunction="activeToString" width="55"/>
 					</mx:columns>
@@ -256,7 +276,7 @@
 					<mx:Button label="Создать" click="createNew()" width="173"/>
 				</mx:HBox>
 			</mx:VBox>			
-			<mx:VBox height="232" horizontalAlign="center" verticalAlign="center" width="278">				
+			<mx:VBox height="232" horizontalAlign="center" verticalAlign="center" width="259">				
 				<mx:VBox horizontalAlign="left" height="17" width="232">	
 					<mx:TextInput id="tiMode" visible="false" text="EDIT"/>
 					<mx:TextInput id="tiId" visible="false" text=""/>
@@ -272,7 +292,7 @@
 						]]>
 					</mx:Script>
 					<mx:HBox horizontalAlign="right" width="100%">
-						<mx:FormItem label="Фильтр:" width="267">
+						<mx:FormItem label="Фильтр:" width="250">
 							<mx:Button id="filterButton" label="{filterPanelMinimized ? &quot;-&quot; : &quot;+&quot;}" click="filterPanelMinimized = !filterPanelMinimized" width="96"/>
 						</mx:FormItem>												
 					</mx:HBox>					
@@ -283,7 +303,7 @@
 						</mx:FormItem>
 						
 						<mx:FormItem label="Шаблон имени:" >
-							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()"/>									
+							<mx:TextInput id="edFilter" text=".*" change="filterRefresh()" width="141"/>									
 						</mx:FormItem>	
 					</mx:VBox>					
 				</mx:VBox>

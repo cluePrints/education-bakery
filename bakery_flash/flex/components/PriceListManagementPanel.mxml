@@ -77,7 +77,7 @@
 			
 			[Bindable]
 	        private var errors:ArrayCollection = new ArrayCollection();       
-			
+			 private var todayDate:*;
 			// XXX: It's dumb, change it
 			var util:Util = new Util();
 			var svcUrl:SvcUrl = new SvcUrl();
@@ -143,6 +143,9 @@
 			}
 			private function httpResultHandler(event:*):void{
 				errors = util.getHttpRespondedErrors(event);
+				todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
+				
 				units = util.extractItemCollection(event.result.units, 'unit');
 				contragents = util.extractItemCollection(event.result.contragents, 'contragent');
 				addresses = util.extractItemCollection(event.result.addresses, 'address');
@@ -212,6 +215,7 @@
 				cbChildActive.selected = true;
 				cbChildProductType.selectedIndex = -1;
 				tiChildPrice.text = "";
+				dfDate.text = "";
 			}
 			function cancel():void{
 				bindSelected();
@@ -246,7 +250,10 @@
 Ценовая политика завода регламентируется прайс-листами <B>дочернего контрагента</B>.
 ]]>
 				</util:helpText>					
-			</util:ContextHelpButton>				
+			</util:ContextHelpButton>	
+			<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
+				
 			</mx:HBox>			
 			<mx:HBox width="895" height="273">
 				<mx:VBox width="100%" horizontalAlign="center" >

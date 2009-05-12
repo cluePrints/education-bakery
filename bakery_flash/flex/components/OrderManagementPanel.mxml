@@ -44,6 +44,7 @@
             [Bindable] private var contragents:*;   
             [Bindable] private var availableContragents:ArrayCollection;
             [Bindable] private var errors:ArrayCollection = new ArrayCollection();
+              private var todayDate:*;
              var util:Util = new Util();
             var  svcUrl:SvcUrl = new SvcUrl;
 			public function init():void{
@@ -61,6 +62,8 @@
 			} 
 				
 			private function httpResultHandler(event:*):void{
+				todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				
 				errors = util.getHttpRespondedErrors(event);
 				
@@ -99,8 +102,8 @@
 				tiId.text="";
 				cbActive.selected=true;
 				formModel.mode="NEW";
-				dfCreationDate.text ="" ;
-				dfDoneDate.text = "";
+				dfCreationDate.text =todayDate.toString(); ;
+				dfDoneDate.text = todayDate.toString();;
 						
 			}
 			function cancel():void{
@@ -155,6 +158,8 @@
 			 	]]>
 			</util:helpText>
 		</util:ContextHelpButton>	
+		<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
 		</mx:HBox>
 		<mx:VBox height="491" width="100%">
 		<mx:HBox x="0" y="0" width="914" height="388">

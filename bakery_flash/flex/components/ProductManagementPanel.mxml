@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="95%" height="95%">
+	creationComplete="init()" width="95%" height="95%" xmlns:util="components.util.*">
 		
 	<mx:HTTPService id="productTypeSvc" 
 		useProxy="false"
@@ -27,7 +27,7 @@
             private var availableUnits:ArrayCollection;
 			[Bindable]
             private var units:ArrayCollection;
-						
+			 private var todayDate:*;			
 			[Bindable]
 	        private var errors:ArrayCollection = new ArrayCollection();    
 	        var svcUrl:SvcUrl = new SvcUrl();
@@ -55,6 +55,8 @@
 			}
 			private function httpproducttypeResultHandler(event:*):void{
 				saveSelectionState();
+				todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				
 				errors = util.getHttpRespondedErrors(event);
 				productTypes = util.extractItemCollection(event.result.mainData, 'producttype');
@@ -136,6 +138,9 @@
 			 	]]>
 			</util:helpText>
 		</util:ContextHelpButton>
+		<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
+		
 	</mx:HBox>
 		<mx:VBox width="100%">
 		<mx:HBox x="0" y="0" width="891" height="412">

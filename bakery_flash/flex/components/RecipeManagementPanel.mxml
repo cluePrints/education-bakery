@@ -95,7 +95,8 @@
 			[Bindable] private var selectedRecipeEffectParts:ArrayCollection = new ArrayCollection();          
 											
 			[Bindable]
-	        private var errors:ArrayCollection = new ArrayCollection();          
+	        private var errors:ArrayCollection = new ArrayCollection(); 
+	         private var todayDate:*;         
 			
 			var util:Util = new Util();
 			var svcUrl:SvcUrl = new SvcUrl();
@@ -147,6 +148,8 @@
 			private function httpResultHandler(event:*):void{
 				saveSelectionState();
 				errors = util.getHttpRespondedErrors(event);
+					todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				
 				productTypes = util.extractItemCollection(event.result.productTypes, 'producttype');
 				recipeEffects = util.extractItemCollection(event.result.recipeEffects, 'recipeeffect');
@@ -412,7 +415,10 @@
 <BR/></BR>
 Это означает, что из 5 едениц муки будет получено 5 едениц хлеба в случае, если колебания температуры будут равны 0.]]>
 			</util:helpText>					
-			</util:ContextHelpButton>						
+			</util:ContextHelpButton>	
+				<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
+							
 		</mx:HBox>
 		<mx:HBox width="95%" height="100%">
 			<mx:VBox width="462" horizontalAlign="left" >

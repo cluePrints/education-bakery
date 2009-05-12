@@ -69,7 +69,8 @@
 	            private var availableUnits:ArrayCollection = new ArrayCollection();;
 				
 				[Bindable]
-	            private var errors:ArrayCollection = new ArrayCollection();;
+	            private var errors:ArrayCollection = new ArrayCollection();
+	            	private var todayDate:*;
 				var deviceParameters:ArrayCollection;
 				// XXX: It's dumb, change it
 				var util:Util = new Util();
@@ -128,7 +129,8 @@
 				}
 				private function httpResultHandler(event:*):void{
 					saveSelectionState();
-					
+					todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 					errors = util.getHttpRespondedErrors(event);
 					mainData = util.extractItemCollection(event.result.mainData, 'device');
 					deviceParameters = util.extractItemCollection(event.result.deviceParameters, 'deviceparameter');
@@ -238,6 +240,8 @@
 ]]>
 				</util:helpText>					
 			</util:ContextHelpButton>
+			<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
 			</mx:HBox>
 			<mx:HBox width="925" height="214">
 				<mx:VBox height="212" width="527" horizontalAlign="center" >

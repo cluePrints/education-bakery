@@ -46,7 +46,7 @@
             [Bindable] private var availableRecipe:ArrayCollection;
             [Bindable] private var orders:*;   
             [Bindable] private var availableOrders:ArrayCollection;
-            
+             private var todayDate:*;
             [Bindable] private var errors:ArrayCollection = new ArrayCollection();
             	var scvUrl:SvcUrl = new SvcUrl();
             	var util:Util = new Util();	
@@ -66,6 +66,8 @@
 			 
 			private function httpResultHandler(event:*):void{	
 				errors = util.getHttpRespondedErrors(event);
+				todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				
 				orders = util.extractItemCollection(event.result.orders, 'order');
 				availableOrders = util.getActiveItems(orders);
@@ -163,6 +165,9 @@
 Наиболее типичным случаем является создание по одному производственному плану на каждый заказанный тип продукта.]]>
 			</util:helpText>					
 			</util:ContextHelpButton>
+			<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
+	
 		</mx:HBox>		
 		<mx:VBox  width="100%">
 		<mx:HBox x="0" y="0" width="1057" height="460">

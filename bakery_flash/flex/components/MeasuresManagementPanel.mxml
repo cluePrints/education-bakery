@@ -32,6 +32,7 @@
             private var availableDeviceParameters:ArrayCollection = new ArrayCollection();
 			[Bindable]
 			private var errors:ArrayCollection = new ArrayCollection();
+			private var todayDate:*;
 			var svcUrl:SvcUrl = new SvcUrl();
 			public var util:Util = new Util();
 			public function init():void{
@@ -54,7 +55,8 @@
 			}
 			private function httpResultHandler(event:*):void{
 				saveSelectionState();
-				
+				todayDate = event.result.currentDate;
+				lbToday.text = todayDate.toString();
 				errors = util.getHttpRespondedErrors(event);
 				measures = util.extractItemCollection(event.result.mainData, 'measure');
 				if (measures != null) {
@@ -125,8 +127,11 @@
 			<time>{tiDate.text}</time>
 		</root>		
 	</mx:Model>		
-					
+			<mx:HBox>		
 		<mx:Label text="Измеренные значения параметров производства" fontWeight="bold" fontSize="14"/>
+			<mx:Label text="Сегодня : "/>
+		<mx:Label text="" id="lbToday"/>
+		</mx:HBox>
 		<mx:VBox width="100%">
 		<mx:HBox x="0" y="0">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
