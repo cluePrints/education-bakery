@@ -61,31 +61,38 @@ public abstract class BusinessEntity implements Serializable {
 			Method readMethod = prop.getReadMethod();
 			Object result = readMethod.invoke(this);
 			tmp.append("\n").append(LONG).append(L).append(propName).append(G);	//<paramName>			
-			if (result == null) {
-				// append nothing
-			} else if (result instanceof BusinessEntity) {
-				tmp.append(((BusinessEntity)result).getId());
-			} else if (result.getClass().isPrimitive()){				
-				tmp.append(result);
-			} else if (result instanceof Integer
-					|| result instanceof Short
-					|| result instanceof Byte
-					|| result instanceof Long
-					|| result instanceof Float
-					|| result instanceof Double
-					|| result instanceof Boolean){
-				tmp.append(result);
-			} else if (result instanceof String){
-				tmp.append(SvcHelper.replaceXMLDeclinedCharacters((String) result));
-			} else if (result instanceof Date){
-				tmp.append(SvcHelper.dateToString((Date) result));
-			}
+			
 			tmp.append(LE).append(propName).append(G);  //</paramName>			
 		}
 		tmp.append(generateAdditionalXML());
 		tmp.append("\n").append(SHORT).append(LE).append(classInstanceName).append(G);
 		return tmp.toString();		
 	};
+	
+	// TODO: move away
+	public static Object valueToString(Object result) {
+		Object tmp = "";
+		if (result == null) {
+			// append nothing
+		} else if (result instanceof BusinessEntity) {
+			tmp = ((BusinessEntity)result).getId();
+		} else if (result.getClass().isPrimitive()){				
+			tmp = result;
+		} else if (result instanceof Integer
+				|| result instanceof Short
+				|| result instanceof Byte
+				|| result instanceof Long
+				|| result instanceof Float
+				|| result instanceof Double
+				|| result instanceof Boolean){
+			tmp = result;
+		} else if (result instanceof String){
+			tmp = SvcHelper.replaceXMLDeclinedCharacters((String) result);
+		} else if (result instanceof Date){
+			tmp = SvcHelper.dateToString((Date) result);
+		}
+		return tmp;
+	}
 	
 	/**
 	 * Generate additional xml fields. Supposed to be called right before closing entity tag

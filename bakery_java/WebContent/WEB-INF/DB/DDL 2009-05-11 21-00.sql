@@ -174,9 +174,6 @@ CREATE TABLE BAKERY.plans (
      , INDEX (recip_id)
      , CONSTRAINT FK_plans_2 FOREIGN KEY (recip_id)
                   REFERENCES BAKERY.recips (recip_id)
-     , INDEX (plan_id)
-     , CONSTRAINT FK_plans_3 FOREIGN KEY (plan_id)
-                  REFERENCES BAKERY.plans (plan_id)
 ) DEFAULT CHARSET=utf8;
 
 CREATE TABLE BAKERY.recip_parameters (
