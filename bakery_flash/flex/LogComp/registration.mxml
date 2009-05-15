@@ -54,8 +54,17 @@ public function getItemIdByName(items:*, name:*):*{
 		if (items == null)
 			return null;
 		for each (var unit in items){ 
+			if(unit != null){
+			if (unit.hasOwnProperty('name')){
+			//mx.controls.Alert.show(name+"          "+unit.name);
 			if (unit.name == name) {
 				result = unit.id;
+			}
+			}
+			}else{
+			//mx.controls.Alert.show("mmmmmm!!--->"+items['id']+"<---");
+			result = items['id'];
+			
 			}
 		} 
 		return result;
@@ -64,9 +73,10 @@ public function getItemIdByName(items:*, name:*):*{
 private function httpContragentResultHandler(event:*):void{
 		
 		contragent = event.result.mainData['contragent'];
+	//	mx.controls.Alert.show("1-"+contragent.toString())
 		contragentId = getItemIdByName(contragent,itContragentName.text);
-	
-		if(contragentId){
+	//mx.controls.Alert.show(contragent.toString()+"   "+contragentId)
+		//if(contragentId){
 			// save warehouse
 			formModelWarehouse.mode = "EDIT";
 			formModelWarehouse.owner = contragentId;
@@ -81,14 +91,17 @@ private function httpContragentResultHandler(event:*):void{
 			accountSvc.send(formModelAccount);
 			
 			
-		}
+		//}
 		
 			} 	
 private function httpWarehouseResultHandler(event:*):void{
 		saveResult();
 			} 			
 private function httpAddressResultHandler(event:*):void{
+	
 		address = event.result.mainData['address'];
+		//address = util.extractItemCollection(event.result.mainData, 'address');
+		//mx.controls.Alert.show(address.toString()+"   "+itContragentAddress.text+"   "+itContragentWareHousAddress.text);
 		addressId = getItemIdByName(address,itContragentAddress.text);
 		wahwhouseAddressId = getItemIdByName(address,itContragentWareHousAddress.text);
 		if(addressFlag == 0 && addressId ){
@@ -103,13 +116,16 @@ private function httpAccountResultHandler(event:*){
 	saveResult();
 }			
 private function save(){
+	
+	if(checkData() == true){
 		addressFlag = 0;
+		
 		formModelAddress.mode="EDIT";
 		formModelWarehouseAddress.mode = "EDIT";
 		addressSvc.cancel();		
 		addressSvc.send(formModelAddress);
 		addressSvc.send(formModelWarehouseAddress);	
-		
+	}	
 }
 private function saveResult(){
 	clearAll();
@@ -124,6 +140,30 @@ private function changeInput(comp1:*,comp2:*){
 private function okFunction(){
 	resultVbox.visible = false;
 }
+	function checkData(){
+		var result:Boolean;
+	
+		if(itContragentName.text == "" || itContragentAddress.text == "" ){
+			return  false;
+			mx.controls.Alert.show("Не введена необходимая информация для регистрации контаргента. Проверьте поле Имени и адреса.");
+		
+		}else{
+			result = true;
+		}
+		if(itContragentWareHous.text == ""|| itContragentWareHousAddress.text =="" ){
+			mx.controls.Alert.show("Не введена необходимая информация для регистрации cклада контаргента. Проверьте поле названия и адреса.");
+			return false;
+		}else{
+			result = true;
+		}
+		if(itContragentAccount.text == "" || itContragentAccountDesc.text == ""){
+			mx.controls.Alert.show("Не введена необходимая информация для регистрации счета контаргента. Проверьте поле названия и описания.");
+			return false;
+		}else{
+			result = true;
+		}
+	return result;
+	}
 		]]>		
 </mx:Script>
 <mx:Model id="formModelContragent">		
@@ -140,7 +180,7 @@ private function okFunction(){
 			<mode></mode>
 			<id>{}</id>		
 			<active>{"1"}</active>	
-			<name>{itContragentAddress.text}</name>
+			<name>{encodeURIComponent(itContragentAddress.text)}</name>
 		</root>		
 </mx:Model>	
 <mx:Model id="formModelWarehouseAddress">		
@@ -148,7 +188,7 @@ private function okFunction(){
 			<mode></mode>
 			<id>{}</id>		
 			<active>{"1"}</active>	
-			<name>{itContragentWareHousAddress.text}</name>
+			<name>{encodeURIComponent(itContragentWareHousAddress.text)}</name>
 		</root>		
 </mx:Model>	
 <mx:Model id="formModelWarehouse">		
@@ -158,7 +198,7 @@ private function okFunction(){
 			<address></address>
 			<id>{}</id>		
 			<active>{"1"}</active>
-			<name>{encodeURI(itContragentWareHous.text)}</name>
+			<name>{encodeURIComponent(itContragentWareHous.text)}</name>
 		</root>		
 	</mx:Model>	
 	
@@ -167,16 +207,16 @@ private function okFunction(){
 			<mode></mode>
 			<owner></owner>
 			<id>{}</id>	
-			<desc>{encodeURI(itContragentAccountDesc.text)}</desc>	
+			<desc>{encodeURIComponent(itContragentAccountDesc.text)}</desc>	
 			<active>{"1"}</active>
-			<name>{encodeURI(itContragentAccount.text)}</name>
+			<name>{encodeURIComponent(itContragentAccount.text)}</name>
 		</root>		
 	</mx:Model>				
 	<mx:Label text="		РЕГИСТРАЦИЯ НОВОГО КОНТРАГЕНТА"  fontSize="14" height="22" width="514" x="63" y="10" fontWeight="bold"/>
 	<mx:HBox>
 	<mx:VBox width="25" height="216">
 	</mx:VBox>
-	<mx:VBox x="44" y="57" height="263" width="682" fontWeight="bold">
+	<mx:VBox x="44" y="57" height="302" width="682" fontWeight="bold">
 		<mx:VBox width="657" height="186">
 		<mx:FormItem label="Контрагент" required="true" width="90%" fontWeight="bold"  >
 			<mx:TextInput id="itContragentName" text="" width="95%" fontWeight="normal"  change="changeInput(itContragentName,resultContragent)">
@@ -215,38 +255,39 @@ private function okFunction(){
 	</mx:HBox>
 	</mx:VBox>
 	</mx:HBox>
-	<mx:HBox width="862" height="267">
-	<mx:VBox width="194" height="209">
-	</mx:VBox>
-	<mx:VBox  id="resultVbox"  width="647" visible="false">
-	<mx:Label text="КОНТРАГЕНТ УСПЕШНО СОХРАНЕН"  fontWeight="bold" />
+	<mx:HBox width="861" height="288">
+	<mx:HBox width="44" height="229">
+	</mx:HBox>
+	<mx:VBox  id="resultVbox"  width="787" visible="false"  >
+	<mx:Panel click="resultVbox.visible = false;">
+	<mx:Label text="КОНТРАГЕНТ УСПЕШНО ЗАРЕГИСТРИРОВАН"  fontWeight="bold" fontSize="16"  width="539"/>
 	<mx:HBox x="44" y="277" width="596" height="26" >
-		<mx:Label text="Контрагент" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="Контрагент" width="168" height="22" fontWeight="bold"/>
 		<mx:Label text="" width="388" height="22" id="resultContragent"/>
 	</mx:HBox>
 	<mx:HBox width="596" height="25">
-		<mx:Label text="Адрес" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="Адрес" width="168" height="22" fontWeight="bold"/>
 		<mx:Label text="" width="375" height="22" id="resultContragentAddress"/>
 	</mx:HBox>
 	<mx:HBox x="44" y="277" width="596" height="27">
-		<mx:Label text="Склад" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="Склад" width="168" height="22" fontWeight="bold"/>
 		<mx:Label text="" width="388" height="22" id="resultContragentWarehouse"/>
 	</mx:HBox>
 	<mx:HBox x="44" y="277" width="596" height="26">
-		<mx:Label text="Адрес скалада" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="Адрес скалада" width="168" height="22" fontWeight="bold"/>
 		<mx:Label text="" width="394" height="22" id="resultWarehouseAddress"/>
 	</mx:HBox>
 	<mx:HBox x="44" y="277" width="596" height="32">
-		<mx:Label text="Счет" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="Счет" width="168" height="22" fontWeight="bold"/>
 		<mx:Label text="" width="383" height="22" id="resultContragentAccount"/>
 	</mx:HBox>
 	<mx:HBox x="44" y="277" width="596" height="32">
-		<mx:Label text="Описание счета" width="104" height="22" fontWeight="bold"/>
+		<mx:Label text="Описание счета" width="168" height="22" fontWeight="bold"/>
 		<mx:Label text="" width="383" height="22" id="resultContragentAccountDesc"/>
 	</mx:HBox>
 	
-	
-	<mx:Button  label="   ОК   " click="okFunction()" width="213"/>
+	</mx:Panel>
+
 	
 	</mx:VBox>	
 	</mx:HBox>

@@ -33,6 +33,7 @@
 		fault="httpFaultHandler(event)"/>						
 <mx:Script>
 <![CDATA[
+	import mx.controls.Alert;
 	
 	import mx.collections.ArrayCollection;
 	import LogComp.Util;
@@ -41,6 +42,7 @@
 	private var units:*;
 	private var orderId:*;
 	private var moneyMoveItem:*;
+	private var amount_:*;
 	[Bindable] private var contragent:ArrayCollection;
 	[Bindable] private var product:ArrayCollection;
 	[Bindable] private var childContragent:ArrayCollection;
@@ -59,14 +61,23 @@
 	 function httpMoneyMoveResultHandler(event:*){
 	 	var item:*;
 	 	var main:*;
-	 	errors = util.getHttpRespondedErrors(event);
+	 
+	 	if(event.result.mainData == null){
+	 		//mx.controls.Alert.show("1");
+	 		main = null;
+	 	}else{
 	 	main = event.result.mainData['moneymove'];
+	 	}
+	 	
 	 	item = util.extractItemCollection(event.result.accounts,'account');
 	 	account = util.getActiveItems(item);
 	 	customerAccountArr = getAccountByOwner(account,contragentCustomer.selectedItem.id);
 	 	providerAccountArr = getAccountByOwner(account,contragentProvider.selectedItem.id);
+	 	
 	 	productPriceList = util.extractItemCollection(event.result.priceListItems,"pricelistitem");
+	 	if(productNameForOrder.selectedItem){
 	 	productPriceArr = getPriceForProduct(productPriceList,productNameForOrder.selectedItem.id);
+	 	}
 	 	if(productPriceArr != null){
 	 	productPrice.text = productPriceArr.price;
 	 	}
@@ -80,7 +91,9 @@
 			productMoveSvc.cancel();
 			productMoveSvc.send(formModelProductMove);
 			}
+		
 	 	}
+	 		errors = util.getHttpRespondedErrors(event);
 	 }
 	 function httpProductMoveResultHandler(event:*){
 	 	var item:*;
@@ -113,7 +126,12 @@
 	 
 	function httpProductResultHandler(event:*){
 		errors = util.getHttpRespondedErrors(event);
+		if(event.result.mainData!= null){
 		product = util.getActiveItems(event.result.mainData['producttype']);
+		}else{
+		product = null;
+		mx.controls.Alert.show("В бвзе отсутствует список продуктов.");
+		}
 		units = util.extractItemCollection(event.result.units,'unit');
 	}
 	function httpContragentResultHandler(event:*){
@@ -170,12 +188,16 @@
 			if (unit.product == productId) {
 				result = unit;
 			}
+			
+			
 		} 
 		return result;	
 	}
 	public function getAccountByOwner(items:ArrayCollection,contrId:*):ArrayCollection{
 		var result = new ArrayCollection();		
 		for each (var item in items){
+			
+			
 			if (item.hasOwnProperty('owner')){
 				if (item.owner == contrId){
 				result.addItem(item);
@@ -211,49 +233,80 @@
 		if (items == null)
 			return null;
 		for each (var unit in items){ 
+			if(unit != null){
+			
 			if (unit.id == _id) {
 				result = unit;
+			}
+		
+			}else{
+			
+			result = items;
 			}
 		} 
 		return result;
 	}
 	public function getOrder(items:*,provName:*,cusName:*,creatinDate:*,doneDate:*):*{
 		var result=null;
-		if (items == null)
-			return null;
+		if (items == null){
+			return null;}else{
 		for each (var unit in items){ 
+			if(unit != null){
+			if (unit.hasOwnProperty('provider')&& unit.hasOwnProperty('consumer')&&unit.hasOwnProperty('creationDate')&&unit.hasOwnProperty('doneDate')&& unit.hasOwnProperty('active')){
 			if (unit.provider == provName && unit.consumer == cusName && unit.creationDate == creatinDate && unit.doneDate == doneDate && unit.active == false) {
 				result = unit;
 			}
+			}
+			else{
+			result = items;
+			}
+			}else{
+			result = items;
+			}
 		} 
 		return result;
+			}
 	}
 	public function getMoneyMoveByOrder(items:*, _id:*):*{
 		var result=null;
 		if (items == null)
 			return null;
 		for each (var unit in items){ 
+			if(unit != null){
+			if (unit.hasOwnProperty('order')){
 			if (unit.order == _id) {
 				result = unit;
+			}
+			}else{
+				
+			result = items;
+			}
+			}else{
+			result = items;
 			}
 		} 
 		return result;
 	}
 	function showUnit(){
-		var item = getItemById(units,productNameForOrder.selectedItem.id);
-		if(item != null){
+		var item = getItemById(units,productNameForOrder.selectedItem.unit);
+		//mx.controls.Alert.show(units.toString()+"   "+productNameForOrder.selectedItem.id);
 		productUnits.text = item.textView;
-		}
+		
 		productPriceArr = getPriceForProduct(productPriceList,productNameForOrder.selectedItem.id);
+		if(productPriceArr != null){
 	 	productPrice.text = productPriceArr.price;
 	 	getAllPrice();
+	 }else{
+	 	mx.controls.Alert.show("Прайс на данный тип продукта отсутствует.");
+	 productPrice.text = "0"
+	 }
 	}
 	function saveOrder(){
-		
+		if(checkData() == true){
 		formModelOrder.mode = "EDIT";
 		orderSvc.cancel();
 		orderSvc.send(formModelOrder);
-		
+		}
 		
 	}
 	function getAccount(){
@@ -270,7 +323,7 @@
 		var num2:int;
 		num1 = int(orderSize.text);
 		num2 = int(productPrice.text);
-		
+		amount_ = num1.toString();
 		AllPrice.text = ( num1* num2).toString();
 	
 	}
@@ -280,10 +333,10 @@
 		dfDoneDate.text = "";
 		productUnits.text = "";
 		AllPrice.text = "";
-		productUnits.text = ""
+		
 		orderSize.text = "";
 		contragentProvider.selectedIndex = 0;
-		productNameForOrder.selectedIndex = 0;
+		productNameForOrder.selectedIndex = -1;
 		
 		
 	}
@@ -291,9 +344,9 @@
 		formModelMoneyMove.mode = "EDIT";
 		formModelMoneyMove.destinationAccount = providerAccount.selectedItem.id;
 		formModelMoneyMove.sourceAccount = customerAccount.selectedItem.id;
-		formModelMoneyMove.amount = orderSize.text;
+		formModelMoneyMove.amount = amount_;
 		formModelMoneyMove.order = orderId.id;
-		formModelMoneyMove.price = productPrice.text;
+		formModelMoneyMove.price = productPriceArr.id;
 	
 		
 	}
@@ -315,6 +368,54 @@
 		formModelProductMove.moneyMove = moneyMoveItem.id;
 	
 	
+	}
+	function checkData(){
+		var result:Boolean;
+		
+		if(dfCreationDate.text == "" || dfDoneDate.text == ""){
+			return false;
+			mx.controls.Alert.show("Вы не ввели все необходимые даты. Проверьте соответствующие поля.");
+		}else{
+			result = true;
+		}
+		if(productUnits.text == "" || productNameForOrder.selectedItem == null){
+			mx.controls.Alert.show("Вы не выбрали продукт для заказа или данные о выбраном продукте не корректны.");
+			return false;
+		}else{
+			result = true;
+		}
+		if(productPrice.text == ""){
+			mx.controls.Alert.show("Нет цены на этот продукт. Проверьте корректность прайсов!");
+			return false;
+		}else{
+			result = true;
+		}
+		if(contragentProvider.selectedItem == null ||contragentCustomer.selectedItem == null ){
+			mx.controls.Alert.show("Отсутствуют необходимые для заключения договора контрагенты. Зарегестрируйте нужного вам контрагента и повторите попытку.");
+			return false;
+		}else{
+			result = true;
+		}
+		if(orderSize.text = ""){
+			mx.controls.Alert.show("Укажите количество продукта в заказе!");
+			return false;
+		}else{
+			result = true;
+		}
+		if(customerAccount.selectedItem == null || providerAccount.selectedItem == null){
+			mx.controls.Alert.show("Отсутствуют необходиммые для заказа счета. Вы можете внести нужные счета на панели работы со счетами.");
+			return false;
+		}else{
+			result = true;
+		}
+		if(сustomerWarehouse.selectedItem == null || providerWarehouse.selectedItem == null ){
+			mx.controls.Alert.show("Отсутствуют необходимые склады. Вы можете добавить их с помощью панели для работы со складами.");
+			return false;
+		}else{
+			result = true;
+		}
+		
+	return result;
 	}
 		]]>
 </mx:Script>
@@ -465,6 +566,7 @@
 		<mx:FormItem label="Продукция" required="true" width="397" fontWeight="bold">
 			<mx:ComboBox id="productNameForOrder" 
 				width="95%" 
+				selectedIndex="-1"
 				fontWeight="normal"
 				dataProvider="{product}"
 				labelField="textView" 

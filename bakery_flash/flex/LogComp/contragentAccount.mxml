@@ -36,19 +36,29 @@
 	[Bindable] private var orders:ArrayCollection; 
 	[Bindable] private var contragent:ArrayCollection; 
 	[Bindable] private var accounts:ArrayCollection;
+	[Bindable] private var errors:ArrayCollection = new ArrayCollection();
 	 var util:Util = new Util();
 	 
 	 function httpOrderResultHandler(event:*){
-	 
-	 
+	 orders = getNoActiveItems(util.extractItemCollection(event.result.mainData, 'order'));
+	 mx.controls.Alert.show("Средства перечислены.");
 	 }
 	public function getItemById(items:*, _id:*):*{
 		var result=null;
 		if (items == null)
 			return null;
 		for each (var unit in items){ 
+			if(unit != null){
+				if (unit.hasOwnProperty('id')){
+			
 			if (unit.id == _id) {
 				result = unit;
+			}
+			}else{
+			result = items;
+			}
+			}else{
+			result = items;
 			}
 		} 
 		return result;
@@ -58,13 +68,35 @@
 		if (items == null)
 			return null;
 		for each (var unit in items){ 
+			if(unit != null){
+			
+			if (unit.hasOwnProperty('order')){
 			if (unit.order == __id) {
 				result = unit;
+			
+			}
+			}else{
+			result = items;
+			}
+			}else{
+			result = items;
 			}
 		} 
 		return result;
 	}
+	public function getNoActiveItems(items:ArrayCollection):ArrayCollection{
+		var result = new ArrayCollection();		
+		for each (var item in items){
+			if (item.hasOwnProperty('active')){
+				if (item.active  == false){
+					result.addItem(item);
+				}
+			}			
+		} 		
+		return result;		
+	}
 	 function httpContragentResultHandler(event:*){
+	 	errors = util.getHttpRespondedErrors(event);
 	 	contragent = event.result.mainData['contragent'];
 	 	
 	 }
@@ -78,14 +110,16 @@
 		contragentSvc.send(formModelContragent);
 	}
 	function httpResultHandler(event:*){
+		errors = util.getHttpRespondedErrors(event);
 		if(event.result.mainData!=null){
 		mainData = event.result.mainData['moneymove'];
 		}
 		accounts = util.extractItemCollection(event.result.accounts, 'account');
-		orders = util.extractItemCollection(event.result.orders, 'order');
+		orders = getNoActiveItems(util.extractItemCollection(event.result.orders, 'order'));
 		
-		orderName.selectedIndex = 0;
+		orderName.selectedIndex =0;
 		writeAll();
+		
 		
 	
 	}
@@ -100,10 +134,11 @@
 	}
 	function writeAll(){
 		clearAllText();
+		if(orderName.selectedItem){
 		var contragentItem = getItemById(contragent,orderName.selectedItem.consumer);
 		var item = getItemIdByOrder(mainData,orderName.selectedItem.id)
-		if(item == null ||  contragentItem == null){
-			//error
+		if(item == null){
+			mx.controls.Alert.show("Отсутствует движение денег по данному заказу. Вы можете создать его используя панель для работы  с движением денег.");
 		}else{
 		
 		lbSourceAccount.text = item.sourceAccount ;
@@ -112,7 +147,10 @@
 		lbPrice.text = item.price;
 		lbId.text = item.id;
 		lbDesc.text = item.desc;
+		}
+		if(contragentItem != null){
 		lbContragent.text = contragentItem.textView;
+		}
 		}
 		
 	}
@@ -129,11 +167,14 @@
 		
 	}
 	function saveSelected():void{
-	
+	if(checData() == true){
+				
 				formModel.mode="EDIT";
 				moneyMoveSvc.cancel();			
 				moneyMoveSvc.send(formModel);
 				sendOrder();
+				writeAll();
+	}
 			}
 	function clearAllText(){
 		lbSourceAccount.text = "" ;
@@ -143,6 +184,30 @@
 		lbId.text = "";
 		lbDesc.text = "";
 		lbContragent.text = "";
+	}
+	
+	function checData(){
+		var result:Boolean;
+		
+		if(orderName.selectedItem != null){
+			result = true;
+		}else{
+			mx.controls.Alert.show("Вы не выбрали заказ для оплаты!");
+			return false;
+		}
+		if(lbSourceAccount.text == ''||lbDestinationAccount.text == "" ){
+			mx.controls.Alert.show("У выбраного заказа отсутствуют необходимые для оплаты счета!");
+			return false;
+		}else{
+			result = true;
+		}
+		if(lbId.text == "" ||lbAmount.text == "" ||lbPrice.text =="" || date.text ==""){
+			mx.controls.Alert.show("Отсутствует часть данных, проверьте правильность заполеных полей!");
+			return false;
+		}else{
+			result = true;
+		}
+		return result;
 	}
 		]]>
 </mx:Script>
@@ -235,5 +300,13 @@
 		<mx:Button label="Очистить"  click="clearAll()" fontSize="12"/>
 
 	</mx:HBox>
+	<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="910" height="84" fontSize="12" >
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
 	</mx:VBox>
 </mx:Canvas>
