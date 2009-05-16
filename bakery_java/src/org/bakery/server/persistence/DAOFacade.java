@@ -1,6 +1,7 @@
 package org.bakery.server.persistence;
 
 public class DAOFacade {
+	private org.springframework.jdbc.datasource.DriverManagerDataSource dataSource;
 	private AbstractDAO addressDAO;
 	private AbstractDAO deviceDAO;
 	private AbstractDAO accountDAO;
@@ -133,5 +134,12 @@ public class DAOFacade {
 	}
 	public void setEnvironmentDAO(AbstractDAO environmentDAO) {
 		this.environmentDAO = environmentDAO;
+	}
+	public org.springframework.jdbc.datasource.DriverManagerDataSource getDataSource() {
+		return dataSource;
+	}
+	public void setDataSource(
+			org.springframework.jdbc.datasource.DriverManagerDataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 }

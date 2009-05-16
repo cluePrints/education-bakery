@@ -22,6 +22,7 @@
 	</bean>
 
 	<bean id="DAOFacade" class="org.bakery.server.persistence.DAOFacade">
+		<property name="dataSource" ref="dataSource"/>
 		<property name="measureDAO">
 			<bean parent="abstractDAO">
 				<property name="targetClassName"
