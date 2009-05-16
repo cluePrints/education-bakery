@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="996" height="554" fontSize="24" creationComplete="init()">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="1066" height="626" fontSize="24" creationComplete="init()">
 <mx:HTTPService id="moneyMoveSvc" 
 		useProxy="false"
 		method="POST"
@@ -44,10 +44,10 @@
 	[Bindable] private var accounts:ArrayCollection;
 	[Bindable] private var errors:ArrayCollection = new ArrayCollection();
 	 var util:Util = new Util();
-	 
+	   private var todayDate:*;
 	 function httpOrderResultHandler(event:*){
 	 orders = getNoActiveItems(util.extractItemCollection(event.result.mainData, 'order'));
-	 mx.controls.Alert.show("Средства перечислены.");
+	resultVbox.visible = true;
 	 }
 	 
 	 function httpPlanResultHandler(event:*){
@@ -109,7 +109,8 @@
 	 function httpContragentResultHandler(event:*){
 	 	errors = util.getHttpRespondedErrors(event);
 	 	contragent = event.result.mainData['contragent'];
-	 	
+	 	todayDate = event.result.currentDate;
+	 	lbToday.text = todayDate.toString();
 	 }
 	function init(){
 		formModel.mode = "FETCH";
@@ -145,6 +146,7 @@
 	}
 	function writeAll(){
 		clearAllText();
+		
 		if(orderName.selectedItem){
 		var contragentItem = getItemById(contragent,orderName.selectedItem.consumer);
 		var item = getItemIdByOrder(mainData,orderName.selectedItem.id)
@@ -158,6 +160,7 @@
 		lbPrice.text = item.price;
 		lbId.text = item.id;
 		lbDesc.text = item.desc;
+		getAllPrice(lbAmount.text,lbPrice.text);
 		}
 		if(contragentItem != null){
 		lbContragent.text = contragentItem.textView;
@@ -195,6 +198,8 @@
 		lbId.text = "";
 		lbDesc.text = "";
 		lbContragent.text = "";
+		lbAllPrice.text = "";
+		date.text = "";
 	}
 	
 	function checData(){
@@ -219,6 +224,15 @@
 			result = true;
 		}
 		return result;
+	}
+	function getAllPrice(param1:*,param2:*){
+		var num1:int;
+		var num2:int;
+		num1 = int(param1);
+		num2 = int(param2);
+		
+		lbAllPrice.text = ( num1* num2).toString();
+	
 	}
 		]]>
 </mx:Script>
@@ -268,21 +282,32 @@
 			
 		</root>		
 	</mx:Model>		
-	<mx:Label text="ОПЛАТА СЧЕТА" x="58.5" y="10" fontSize="14" fontWeight="bold"/>
-	<mx:VBox x="10" y="53" height="341" width="976">
+	<mx:HBox>
+	<mx:VBox width="45" height="371">
 	
+	</mx:VBox>
+	<mx:VBox x="10" y="53" height="592" width="936">
+	<mx:HBox horizontalAlign="center" width="867">
+	<mx:Label text="ОПЛАТА СЧЕТА                            " fontSize="14" fontWeight="bold" width="271"/>
+	
+	<mx:Label text="Сегодня:"  fontSize="10"/>
+	<mx:Label text=""  id="lbToday" fontSize="10"/>
+	</mx:HBox>
 	<mx:FormItem label="Заказ" width="95%" fontWeight="bold" fontSize="11">
 		<mx:ComboBox id="orderName"
 			dataProvider="{orders}"
 			labelField = "textView"
-			 width="450"
+			 width="699"
 			 change = "writeAll()"
 			
 			 fontWeight="normal"/>
 	</mx:FormItem>
-	<mx:VBox width="100%" height="161">
+	<mx:VBox width="100%" height="295">
+	
+	<mx:Panel width="917" height="274">
 	<mx:HBox width="100%">
 		<mx:Label text="В соответствии с выбранным заказом будет осуществлен перевод средств контрагентом:" fontSize="11" fontWeight="bold"/>
+		
 		<mx:Label text="" id="lbContragent" fontSize="12" width="100%"/>
 	</mx:HBox>
 	<mx:HBox width="835">
@@ -305,29 +330,44 @@
 		<mx:Label text="Цена:" fontSize="11" width="48" fontWeight="bold"/>
 		<mx:Label text=" " id="lbPrice"  fontSize="12" width="133"/>
 	</mx:HBox>
+	
+	<mx:HBox width="100%">
+		<mx:Label text="Общая сумма:" fontSize="11" width="112" fontWeight="bold"/>
+		<mx:Label text=" " id="lbAllPrice"  fontSize="12" width="133"/>
+	</mx:HBox>
 	<mx:HBox width="100%">
 		<mx:Label text="Описание:" fontSize="11" width="73" fontWeight="bold"/>
 		<mx:Label text=" " id="lbDesc"  fontSize="12" width="100%"/>
 	</mx:HBox>
 	
-	
-	</mx:VBox>
 	<mx:FormItem label="Дата перевода" width="90%" fontWeight="bold" fontSize="11">
-		<mx:DateField id="date" fontWeight="normal" formatString="DD/MM/YY" width="167"/>
+		<mx:DateField id="date" fontWeight="normal" formatString="DD/MM/YY" width="167" change="resultVbox.visible = false"/>
 		
 	</mx:FormItem>
-	<mx:HBox width="100%">
+	
+	</mx:Panel>
+	</mx:VBox>
+	
+	
+	
+	<mx:VBox width="100%" height="112" horizontalAlign="center">
+	<mx:HBox width="236" horizontalAlign="center" verticalAlign="middle">
 		<mx:Button label="Перечислить"  fontSize="12" click="saveSelected()"/>
 		<mx:Button label="Очистить"  click="clearAll()" fontSize="12"/>
-
 	</mx:HBox>
+	<mx:VBox visible="false" id="resultVbox"  click="resultVbox.visible = false;" color="#AF36A5" width="896" horizontalAlign="center" borderStyle="solid" borderColor="#C47EDE" backgroundColor="#F2E4F1">
+	<mx:Label text="Средства" />
+	<mx:Label text="зачислены" />
+	</mx:VBox>
+	</mx:VBox>
 	<mx:DataGrid dataProvider="{errors}"
 			visible="{errors.length>0}"
-			width="910" height="84" fontSize="12" >
+			width="743" height="84" fontSize="12" >
 			<mx:columns>
 				<mx:DataGridColumn headerText="Ошибки"
 					 dataField="message"/>
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:VBox>
-</mx:Canvas>
+	</mx:HBox>
+</mx:VBox>

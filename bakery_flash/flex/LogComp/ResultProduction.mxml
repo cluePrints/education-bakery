@@ -143,6 +143,7 @@
 		if(checkDoneOrder(dgData.selectedItem.order_id)==false){
 		saveProducMove();
 		resultPanel.visible = true;
+		init();
 		}else{
 			mx.controls.Alert.show("Товар по данному заказу уже был отгружен");}	
 	}else{
@@ -192,7 +193,7 @@
 		var monMoves:*;
 		monMoves = getAmountByOrderId(moneyMoves,orderId);
 		prodMoves = getProdMovesByMoney(productMoves,monMoves.id);
-		if(prodMoves.active>0){
+		if(prodMoves.active == false){
 		 return true;
 		}else{
 		 return false;

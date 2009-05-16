@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="1018" height="640" creationComplete="init()">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="1250" height="640" creationComplete="init()">
 
 <mx:HTTPService id="contragentSvc" 
 		useProxy="false"
@@ -105,8 +105,10 @@
 	 	 
 	 	
 	 	if(formModelProductMove.mode == "EDIT"){
+	 		write();
 	 		clearAllText();
-	 		mx.controls.Alert.show("	ДОГОВОР УСПЕШНО СОХРАНЕН!    ");
+	 		//mx.controls.Alert.show("	ДОГОВОР УСПЕШНО СОХРАНЕН!    ");
+	 		
 	 	}
 	 	
 	 	
@@ -303,6 +305,7 @@
 		formModelOrder.mode = "EDIT";
 		orderSvc.cancel();
 		orderSvc.send(formModelOrder);
+		
 		}
 		
 	}
@@ -414,6 +417,19 @@
 		
 	return result;
 	}
+	function write(){
+	lbOrderId.text = orderId.id;
+	lbProviderName.text = contragentProvider.selectedItem.name;
+	lbAllPrice.text = AllPrice.text;
+	lbAmount.text = amount_;
+	lbUnit.text = productUnits.text;
+	lbProductName.text = productNameForOrder.selectedItem.textView;
+	lbConsumerName.text = contragentCustomer.selectedItem.name;
+	lbOrderDoneDate.text = dfDoneDate.text;
+	lbOrderDone.text = dfDoneDate.text;
+	lbCreatinDate.text = dfCreationDate.text;
+	resultVBoxOrder.visible = true;
+	}
 		]]>
 </mx:Script>
 <mx:Model id="formModelContragent">		
@@ -470,13 +486,15 @@
 			<sourceWarehouse>{}</sourceWarehouse>
 			<destinationWarehouse>{}</destinationWarehouse>
 			<moneyMove>{}</moneyMove>		
-			<active>{"0"}</active>	
+			<active>{"1"}</active>	
 			<date>{}</date>
 			
 		</root>		
 	</mx:Model>	
-	<mx:Label  text= "НОВЫЙ ДОГОВОР" id="headerText" fontSize="14" y="69" x="315" width="515" fontWeight="bold"/>
-	<mx:VBox x="10" y="113" height="370" width="100%" id="mainVBox">
+	<mx:HBox width="1244" height="416">
+	
+	<mx:VBox x="10" y="113" height="404" width="741" id="mainVBox" horizontalAlign="left" click="resultVBoxOrder.visible = false">
+	<mx:Label  text= "НОВЫЙ ДОГОВОР" id="headerText" fontSize="14" width="441" fontWeight="bold"/>
 	<mx:HBox>
 	<mx:FormItem label="Договор на поставку" required="true" width="65%" fontWeight="bold" >
 			<mx:CheckBox selected="true" fontWeight="normal" id="orderType_1" change ="changeOrderType()"/>
@@ -485,7 +503,7 @@
 			<mx:CheckBox selected="false" fontWeight="normal"  change ="changeOrderType()" id="orderType_2" />
 		</mx:FormItem>
 		</mx:HBox>
-		<mx:FormItem label="Потребитель" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Потребитель" required="true" width="95%" fontWeight="bold" >
 			<mx:ComboBox text="" 
 				 id="contragentCustomer"
 				 width="95%"
@@ -496,7 +514,7 @@
 				 
 				 />
 		</mx:FormItem>
-		<mx:FormItem label="Поставщик" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Поставщик" required="true" width="95%" fontWeight="bold" >
 			<mx:ComboBox text=""
 				 id="contragentProvider" 
 				 dataProvider = "{childContragent}"
@@ -506,7 +524,7 @@
 				 fontWeight="normal" />
 		</mx:FormItem>
 		
-		<mx:FormItem label="Счет потребителя" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Счет потребителя" required="true" width="95%" fontWeight="bold" >
 			<mx:ComboBox text="" 
 				 id="customerAccount"
 				 width="95%"
@@ -516,7 +534,7 @@
 				 
 				 />
 		</mx:FormItem>
-		<mx:FormItem label="Счет поставщика" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Счет поставщика" required="true" width="95%" fontWeight="bold" >
 			<mx:ComboBox text=""
 				 id="providerAccount" 
 				 dataProvider = "{providerAccountArr}"
@@ -525,7 +543,7 @@
 				 fontWeight="normal" />
 		</mx:FormItem>
 		
-		<mx:FormItem label="Склад потребителя" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Склад потребителя" required="true" width="95%" fontWeight="bold" >
 			<mx:ComboBox text="" 
 				 id="сustomerWarehouse"
 				 width="95%"
@@ -535,7 +553,7 @@
 				 
 				 />
 		</mx:FormItem>
-		<mx:FormItem label="Склад Поставщика" required="true" width="65%" fontWeight="bold" >
+		<mx:FormItem label="Склад Поставщика" required="true" width="95%" fontWeight="bold" >
 			<mx:ComboBox text=""
 				 id="providerWarehouse" 
 				 dataProvider = "{providerWarehouseArr}"
@@ -556,7 +574,7 @@
 							text=""
 							formatString="DD/MM/YY"/>
 						</mx:FormItem>
-		<mx:VBox width="880" height="52">
+		<mx:VBox width="718" height="52">
 			
 			<mx:HBox width="706" height="50">
 			<mx:VBox>
@@ -595,6 +613,58 @@
 		
 		</mx:HBox>
 	</mx:VBox>
+	
+	
+	<mx:VBox width="50%" height="398" id="resultVBoxOrder" visible="false" click="resultVBoxOrder.visible = false;" fontSize="12">
+	<mx:HBox>
+	<mx:Label text="Заключен договор #"  fontWeight="bold" fontSize="13" />
+	<mx:Label text="" id="lbOrderId"/>
+	<mx:Label text=" от  " />
+	<mx:Label text="" id="lbCreatinDate"/>
+	</mx:HBox>
+	<mx:Panel height="364" width="484">
+	<mx:HBox>
+		<mx:Label text="В соответствии с данным договором "  />
+		
+	</mx:HBox>
+	<mx:HBox>
+		<mx:Label text="Поставщик:"  />
+		<mx:Label text="" id="lbProviderName" fontWeight="bold"/>
+	</mx:HBox>
+		<mx:HBox>
+		<mx:Label text="обязан предоставить " />
+		<mx:Label text=""  id="lbAmount" fontWeight="bold" />
+		<mx:Label text=""  id="lbUnit" fontWeight="bold" />
+		<mx:Label text=""  id="lbProductName" fontWeight="bold" />
+		<mx:Label text="  заказчику. " />
+	</mx:HBox>
+	
+		<mx:HBox>
+		<mx:Label text="С другой стороны заказчик:" />
+		<mx:Label text="" id="lbConsumerName" fontWeight="bold"/>
+	</mx:HBox>
+	
+		<mx:HBox>
+		<mx:Label text="обязан перечислить на счет поставщика сумму в размере " />
+		<mx:Label text="" id="lbAllPrice" fontWeight="bold"/>
+	</mx:HBox>
+	
+		<mx:HBox>
+		<mx:Label text="перевод денег должен быть осуществлен до " />
+		<mx:Label text="" id="lbOrderDoneDate" fontWeight="bold" />
+	</mx:HBox>
+	
+		<mx:HBox>
+		<mx:Label text="Заказ должен быть выполнен:" />
+		<mx:Label text=""  id="lbOrderDone" fontWeight="bold"/>
+	 </mx:HBox>
+	 <mx:Label text="В случае невыполнения договора одной из сторой она " />
+	 <mx:Label text="обязана покрыть все убытки пострадавшей стороны" />
+	
+	</mx:Panel>
+		
+	</mx:VBox>
+	</mx:HBox>
 	<mx:DataGrid dataProvider="{errors}"
 			visible="{errors.length>0}"
 			width="989" height="84" x="19" y="491" id="errorTable">
@@ -603,4 +673,4 @@
 					 dataField="message"/>
 			</mx:columns>
 		</mx:DataGrid>
-</mx:Canvas>
+</mx:VBox>
