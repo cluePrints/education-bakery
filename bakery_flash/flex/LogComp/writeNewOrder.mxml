@@ -234,13 +234,10 @@
 			return null;
 		for each (var unit in items){ 
 			if(unit != null){
-			
 			if (unit.id == _id) {
 				result = unit;
 			}
-		
 			}else{
-			
 			result = items;
 			}
 		} 

@@ -1,7 +1,262 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="920" height="550">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="1034" height="674" creationComplete="init()">
+<mx:HTTPService id="CurDoneDateOrderSvc" 
+		useProxy="false"
+		method="POST"
+		result="httpCurDoneDateOrderHandler(event)"
+		fault="httpFaultHandler(event)"/>
+<mx:HTTPService id="ContragentSvc" 
+		useProxy="false"
+		method="POST"
+		url = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ContragentSvc"
+		result="httpContragentHandler(event)"
+		fault="httpFaultHandler(event)"/>
+<mx:HTTPService id="MoneyMoveSvc" 
+		useProxy="false"
+		method="POST"
+		url = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.MoneyMoveSvc"
+		result="httpMoneyMoveHandler(event)"
+		fault="httpFaultHandler(event)"/>		
+<mx:HTTPService id="ProductMoveSvc" 
+		useProxy="false"
+		method="POST"
+		url = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductMoveSvc"
+		result="httpProductMoveHandler(event)"
+		fault="httpFaultHandler(event)"/>			
+<mx:Script>	
+<![CDATA[
+	import LogComp.Util;
+	import mx.collections.ArrayCollection;
+	[Bindable] private var curDoneDateOrders:ArrayCollection; 
+	var util:Util = new Util();
+	 var contragents:ArrayCollection; 
+	 var moneyMoves:ArrayCollection; 
+	 var productMoves:ArrayCollection; 
+	 var warehouses:ArrayCollection; 
+	 var todayDate:*;
+	 var productMoveId:*;
+	
+	//public var util:Util = new Util();
+	function init(){
+		CurDoneDateOrderSvc.url = "http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.common.CustomSQLQuerySvc&collectionName=currentDoneDateOrders&objName=item&query=select%20*%20from%20orders%20where%20DATEDIFF(now(),order_done_date)=0";
+		formModelCurDoneDateOrder.mode ="FETCH";
+		formModelContragent.mode = "FETCH";
+		formModelMoneyMove.mode = "FETCH";
+		formModelProductMove.mode = "FETCH";
+		
+		
+		MoneyMoveSvc.cancel();
+		MoneyMoveSvc.send(formModelMoneyMove);
+		
+		ProductMoveSvc.cancel();
+		ProductMoveSvc.send(formModelProductMove);
+		
+		ContragentSvc.cancel();
+		ContragentSvc.send(formModelContragent);
+		
+		
+	}
+		
+		
+		
+	function httpProductMoveHandler(event:*){
+		var mainData:*;
+		mainData = event.result.mainData;
+		productMoves = mainData['productmove'];
+		warehouses = event.result.warehouses['warehouse'];
+	
+	}
+	function httpMoneyMoveHandler(event:*){
+		var mainData:*;
+		mainData = event.result.mainData;
+		moneyMoves = mainData['moneymove'];
+		
+		CurDoneDateOrderSvc.cancel();
+		CurDoneDateOrderSvc.send(formModelCurDoneDateOrder);
+		
+	}
+	function httpContragentHandler(event:*){
+		contragents = event.result.mainData['contragent'];
+		todayDate = event.result.currentDate;
+		lbToday.text = todayDate.toString(); 
+	
+	}
+	function httpCurDoneDateOrderHandler(event:*){
+		curDoneDateOrders = event.result.item;
+		
+	
+	}
+	function httpFaultHandler(event:Event):void{
+					 mx.controls.Alert.show(event.toString())	;
+			
+			}
+			
+	function getConsumerName(item:Object, column:DataGridColumn):String{				
+				var tmp = getItemById(contragents, item.order_consumer);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}
+	function getProviderName(item:Object, column:DataGridColumn):String{				
+				var tmp = getItemById(contragents, item.order_provider);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.name;
+				}					
+			}		
+	function getAmount(item:Object, column:DataGridColumn):String{				
+				var tmp = getAmountByOrderId(moneyMoves, item.order_id);
+				if (tmp == null) {
+					return "";
+				} else {
+					return tmp.amount;
+				}					
+			}	
+	function getItemById(items:*, _id:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.id == _id) {
+				result = unit;
+			}
+		} 
+		return result;
+	}	
+	function getAmountByOrderId(items:*, _id:*):*{
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.order == _id) {
+				result = unit;
+			}
+		} 
+		return result;
+	}	
+	function  sendProduct(){
+	
+	if(dgData.selectedItem){
+		if(checkDoneOrder(dgData.selectedItem.order_id)==false){
+		saveProducMove();
+		resultPanel.visible = true;
+		}else{
+			mx.controls.Alert.show("Товар по данному заказу уже был отгружен");}	
+	}else{
+	mx.controls.Alert.show("Вы не выбрали заказ для отгрузки.");}
+	}
+	function getProdMovesByMoney(items:*, MoneyMove:*):*{
+	
+		var result=null;
+		if (items == null)
+			return null;
+		for each (var unit in items){ 
+			if (unit.moneyMove == MoneyMove) {
+				result = unit;
+			}
+		} 
+		return result;
+	}	
+	function writeDet(){
+	var prodMoves:*;
+	var monMoves:*;
+		resultPanel.visible = false;
+		monMoves = getAmountByOrderId(moneyMoves,dgData.selectedItem.order_id);
+		prodMoves = getProdMovesByMoney(productMoves,monMoves.id);
+		lbMoneyMove.text = monMoves.textView;
+		lbDestinationWarehouse.text = getItemById(warehouses,prodMoves.destinationWarehouse).textView;
+		lbSourceWarehouse.text = getItemById(warehouses,prodMoves.sourceWarehouse).textView;
+		lbMoneyMove.text = prodMoves.moneyMove;
+		lbOrderId.text = dgData.selectedItem.order_id;
+		lbCreationDate.text = dgData.selectedItem.order_creation_date;
+		productMoveId = prodMoves;
+	}	
+	function saveProducMove(){
+		formModelProductMove.mode = "EDIT";
+		formModelProductMove.id = productMoveId.id;
+		formModelProductMove.sourceWarehouse = productMoveId.sourceWarehouse
+		formModelProductMove.destinationWarehouse = productMoveId.destinationWarehouse;
+		formModelProductMove.moneyMove = productMoveId.moneyMove;
+		formModelProductMove.date = todayDate.toString();
+		formModelProductMove.active = 1;
+		
+		ProductMoveSvc.cancel();
+		ProductMoveSvc.send(formModelProductMove);
+	
+	}
+	function checkDoneOrder(orderId:*){
+		var prodMoves:*;
+		var monMoves:*;
+		monMoves = getAmountByOrderId(moneyMoves,orderId);
+		prodMoves = getProdMovesByMoney(productMoves,monMoves.id);
+		if(prodMoves.active>0){
+		 return true;
+		}else{
+		 return false;
+		}		
+			}
+	function getActiveOrder(item:Object, column:DataGridColumn):String{				
+				var result = checkDoneOrder(item.order_id)	;
+				if(result == true){
+				return " + ";
+				}else{
+				return " - ";}
+			}	
+	]]>
+</mx:Script>
+<mx:Model id="formModelProductMove">		
+		<root>
+			<mode></mode>
+			<id>{}</id>
+			<sourceWarehouse>{}</sourceWarehouse>
+			<destinationWarehouse>{}</destinationWarehouse>
+			<moneyMove>{}</moneyMove>		
+			<active>{}</active>	
+			<date>{}</date>
+			
+		</root>		
+	</mx:Model>
+<mx:Model id="formModelMoneyMove">		
+		<root>
+			<mode></mode>
+			<id>{}</id>
+			<destinationAccount>{}</destinationAccount>
+			<sourceAccount>{}</sourceAccount>
+			<amount>{}</amount>		
+			<active>{}</active>	
+			<date>{}</date>
+			<order>{}</order>
+			<price>{}</price>
+			<desc>{}</desc>
+			
+		</root>		
+	</mx:Model>	
+<mx:Model id="formModelCurDoneDateOrder">		
+		<root>
+			<mode></mode>
+			<provider>{}</provider>
+			<consumer>{}</consumer>
+			<id>{}</id>		
+			<active>{}</active>	
+			<creationDate>{}</creationDate>
+			<doneDate>{}</doneDate>
+			
+		</root>		
+	</mx:Model>		
+<mx:Model id="formModelContragent">		
+		<root>
+			<mode></mode>
+			<address>{}</address>		
+			<active>{}</active>
+			<child>{}</child>
+			<name>{}</name>
+		</root>		
+	</mx:Model>				
 <mx:Label text="Готовая продукция" fontSize="24"/>
-	<mx:HBox x="0" y="43" width="920" height="405">
+	<mx:HBox x="0" y="43" width="1024" height="388">
 	
 	<mx:VBox height="378">
 	<mx:Label text="Произведенная продукция"  fontWeight="bold"/>
@@ -13,20 +268,52 @@
 			</mx:columns>
 		</mx:DataGrid>
 	</mx:VBox>
-	<mx:VBox width="421" height="378">
+	<mx:VBox width="636" height="378">
 	<mx:Label text="Заказанная продукция"  fontWeight="bold"/>
-	<mx:DataGrid height="351">
+	<mx:DataGrid height="352" dataProvider ="{curDoneDateOrders}" 
+		width="628" id="dgData"
+		click = "writeDet()"
+		>
 		<mx:columns>
-			<mx:DataGridColumn headerText="Контаргент" />
-			<mx:DataGridColumn headerText="Продукт" />
-			<mx:DataGridColumn headerText="количество" />
-			<mx:DataGridColumn headerText="Заказ" />
+			<mx:DataGridColumn headerText="Ид.Номер заказа" dataField="order_id" id="order_id" width="70"/>
+			<mx:DataGridColumn headerText="Заказчик"  dataField="order_consumer" labelFunction="getConsumerName" width="100"/>
+			<mx:DataGridColumn headerText="Поставщик"  dataField="order_provider" labelFunction="getProviderName" width="100"/>
+			
+			<mx:DataGridColumn headerText="Дата заказа" dataField = "order_creation_date" id="order_creation_date" width="70"/>
+			<mx:DataGridColumn headerText="Размер заказа" dataField = "order_id"  labelFunction = "getAmount" width="70"/>
+			<mx:DataGridColumn headerText="Отгружен" dataField = "done"  id="done" labelFunction = "getActiveOrder" width="50"/>
+			
 		</mx:columns>
 	</mx:DataGrid>
 	</mx:VBox>
 	</mx:HBox>
-	<mx:HBox x="10" y="476" width="645" height="32">
+	<mx:HBox x="10" y="439" width="645" height="32">
 		<mx:Button label="Отгрузить всю продукцию"/>
-		<mx:Button label="Отгрузить выбранную"/>
+		<mx:Button label="Отгрузить выбранную" click="sendProduct()"/>
 	</mx:HBox>
-</mx:Canvas>
+	<mx:Panel height="158" id="resultPanel" visible="false" click="resultPanel.visible = false;">
+	<mx:HBox width = "90%">
+	<mx:Label text="В соответствии с заказом №: " fontWeight="bold" />
+	<mx:Label text="" id="lbOrderId" />
+	<mx:Label text=" от "  fontWeight="bold" />
+	<mx:Label text="" id="lbCreationDate"/>
+	
+	</mx:HBox>
+	<mx:HBox width = "90%">
+	<mx:Label text="Произошла отгрузка продукции со склада: " fontWeight="bold" />
+	<mx:Label id="lbSourceWarehouse" text=""/>
+	</mx:HBox>
+	<mx:HBox width = "90%">
+	<mx:Label text = "на склад :" fontWeight="bold"  />
+	<mx:Label text='' id="lbDestinationWarehouse" />
+	</mx:HBox>
+	<mx:HBox>
+	<mx:Label text="Дата отгрузки: " fontWeight="bold"  />
+	<mx:Label text="" id="lbToday" />
+	</mx:HBox>
+	<mx:HBox width = "90%">
+	<mx:Label text = "Двидение денег соответствующее заказу :" fontWeight="bold"  />
+	<mx:Label text='' id="lbMoneyMove" width="600"/>
+	</mx:HBox>
+	</mx:Panel>
+</mx:VBox>

@@ -17,6 +17,12 @@
 		method="POST"
 		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.OrderSvc"
 		result="httpOrderResultHandler(event)"
+		fault="httpFaultHandler(event)"/>	
+<mx:HTTPService id="planSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductionPlanSvc"
+		result="httpPlanResultHandler(event)"
 		fault="httpFaultHandler(event)"/>		
 
 <mx:Script>	
@@ -42,6 +48,11 @@
 	 function httpOrderResultHandler(event:*){
 	 orders = getNoActiveItems(util.extractItemCollection(event.result.mainData, 'order'));
 	 mx.controls.Alert.show("Средства перечислены.");
+	 }
+	 
+	 function httpPlanResultHandler(event:*){
+	 
+	 
 	 }
 	public function getItemById(items:*, _id:*):*{
 		var result=null;
@@ -218,6 +229,16 @@
 			<active>{}</active>
 			<child>{}</child>
 			<name>{}</name>
+		</root>		
+	</mx:Model>	
+	<mx:Model id="formModelPlan">		
+		<root>
+			<mode></mode>
+			<id>{}</id>	
+			<active>{}</active>	
+			<startDate>{}</startDate>
+			<order>{}</order>
+			<recipe>{}</recipe>
 		</root>		
 	</mx:Model>	
 	<mx:Model id="formModel">		
