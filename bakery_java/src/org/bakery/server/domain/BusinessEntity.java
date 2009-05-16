@@ -61,7 +61,7 @@ public abstract class BusinessEntity implements Serializable {
 			Method readMethod = prop.getReadMethod();
 			Object result = readMethod.invoke(this);
 			tmp.append("\n").append(LONG).append(L).append(propName).append(G);	//<paramName>			
-			
+			tmp.append(valueToString(result));
 			tmp.append(LE).append(propName).append(G);  //</paramName>			
 		}
 		tmp.append(generateAdditionalXML());
