@@ -23,7 +23,7 @@ public class SvcUrl{
 	public var recipeEffectPartSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.RecipeEffectPartSvc"
 	public var environmentSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.EnvSvc"
 		
-					
+	public var dumpSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.common.BackupSvc";			
 
 }
 
