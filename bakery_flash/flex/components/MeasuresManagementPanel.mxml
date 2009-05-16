@@ -156,18 +156,18 @@
 					</mx:FormItem>
 					<mx:FormItem label="Значение:" 
 						required="true"
-						width="100%">												
+						width="90%">												
 						<mx:DateField
 							formatString="DD/MM/YY" 
 							id="tiDate"
-							width="100%"/>
+							width="90%"/>
 					</mx:FormItem>
 					<mx:FormItem label="Производственный параметр :" 
 						required="true"
-						width="100%">												
+						width="90%">												
 						<mx:ComboBox id="cbDeviceParameters"
 							dataProvider="{availableDeviceParameters}"
-							labelField="textView" width="100%"
+							labelField="textView" width="90%"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Активный">

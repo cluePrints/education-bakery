@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox horizontalAlign="center"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()" width="914" height="522">
+	<mx:HTTPService id="mainSvc" 
+		useProxy="false"
+		method="GET"		
+		result="httpResultHandler(event)"
+		fault="httpFaultHandler(event)"
+		url="{svcUrl.dumpSvcUrl}"/>
+		
+	<mx:Model id="formModel">		
+		<root>
+			<mode></mode>
+			<dumpName></dumpName>
+		</root>		
+	</mx:Model>	
+		
+	<mx:Script>
+		<![CDATA[
+			import mx.charts.chartClasses.DualStyleObject;
+			import mx.events.CollectionEvent;
+			import mx.automation.codec.ArrayPropertyCodec;
+			import mx.validators.RegExpValidator;
+			import mx.utils.StringUtil;
+			import mx.rpc.http.mxml.HTTPService;
+			import flash.sampler.getInvocationCount;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import components.Util;
+			import components.SvcUrl;
+			public var mainDataSvcUrl:String;
+			public var mainDataUnitName:String;
+			public var mainDataUnitVisualName:String;
+			public var hideEffect:*;
+			[Bindable] private var mainData:*;
+            [Bindable] private var contragents:*;   
+            [Bindable] private var availableContragents:ArrayCollection;
+            [Bindable] private var errors:ArrayCollection = new ArrayCollection();
+            var util:Util = new Util();
+            var svcUrl:SvcUrl = new SvcUrl;
+			public function init():void{			
+				mainSvc.cancel();
+				formModel.mode=null;
+				mainSvc.send(formModel);				
+			}
+			
+			private function httpFaultHandler(event:Event):void{
+				mx.controls.Alert.show(event.toString())	;				
+			} 
+				
+			private function httpResultHandler(event:*):void{				
+				errors = util.getHttpRespondedErrors(event);				
+				mainData = util.extractItemCollection(event.result.files, 'file');				
+			} 
+			function startBackup():void{				
+				formModel.mode="save";
+				formModel.dumpName=encodeURIComponent(tiCopyName.text);
+				mainSvc.cancel();	
+				mainSvc.send(formModel);				
+			}
+			function restoreFromBackup():void{				
+				formModel.mode="load";
+				formModel.dumpName=encodeURIComponent(dgData.selectedItem.name);
+				mainSvc.cancel();	
+				mainSvc.send(formModel);				
+			}
+		]]>
+	</mx:Script>				
+		<mx:Label text="Управление резервными копиями системы" fontWeight="bold" fontSize="14"/>
+		<mx:VBox height="491" width="100%">
+		<mx:HBox x="0" y="0" width="914" height="388">
+			<mx:VBox height="378" width="606" horizontalAlign="center" >
+			
+				<mx:DataGrid height="278" width="100%" 
+					id="dgData" 
+					dataProvider="{mainData}">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Название копии" dataField="name"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<mx:HBox width="100%" height="61">
+					<mx:FormItem label="Задайте имя новой резервной копии">
+						<mx:TextInput id="tiCopyName">							
+						</mx:TextInput>						
+					</mx:FormItem>
+				</mx:HBox>
+				<mx:HBox width="100%" height="24">
+					<mx:Button label="Начать процесс резервного копирования" 
+						click="startBackup()"
+						enabled="{(tiCopyName.text!=null) &amp;&amp; (tiCopyName.text.length>0)  &amp;&amp; (encodeURIComponent(tiCopyName.text)==tiCopyName.text)}"
+						/>
+					<mx:Button label="Восстановить базу данных из резервной копии" 
+						click="restoreFromBackup()"
+						enabled="{dgData.selectedItem!=null}"/>
+				</mx:HBox>	
+			</mx:VBox>			
+		</mx:HBox>
+		
+		
+		
+		
+		<mx:DataGrid dataProvider="{errors}"
+			visible="{errors.length>0}"
+			width="910" height="91">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Ошибки"
+					 dataField="message"/>
+			</mx:columns>
+		</mx:DataGrid>
+		</mx:VBox>
+	</mx:VBox>

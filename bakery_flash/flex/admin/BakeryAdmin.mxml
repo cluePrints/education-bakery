@@ -120,5 +120,11 @@
 				id="env"
 				width="100%" height="100%"/>			
 		</mx:Canvas>
+		<mx:Canvas label="Backup" width="100%" height="100%"
+			show="backups.init()">
+			<comp:BackupManagementPanel
+				id="backups"
+				width="100%" height="100%"/>			
+		</mx:Canvas>		
 	</mx:TabNavigator>			
 </mx:Box>
