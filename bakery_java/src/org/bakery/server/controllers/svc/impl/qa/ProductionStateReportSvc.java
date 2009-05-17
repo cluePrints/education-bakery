@@ -31,9 +31,9 @@ public class ProductionStateReportSvc implements ControllerAwareCommand{
 			b.append("<deviceName>");
 			b.append(deviceName);
 			b.append("</deviceName>");
-			b.append("<hoursLeft>");
-			b.append(res.getObject("hoursleft"));
-			b.append("</hoursLeft>");
+			b.append("<minutesLeft>");
+			b.append(res.getObject("minutesleft"));
+			b.append("</minutesLeft>");
 			b.append("\n</productionProcess>");
 		}
 		response.getWriter().write(b.toString());

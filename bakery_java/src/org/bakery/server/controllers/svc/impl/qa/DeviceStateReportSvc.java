@@ -51,7 +51,7 @@ public class DeviceStateReportSvc implements ControllerAwareCommand{
 		
 	}
 	static final String SQL_CURRENTLY_WORKING_PLANS= 
-		"SELECT *, datediff(end_date, current_datetime)*24 as hoursleft FROM (\n"+
+		"SELECT *, minute(timediff(end_date, current_datetime)) as minutesleft FROM (\n"+
    	 	"	SELECT\n"+
 		"	device_name,\n"+
 		"    order_id,\n"+
@@ -71,7 +71,7 @@ public class DeviceStateReportSvc implements ControllerAwareCommand{
 		"WHERE current_datetime <= end_date AND start_date<=current_datetime\n"+
 		"GROUP BY plan_id";
 	/*
-	 	SELECT *, datediff(end_date, current_datetime)*24 as hoursleft FROM (
+	 	SELECT *, minute(timediff(end_date, current_datetime)) as minutesleft FROM (
 	SELECT
 	device_name,
     order_id,
