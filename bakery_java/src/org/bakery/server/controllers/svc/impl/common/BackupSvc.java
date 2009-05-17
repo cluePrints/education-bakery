@@ -28,7 +28,6 @@ public class BackupSvc implements ControllerAwareCommand {
 		/* out all dumps */
 		File f = new File(PATH);
 		f.mkdirs();
-		File[] dumpFiles = f.listFiles();
 
 		if ("save".equalsIgnoreCase(mode)) {
 			String name = request.getParameter("dumpName");
@@ -79,6 +78,7 @@ public class BackupSvc implements ControllerAwareCommand {
 				from.close();
 			}			
 		}
+		File[] dumpFiles = f.listFiles();
 		StringBuilder b = new StringBuilder();
 
 		b.append("<files>");

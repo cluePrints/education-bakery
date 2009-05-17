@@ -40,6 +40,7 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	public void setUnit(Unit unit) {
 		this.unit = unit;
 	}
+	@CouldNotBeEmpty(message="Устройство, для которого создается параметр должно быть выбрано.")
 	public Device getDevice() {
 		return device;
 	}
@@ -74,5 +75,5 @@ public class DeviceParameter extends BusinessEntity implements NamedEntity {
 	}
 	public String toString(){
 		return getDevice().getName()+"."+getName();
-	}
+	}	
 }
