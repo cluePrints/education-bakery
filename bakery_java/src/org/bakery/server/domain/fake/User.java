@@ -7,11 +7,14 @@ public class User extends BusinessEntity{
 	private static final long serialVersionUID=1L;
 	private String name;
 	private String password;
-	private Integer role;
+	private Integer role=0;
 	private String textView;
 	public static final int ROLE_LOGIST=1;
 	public static final int ROLE_ADMIN=2;
 	public static final int ROLE_QA=4;
+	public static final int NOT_ROLE_LOGIST=31-ROLE_LOGIST;
+	public static final int NOT_ROLE_ADMIN=31-ROLE_ADMIN;
+	public static final int NOT_ROLE_QA=31-ROLE_QA;
 	@CouldNotBeEmpty(message="Ћогин пользовател€ должен быть задан.")
 	public String getName() {
 		return name;
@@ -45,21 +48,21 @@ public class User extends BusinessEntity{
 		if (grantRights) {
 			role = role | ROLE_ADMIN;
 		} else {
-			role = role | ~ROLE_ADMIN;
+			role = role & NOT_ROLE_ADMIN;
 		}
 	}
 	public void setUserLogist(boolean grantRights){
 		if (grantRights) {
 			role = role | ROLE_LOGIST;
 		} else {
-			role = role | ~ROLE_LOGIST;
+			role = role & NOT_ROLE_LOGIST;
 		}
 	}
 	public void setUserQA(boolean grantRights){
 		if (grantRights) {
 			role = role | ROLE_QA;
 		} else {
-			role = role | ~ROLE_QA;
+			role = role & NOT_ROLE_QA;
 		}
 	}
 	@CouldNotBeEmpty(message="ѕолное им€ пользовател€ должно быть задано.")

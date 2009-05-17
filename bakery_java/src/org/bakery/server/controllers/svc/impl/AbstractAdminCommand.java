@@ -132,7 +132,7 @@ public abstract class AbstractAdminCommand implements ControllerAwareCommand {
 				if (propType.isAssignableFrom(Date.class)) {
 					propValue = SvcHelper.parseDate(strVal);
 				}
-
+				
 				Method writeMethod = prop.getWriteMethod();
 				writeMethod.invoke(command, propValue);
 
