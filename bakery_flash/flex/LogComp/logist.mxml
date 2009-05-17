@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application
-	
-	xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" >
+<mx:Canvas
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="1024"
+	height="768">
 <mx:Script>
 	<![CDATA[
+		import mx.managers.PopUpManager;
 		import components.SimpleManagementPanel;
 		import components.WarehouseManagementPanel;
 		import components.OrderManagementPanel;
@@ -96,9 +98,12 @@
 			case 21:
 			var newComp = new Help();
 				break;
+			case 22:
+				PopUpManager.removePopUp(this);
 		}
+		if (mbSelectedItem!=22){
 		mainCanvas.addChild(newComp);
-		
+		}
 	}
 	
 		]]>
@@ -106,7 +111,8 @@
 <mx:Canvas width="100%" >
 <mx:VBox width="100%">
 <mx:HBox  height="78">
-<mx:MenuBar id="mainMenuBar" labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)" width="368" height="27" fontWeight="bold" fontSize="10">
+<mx:MenuBar id="mainMenuBar" labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)"
+	 width="368" height="27" fontWeight="bold" fontSize="10">
         <mx:XMLList>
             <menuitem label="|  РАБОТА   |" >
                 <menuitem label="С результатами производства"/>
@@ -131,6 +137,7 @@
             <menuitem label="|  ПОМОЩЬ  |" type="check" >
             <menuitem label="О программе" enabled="False"/>
             <menuitem label="Помощь пользователю"/>
+            <menuitem label="Выйти"/>
             </menuitem>
           
         </mx:XMLList>
@@ -144,4 +151,4 @@
     </mx:Canvas>
     </mx:VBox>
     </mx:Canvas>
-</mx:Application>
+</mx:Canvas>

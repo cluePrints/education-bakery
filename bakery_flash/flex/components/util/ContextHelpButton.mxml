@@ -30,6 +30,7 @@
 					screen.placeholder.addChild(this.getChildAt(0));
 				}
 				PopUpManager.addPopUp(screen, this, true);
+				PopUpManager.centerPopUp(screen);
 			}			
 		]]>
 	</mx:Script>

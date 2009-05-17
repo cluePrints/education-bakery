@@ -24,7 +24,7 @@ public class SvcUrl{
 	public var environmentSvcUrl="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.EnvSvc"
 		
 	public var dumpSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.common.BackupSvc";			
-
+	public var authSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.common.AuthSvc";
 }
 
 

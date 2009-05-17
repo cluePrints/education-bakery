@@ -3,7 +3,78 @@
 	xmlns:commmon="commonWindow.*"
 	xmlns:dev="qualityManager.simpledevicereport.*"
 	xmlns:util="components.util.*">	
-	<commmon:StartWindow width="100%"
-		height="100%">		
-	</commmon:StartWindow>						
+	<mx:HTTPService id="authSvc" 
+		useProxy="false"
+		method="POST"		
+		result="httpResultHandler(event)"
+		fault="util.httpFaultHandler(event)"
+		url="{svcUrl.authSvcUrl}"/>
+	<mx:Model
+		id="formModel">
+		<root>
+			<mode></mode>
+			<login></login>
+			<password></password>
+		</root>
+	</mx:Model>
+	<mx:Script>
+		<![CDATA[
+			import commonWindow.StartWindow;
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import components.SvcUrl;
+			import components.Util;
+	        var util:Util = new Util();
+            var svcUrl:SvcUrl = new SvcUrl;
+            private function httpResultHandler(event:*){
+            	if ((event.result=="") || (event.result.currentUser == null)) {
+            		Alert.show("Пользователь с таким именем и паролем не существует или был деактивирован.");
+            	} else {
+            		var wnd:StartWindow = new StartWindow();
+            		wnd.initialize();
+            		PopUpManager.addPopUp(wnd, this, true);
+            		PopUpManager.centerPopUp(wnd);
+            	}
+            }
+            private function tryLogin():void{
+            	formModel.login = tiLogin.text;
+            	formModel.password = tiPassword.text;
+            	formModel.mode="login";
+            	authSvc.cancel();
+            	authSvc.send(formModel);
+            }
+		]]>
+	</mx:Script>				
+	<mx:VBox
+		height="100%"
+		width="100%"
+		horizontalAlign="center"
+		verticalAlign="middle">
+		<mx:VBox
+			width="300"
+			height="150"
+			horizontalAlign="center">
+			<mx:Label
+				text="Вход в систему"
+				fontSize="24"/>								
+			<mx:FormItem
+				label="Логин"
+				required="true">				
+				<mx:TextInput
+					id="tiLogin"/>					
+			</mx:FormItem>
+			<mx:FormItem
+				label="Пароль"
+				required="true">				
+				<mx:TextInput
+					id="tiPassword"/>					
+			</mx:FormItem>
+			<mx:HBox>
+				<mx:Button
+					label="Войти"
+					enabled="{tiLogin.text != null &amp;&amp; tiLogin.text.length>0}"
+					click="tryLogin()"/>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:VBox>					
 </mx:Application>
