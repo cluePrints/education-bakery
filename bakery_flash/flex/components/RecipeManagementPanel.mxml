@@ -587,6 +587,16 @@
 					width="90%">
 					<mx:CheckBox id="cbChildConsumed"/>
 				</mx:FormItem>
+				<mx:HBox
+					width="90%"
+					horizontalAlign="center">
+					<mx:Button label="Новый" click="childCreateNew()"/>
+					<mx:Button 
+						id="btnChildSave"
+						label="Сохранить"						
+						click="childSave()"/>
+					<mx:Button label="Отмена" click="childBindSelected()"/>				
+				</mx:HBox>		
 				<mx:FormItem label="Формула:"
 					direction="horizontal"
 					required="true"
@@ -633,18 +643,8 @@
 							</mx:Button>
 						</mx:HBox>
 					</mx:VBox>
-			
+				
 				</mx:FormItem>
-				<mx:HBox
-					width="90%"
-					horizontalAlign="center">
-					<mx:Button label="Новый" click="childCreateNew()"/>
-					<mx:Button 
-						id="btnChildSave"
-						label="Сохранить"						
-						click="childSave()"/>
-					<mx:Button label="Отмена" click="childBindSelected()"/>				
-				</mx:HBox>		
 			</mx:VBox>	
 						
 		</mx:HBox>

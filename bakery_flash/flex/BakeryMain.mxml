@@ -3,7 +3,9 @@
 	xmlns:commmon="commonWindow.*"
 	xmlns:dev="qualityManager.simpledevicereport.*"
 	xmlns:util="components.util.*"
-	creationComplete="init()">	
+	creationComplete="init()"
+	width="100%"
+	height="100%">	
 	<mx:HTTPService id="authSvc" 
 		useProxy="false"
 		method="POST"		
@@ -34,9 +36,11 @@
             		}
             	} else {
             		var wnd:StartWindow = new StartWindow();
+            		wnd.setActualSize(systemManager.screen.width, systemManager.screen.height);
             		wnd.initialize();
             		PopUpManager.addPopUp(wnd, this, true);
             		PopUpManager.centerPopUp(wnd);
+            		wnd.setActualSize(systemManager.screen.width, systemManager.screen.height);
             	}
             }
             private function tryLogin():void{

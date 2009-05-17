@@ -119,7 +119,8 @@
 						<mx:TextArea 
 							width="100%"
 							height="100%"
-							id="taDesc"/>								
+							id="taDesc"
+							editable="false"/>								
 					</mx:VBox>
 				</mx:HBox>
 				<mx:HBox

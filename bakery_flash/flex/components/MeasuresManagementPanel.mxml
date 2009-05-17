@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="918" height="446">		
+	creationComplete="init()" width="100%" height="100%">		
 	<mx:HTTPService id="measuresSvc" 
 		useProxy="false"
 		method="POST"
@@ -133,9 +133,10 @@
 		<mx:Label text="" id="lbToday"/>
 		</mx:HBox>
 		<mx:VBox width="100%">
-		<mx:HBox x="0" y="0">
+		<mx:HBox 
+			height="100%">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
-				<mx:DataGrid height="263" width="601" 
+				<mx:DataGrid height="100%" width="601" 
 					id="dgData" 
 					dataProvider="{measures}"
 					itemClick="bindSelected()">

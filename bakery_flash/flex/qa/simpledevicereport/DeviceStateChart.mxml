@@ -55,7 +55,13 @@
 				<mx:PieSeries displayName="Состояние устройств" 
 					field="amount"
 					nameField="type"
-					dataProvider="{devicesState}"/>					
+					dataProvider="{devicesState}">
+					<mx:fills>
+                       <mx:SolidColor color="green" alpha="0.8" />
+                       <mx:SolidColor color="red" alpha="0.2" />
+                       <mx:SolidColor color="yellow" alpha="0.5" />
+	                </mx:fills>
+				</mx:PieSeries>					
 			</mx:series>
 		</mx:PieChart>		
 	</mx:VBox>
