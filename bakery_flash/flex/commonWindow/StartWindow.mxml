@@ -70,6 +70,19 @@
 " - Планами загрузки оборудования.<BR/>" + 
 " - Доступными производственными процессами.";
 			}
+			
+			function showLogist(){
+			
+							taDesc.htmlText="" + 
+"<B>Рабочее место менеджера по логистике</B><BR/>" + 
+"Позволяет работать с :<BR/>" + 
+" - Контрагентами<BR/>"+
+" - Договорами<BR/>" + 
+" - Счетами<BR/>" + 
+" - Движением продутов<BR/>" + 
+" - Движением денег.";
+			
+			}
 			var svcUrl:SvcUrl = new SvcUrl();
 			var util:Util = new Util();
 			var user = null;
@@ -111,7 +124,7 @@
 							visible="{qaRoleAllowed}"
 							click="showQADesc()"/>
 						<mx:RadioButton label="Менеджер по логистике" groupName="workPlace" value="market"
-							visible="{logistRoleAllowed}"/>
+							visible="{logistRoleAllowed}" click="showLogist()"/>
 					</mx:VBox>
 					<mx:VBox
 						width="100%"
