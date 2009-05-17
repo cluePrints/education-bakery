@@ -5,19 +5,26 @@
 	<mx:HTTPService id="reportSvc" 
 		useProxy="false"
 		method="GET"
-		url="{mainDataSvcUrl}"
+		url="{svcUrl.prodStateSvcUrl}"
 		result="httpResultHandler(event)"
 		fault="httpFaultHandler(event)"/>
 	<mx:Script>
 		<![CDATA[
+			import components.SvcUrl;
 			import mx.managers.PopUpManager;
 			import components.util.ReloaderPopup;
 			import components.Util;
 			import mx.collections.ArrayCollection;
-			
+			[Bindable]
+        private var medalsAC:ArrayCollection = new ArrayCollection( [
+            { Country: "USA", Gold: 35, Silver:39, Bronze: 29 },
+            { Country: "China", Gold: 32, Silver:17, Bronze: 14 },
+            { Country: "Russia", Gold: 27, Silver:27, Bronze: 38 } ]);
+       
+
 			[Bindable]			
-			public var report:ArrayCollection = new ArrayCollection();
-			public var mainDataSvcUrl:String;
+			public var report:ArrayCollection = new ArrayCollection();	
+			var svcUrl:SvcUrl = new SvcUrl();
 			
 			public function refresh():void{
 				reportSvc.cancel();
@@ -37,20 +44,42 @@
 					httpFaultHandler(event);
 					return;
 				}
-				report = event.result.report;
+				report = util.extractItemCollection(event.result, 'productionProcess');
 			}			
 		]]>
 	</mx:Script>
-		
+	 <!-- Define custom colors for use as fills. -->
+    <mx:SolidColor id="sc1" color="yellow" alpha=".8"/>
+    <mx:SolidColor id="sc2" color="0xCCCCCC" alpha=".6"/>
+    <mx:SolidColor id="sc3" color="0xFFCC66" alpha=".6"/>
+
+    <!-- Define custom Strokes for the columns. -->
+    <mx:Stroke id="s1" color="yellow" weight="2"/>
+    <mx:Stroke id="s2" color="0xCCCCCC" weight="2"/>
+    <mx:Stroke id="s3" color="0xFFCC66" weight="2"/>
+	
 	<mx:VBox
 		width="100%"
 		height="100%">
-		<mx:BarChart 
-			width="100%"
-			height="100%">
-			<mx:series>				
-				<mx:BarSeries yField="productionPlan" xField="hoursLeft"/>
-			</mx:series>
-		</mx:BarChart>
+		<mx:BarChart id="bar" height="100%" width="45%" 
+            paddingLeft="5" paddingRight="5" 
+            showDataTips="true" dataProvider="{report}">
+                
+            <mx:verticalAxis>
+                <mx:CategoryAxis categoryField="deviceName"/>
+            </mx:verticalAxis>
+                
+            <mx:series>
+                <mx:BarSeries 
+                    yField="deviceName" 
+                    xField="minutesLeft" 
+                    displayName="Минут осталось"
+                    fill="{sc2}"
+                    stroke="{s2}"
+                />
+            </mx:series>
+        </mx:BarChart>
+
+        <mx:Legend dataProvider="{bar}"/>
 	</mx:VBox>
 </mx:VBox>

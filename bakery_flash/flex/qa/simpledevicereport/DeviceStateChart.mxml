@@ -5,11 +5,12 @@
 	<mx:HTTPService id="reportSvc" 
 		useProxy="false"
 		method="GET"
-		url="{mainDataSvcUrl}"
+		url="{svcUrl.devStateSvcUrl}"
 		result="httpResultHandler(event)"
 		fault="httpFaultHandler(event)"/>
 	<mx:Script>
 		<![CDATA[
+			import components.SvcUrl;
 			import mx.managers.PopUpManager;
 			import components.util.ReloaderPopup;
 			import components.Util;
@@ -17,7 +18,6 @@
 			
 			[Bindable]			
 			public var devicesState:ArrayCollection = new ArrayCollection();
-			public var mainDataSvcUrl:String;
 			
 			public function refresh():void{
 				reportSvc.cancel();
@@ -25,6 +25,7 @@
 			}			
 			
 			var util:Util = new Util();
+			var svcUrl:SvcUrl = new SvcUrl();
 			function httpFaultHandler(event:*):void {
 				var p:ReloaderPopup = new ReloaderPopup();
 				p.width = this.width;

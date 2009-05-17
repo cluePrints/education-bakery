@@ -448,7 +448,7 @@
 							required="true" 
 							width="100%">
 							<mx:TextInput id="tiTime" width="100%"/>
-							<util:ContextHelpButton helpText="Время выполнения в миллисекундах. &lt;BR&gt;Должно целым числом больше нуля."/>
+							<util:ContextHelpButton helpText="Время выполнения в минутах. &lt;BR&gt;Должно целым числом больше нуля."/>
 						</mx:FormItem>
 						<mx:FormItem
 							label="Название:"

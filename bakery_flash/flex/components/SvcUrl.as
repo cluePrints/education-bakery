@@ -25,6 +25,9 @@ public class SvcUrl{
 		
 	public var dumpSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.common.BackupSvc";			
 	public var authSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.common.AuthSvc";
+	
+	public var devStateSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.qa.DeviceStateReportSvc";
+	public var prodStateSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.qa.ProductionStateReportSvc";
 }
 
 

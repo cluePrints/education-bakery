@@ -16,15 +16,16 @@
 				okFunc();
 				PopUpManager.removePopUp(this);
 			}
+			
 		]]>
 	</mx:Script>
 	<mx:Text htmlText="Сервер не доступен. &lt;BR/&gt;Попробовать еще раз?"/>
 	<mx:HBox>
 		<mx:Button
 			label="Да"
-			click="{myOkFunc}"/>
-		<!--mx:Button
+			click="{myOkFunc()}"/>
+		<mx:Button
 			label="Нет"
-			click="{cancelFunc}"//-->
+			click="PopUpManager.removePopUp(this)"/>
 	</mx:HBox>
 </mx:VBox>
