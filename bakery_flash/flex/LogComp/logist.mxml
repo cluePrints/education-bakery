@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas
-	xmlns:mx="http://www.adobe.com/2006/mxml"
-	width="1024"
-	height="768">
+<mx:Application
+	
+	xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundColor="#8D95FA"  width="1250" height="900" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#AEAAF7, #3833AC]">
 <mx:Script>
 	<![CDATA[
+		import LogComp.MathTask;
 		import mx.managers.PopUpManager;
 		import components.SimpleManagementPanel;
 		import components.WarehouseManagementPanel;
@@ -55,55 +55,86 @@
 		switch(mbSelectedItem){
 			case 0:
 			var newComp = new ResultProduction();
+			mainCanvas.addChild(newComp);
 				break;
 			case 1:
 			var newComp = new registration();
+			mainCanvas.addChild(newComp);
 				break;
 			case 2:
 			var newComp = new writeNewOrder();
+			mainCanvas.addChild(newComp);
 				break;
 			case 3:
 			var newComp = new contragentAccount();
-				break		
+			mainCanvas.addChild(newComp);
+				break	
+			case 4:
+			var newComp = new MathTask()
+			mainCanvas.addChild(newComp);
+				break			
 			case 10:
 			var newComp = new ContragentManagementPanel();
+			mainCanvas.addChild(newComp);
 				break;
 			case 11:
 			var newComp = new OrderManagementPanel();
+			mainCanvas.addChild(newComp);
+			
 				break;
 			case 12:
 			var newComp = new ProductManagementPanel();
+			mainCanvas.addChild(newComp);
 				break;	
 			case 13:
 			var newComp = new PriceListManagementPanel();
+			mainCanvas.addChild(newComp);
 				break;
 			case 14:
 			var newComp = new AccountManagementPanel();
+			mainCanvas.addChild(newComp);
 				break;
 			case 15:
 			var newComp = new MoneyMoveManagementPanel();
+			mainCanvas.addChild(newComp);
 				break;
 			case 16:
 			var newComp = new ProductMoveManagementPanel();
+			mainCanvas.addChild(newComp);
 				break;	
 			case 17:
 			var newComp = new WarehouseManagementPanel();
+			mainCanvas.addChild(newComp);
 				break;	
 			case 18:
-			var newComp = new SimpleManagementPanel();
-				break;			
+			var test:SimpleManagementPanel = new SimpleManagementPanel();
+			test.mainDataUnitName="address";
+			test.mainDataUnitVisualName="адресами";
+			test.mainDataSvcUrl = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.AddressSvc"
+			mainCanvas.addChild(test);
+			
+				break;	
+			case 19:
+			var testComp:SimpleManagementPanel = new SimpleManagementPanel();
+			testComp.mainDataUnitName="unit";
+			testComp.mainDataUnitVisualName="единицами измерения";
+			testComp.mainDataSvcUrl = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.UnitSvc"		
+			mainCanvas.addChild(testComp);
+			
+				break;				
 			case 20:
 			var newComp = new About();
+			mainCanvas.addChild(newComp);
 				break;
 			case 21:
 			var newComp = new Help();
+			mainCanvas.addChild(newComp);
 				break;
-			case 22:
+						case 22:
 				PopUpManager.removePopUp(this);
 		}
-		if (mbSelectedItem!=22){
-		mainCanvas.addChild(newComp);
-		}
+		
+		
 	}
 	
 		]]>
@@ -111,15 +142,14 @@
 <mx:Canvas width="100%" >
 <mx:VBox width="100%">
 <mx:HBox  height="78">
-<mx:MenuBar id="mainMenuBar" labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)"
-	 width="368" height="27" fontWeight="bold" fontSize="10">
+<mx:MenuBar id="mainMenuBar" labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)" width="368" height="27" fontWeight="bold" fontSize="10">
         <mx:XMLList>
             <menuitem label="|  РАБОТА   |" >
-                <menuitem label="С результатами производства"/>
-                 <menuitem label="Зарегистрировать контрагента"/>
+                <menuitem label="Отгрузить продукцию"/>
+                 <menuitem label="Зарегистрироват контрагента"/>
                  <menuitem label="Составить договор"/>
-                 <menuitem label="Оплатить счет"/>
-                  <menuitem label="С планами"/>
+                 <menuitem label="Оплатить счет по договору"/>
+                  <menuitem label="Спланировать план закупок"/>
                   
             </menuitem>
             <menuitem label="|  ПРОСМОТР  |" >
@@ -132,12 +162,13 @@
                    <menuitem label="Движения продуктов"/>
                    <menuitem label="Списока складов"/>
                    <menuitem label="Списока адесов"/>
+                   <menuitem label="Списока ед.измерения"/>
                    
             </menuitem>
             <menuitem label="|  ПОМОЩЬ  |" type="check" >
             <menuitem label="О программе" enabled="False"/>
             <menuitem label="Помощь пользователю"/>
-            <menuitem label="Выйти"/>
+              <menuitem label="Выйти"/>
             </menuitem>
           
         </mx:XMLList>
@@ -151,4 +182,4 @@
     </mx:Canvas>
     </mx:VBox>
     </mx:Canvas>
-</mx:Canvas>
+</mx:Application>

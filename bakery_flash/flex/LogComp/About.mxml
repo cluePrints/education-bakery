@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="748" height="448" horizontalAlign="center">
 	<mx:Label text="АРМ менеджера - логиста"  fontSize="24" horizontalCenter="-39" verticalCenter="-133"/>
-	<mx:Text x="10" y="43" text="Описание программы. Назначение и т.п." width="380" height="247"/>
 	
-</mx:Canvas>
+	<mx:Label text="Описание программы" fontSize="14"/>
+	<mx:VBox>
+	<mx:Label x="10" y="43" text="Данный программный продук предназначен для автоматизаwии рабочего места менеджера по логистике.
+	" width="710" height="15">
+	</mx:Label>
+	<mx:Label  text = " К основным возможностям этой программы можно отнести:	"/>
+	</mx:VBox>
+	<mx:VBox width="628">
+	<mx:Label  text = " - Возможность регистрировать контрагентов и хранить все даанные о них."/>
+	<mx:Label  text = " - Возможность заключать договор с контрагентом"/>
+	<mx:Label  text = " - Отслеживать двидение продуктов и денежных средств в системе"/>
+	<mx:Label  text = " - Управлять движение продуктов и двидением денег"/>
+	<mx:Label  text = " - Возможность работать с прайсами на продукцию"/>
+	<mx:Label  text = " - Возможность работать с типами продуктов, измерениями и т.д."/>
+</mx:VBox>
+</mx:VBox>
