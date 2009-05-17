@@ -125,6 +125,12 @@
 			<comp:BackupManagementPanel
 				id="backups"
 				width="100%" height="100%"/>			
-		</mx:Canvas>		
+		</mx:Canvas>	<mx:Canvas label="Регистрация учетных записей" width="100%" height="100%"
+			 x="10" y="51"
+			>
+			<comp:UserPanel
+				id="user"
+				width="100%" height="100%"/>	
+		</mx:Canvas>	
 	</mx:TabNavigator>			
 </mx:Box>
