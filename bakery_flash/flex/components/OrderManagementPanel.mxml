@@ -63,8 +63,9 @@
 				
 			private function httpResultHandler(event:*):void{
 				todayDate = event.result.currentDate;
+				if(todayDate != null){
 				lbToday.text = todayDate.toString();
-				
+				}
 				errors = util.getHttpRespondedErrors(event);
 				
 					contragents = util.extractItemCollection(event.result.contragents, 'contragent');
@@ -102,9 +103,27 @@
 				tiId.text="";
 				cbActive.selected=true;
 				formModel.mode="NEW";
-				dfCreationDate.text =todayDate.toString(); ;
-				dfDoneDate.text = todayDate.toString();;
+				dfCreationDate.text ="";
+				dfDoneDate.text = "";
 						
+			}
+function update_function(eventObj:*):void{
+   if(eventObj.detail==Alert.OK){
+       				formModel.mode="REMOVE";
+					mainSvc.cancel();	
+					mainSvc.send(formModel);
+					createNew()
+   } else if(eventObj.detail==Alert.CANCEL){
+      
+   }
+}
+			function removeItem(){
+				if(cbActive.selected == false){
+					mx.controls.Alert.show("Вы действительно хотите удалить выбранный элемент?","Подтверждение удаления",Alert.OK|Alert.CANCEL,this,update_function,null,Alert.OK);
+				
+				}else{
+					mx.controls.Alert.show("Выбранный Вами заказ не может быть удален так как он активный.");
+				}
 			}
 			function cancel():void{
 				bindSelected();
@@ -219,7 +238,8 @@
 				<mx:HBox width="100%" height="24">
 					<mx:Button label="Сохранить" click="saveSelected()"/>							
 					<mx:Button label="Отмена" click="cancel()"/>
-					<mx:Button label="Создать" click="createNew()"/>	
+					<mx:Button label="Создать" click="createNew()"/>
+						
 				</mx:HBox>	
 			</mx:VBox>			
 			<mx:VBox height="232" horizontalAlign="center" verticalAlign="center" width="278">				
