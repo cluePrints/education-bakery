@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="842" height="506" horizontalAlign="center" creationComplete="init()">
+
+<mx:HTTPService id="productTypeSvc" 
+		useProxy="false"
+		method="POST"
+		url="http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.ProductTypeSvc"		
+		result="httpproducttypeResultHandler(event)"
+		fault="httpFaultHandler(event)"/>
+<mx:Script>	
+<![CDATA[
+import mx.collections.ArrayCollection;
+[Bindable]private var productTypes:ArrayCollection;
+[Bindable]private var result:ArrayCollection;
+var periodNumb:*;
+            
+     function init(){
+     formModel.mode = "FETCH";
+     
+     
+     productTypeSvc.cancel();
+     productTypeSvc.send(formModel);
+     
+     }       
+	function httpproducttypeResultHandler(event:*){
+	
+		productTypes = event.result.mainData['producttype'];
+	}
+	function httpFaultHandler(event:Event):void{
+					 mx.controls.Alert.show(event.toString())	;
+			
+			}
+	function getPeriodNumb(){
+		periodNumb = int(tiPeriodNumb.text);
+		dgData.rowCount = periodNumb ;
+	
+	}
+	function createArrColection(){
+	var res:ArrayCollection = new ArrayCollection();
+	var i:*;
+	var rand1:*;
+	var rand2:*;
+		
+			for (i=0; i<periodNumb; i++){
+				rand1 = Math.random()*1000;
+				if((rand1-200)<=0){
+				rand2  = 0
+				}else{
+					rand2 = rand1;
+				}
+			var p:Object = {number:i+1, value:Math.round(rand2)};
+					res.addItem(p);
+				}
+		return res;
+	}
+	function runTask(){
+	dgData.dataProvider = createArrColection();
+	
+	}
+	]]>
+</mx:Script>		
+	<mx:Model id="formModel">		
+		<root>
+			<mode></mode>
+			<unit>{}</unit>	
+			<active>{}</active>
+			<name>{}</name>
+		</root>		
+	</mx:Model>		
+<mx:Label text="Панель управления ресурсами путем их динамического расспределения"  fontSize="14" fontWeight="bold"/>
+	<mx:HBox width="95%" height="406">
+		<mx:DataGrid width="299" height="387" id="dgData">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Период"  dataField="number" width="50" />
+				<mx:DataGridColumn headerText="Размер заказа" dataField="value" width="150"/>
+			</mx:columns>
+		</mx:DataGrid>
+	<mx:VBox width="95%" height="99">
+	<mx:FormItem label="Продукт:">
+		<mx:ComboBox id="cbProduct" 
+			dataProvider="{productTypes}"
+			labelField="name">
+	 	</mx:ComboBox>
+	</mx:FormItem>
+	<mx:HBox>
+	<mx:FormItem label="Расспределить на :">
+		<mx:TextInput id="tiPeriodNumb" change="getPeriodNumb()" width="86">
+		</mx:TextInput>
+	</mx:FormItem>
+	<mx:Label text="  периодов"  />
+	</mx:HBox>
+	<mx:Button label="Распределить" click="runTask()" />
+	</mx:VBox>
+	
+	
+	</mx:HBox>
+</mx:VBox>
