@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class
+		name="org.bakery.server.domain.fake.User"
+		table="users">
+		<id name="id"
+			column="user_id">
+			<generator class="increment"/>
+		</id>
+		<property name="name"
+			column="user_login"/>
+		<property name="password"
+			column="user_pwd"/>
+		<property name="role"
+			column="user_role"/>
+		<property name="textView"
+			column="user_desc"/>
+		<property name="active"
+			column="user_active"/>
+	</class>
+</hibernate-mapping>

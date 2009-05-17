@@ -11,7 +11,7 @@ import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.bakery.server.domain.production.RecipeEffectPart;
 
-public class RecipeEffectPartSvc extends AbstractCommand{
+public class RecipeEffectPartSvc extends AbstractAdminCommand{
 	@Override
 	public void init(SvcController controller) throws Exception {
 		setMainDAO(controller.getDAOFacade().getRecipeEffectPartDAO());

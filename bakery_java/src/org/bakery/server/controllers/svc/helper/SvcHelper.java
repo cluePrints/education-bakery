@@ -20,25 +20,30 @@ public class SvcHelper {
 
 	public static void writeAvailable(PrintWriter out, AbstractDAO dao,
 			String sectionId) throws Exception {
+		StringBuilder buff = new StringBuilder();
 		List<BusinessEntity> entities = dao.getAvailable();
-		out.write("\n<" + sectionId + ">\n");
+		buff.append("\n<" + sectionId + ">\n");
 		for (BusinessEntity e : entities) {
-			out.write(e.toXml());
+			buff.append(e.toXml());
 		}
-		out.write("\n</" + sectionId + ">\n");
+		buff.append("\n</" + sectionId + ">\n");
+		out.write(buff.toString());
 		out.flush();
 	}
 
 	public static void write(PrintWriter out, AbstractDAO dao, String sectionId)
 			throws Exception {
+		StringBuilder buff = new StringBuilder();
 		List<BusinessEntity> entities = dao.searchByName("%",
 				BakeryConstants.DEFAULT_SEARCH_START_FROM,
 				BakeryConstants.DEFAULT_SEARCH_MAX_RESULTS);
-		out.write("\n<" + sectionId + ">\n");
+		
+		buff.append("\n<" + sectionId + ">\n");
 		for (BusinessEntity e : entities) {
-			out.write(e.toXml());
+			buff.append(e.toXml());
 		}
-		out.write("\n</" + sectionId + ">\n");
+		buff.append("\n</" + sectionId + ">\n");
+		out.write(buff.toString());
 		out.flush();
 	}
 

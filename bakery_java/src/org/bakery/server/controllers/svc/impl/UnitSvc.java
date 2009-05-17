@@ -8,7 +8,7 @@ import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.domain.production.Unit;
 
-public class UnitSvc extends AbstractCommand {
+public class UnitSvc extends AbstractAdminCommand {
 
 
 	@Override

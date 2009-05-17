@@ -1,5 +1,4 @@
-SET NAMES 'utf8';
-SET CHARACTER SET utf8;
+#DEFAULT CHARSET=utf8
 drop schema if exists bakery;
 create schema bakery;
 use bakery;
@@ -8,7 +7,7 @@ CREATE TABLE BAKERY.addresses (
      , address_address CHAR(250)
      , address_active INT NOT NULL DEFAULT 1
      , PRIMARY KEY (address_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.recips (
        recip_id INTEGER NOT NULL AUTO_INCREMENT
@@ -17,13 +16,13 @@ CREATE TABLE BAKERY.recips (
      , recip_active INT NOT NULL DEFAULT 1
      , recip_time INTEGER NOT NULL
      , PRIMARY KEY (recip_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.env_parameters (
        id INTEGER NOT NULL AUTO_INCREMENT
      , current_datetime DATETIME
      , PRIMARY KEY (id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.devices (
        device_id INTEGER NOT NULL AUTO_INCREMENT
@@ -31,14 +30,24 @@ CREATE TABLE BAKERY.devices (
      , device_name CHAR(100) NOT NULL DEFAULT '<unknown>'
      , device_desc CHAR(250)
      , PRIMARY KEY (device_id)
-) DEFAULT CHARSET=utf8;
+);
+
+CREATE TABLE BAKERY.users (
+       user_id INTEGER NOT NULL AUTO_INCREMENT
+     , user_login CHAR(100) NOT NULL
+     , user_pwd CHAR(100) NOT NULL
+     , user_active INTEGER DEFAULT 1
+     , user_role INTEGER NOT NULL DEFAULT 0
+     , user_desc CHAR(100)
+     , PRIMARY KEY (user_id)
+);
 
 CREATE TABLE BAKERY.units (
        unit_id INTEGER NOT NULL AUTO_INCREMENT
      , unit_name CHAR(100) NOT NULL DEFAULT '<unknown>'
      , unit_active INT NOT NULL DEFAULT 1
      , PRIMARY KEY (unit_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.product_types (
        product_type_id INTEGER NOT NULL AUTO_INCREMENT
@@ -49,7 +58,7 @@ CREATE TABLE BAKERY.product_types (
      , INDEX (product_type_unit)
      , CONSTRAINT FK_product_types_1 FOREIGN KEY (product_type_unit)
                   REFERENCES BAKERY.units (unit_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.contragents (
        contragent_id INTEGER NOT NULL AUTO_INCREMENT
@@ -61,7 +70,7 @@ CREATE TABLE BAKERY.contragents (
      , INDEX (contragent_address)
      , CONSTRAINT FK_contragents_1 FOREIGN KEY (contragent_address)
                   REFERENCES BAKERY.addresses (address_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.accounts (
        account_id INTEGER NOT NULL
@@ -73,7 +82,7 @@ CREATE TABLE BAKERY.accounts (
      , INDEX (account_contragent)
      , CONSTRAINT FK_accounts_1 FOREIGN KEY (account_contragent)
                   REFERENCES BAKERY.contragents (contragent_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.price_list_heads (
        price_list_head_id INTEGER NOT NULL AUTO_INCREMENT
@@ -85,7 +94,7 @@ CREATE TABLE BAKERY.price_list_heads (
      , INDEX (price_list_head_contragent)
      , CONSTRAINT FK_price_lists_1 FOREIGN KEY (price_list_head_contragent)
                   REFERENCES BAKERY.contragents (contragent_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.recip_effects (
        recip_effect_id INTEGER NOT NULL AUTO_INCREMENT
@@ -99,7 +108,35 @@ CREATE TABLE BAKERY.recip_effects (
      , INDEX (recip_effect_recip)
      , CONSTRAINT FK_recip_effects_2 FOREIGN KEY (recip_effect_recip)
                   REFERENCES BAKERY.recips (recip_id)
-) DEFAULT CHARSET=utf8;
+);
+
+CREATE TABLE BAKERY.orders (
+       order_id INTEGER NOT NULL AUTO_INCREMENT
+     , order_provider INTEGER NOT NULL
+     , order_consumer INTEGER NOT NULL
+     , order_creation_date DATETIME NOT NULL
+     , order_active INTEGER NOT NULL DEFAULT 1
+     , order_done_date DATETIME
+     , PRIMARY KEY (order_id)
+     , INDEX (order_consumer)
+     , CONSTRAINT FK_orders_1 FOREIGN KEY (order_consumer)
+                  REFERENCES BAKERY.contragents (contragent_id)
+);
+
+CREATE TABLE BAKERY.price_list_items (
+       price_list_item_id INTEGER NOT NULL AUTO_INCREMENT
+     , price_list_item_price FLOAT
+     , price_list_item_head INTEGER NOT NULL
+     , price_list_item_active INT NOT NULL DEFAULT 1
+     , price_list_product_type INTEGER NOT NULL
+     , PRIMARY KEY (price_list_item_id)
+     , INDEX (price_list_item_head)
+     , CONSTRAINT FK_price_list_items_1 FOREIGN KEY (price_list_item_head)
+                  REFERENCES BAKERY.price_list_heads (price_list_head_id)
+     , INDEX (price_list_product_type)
+     , CONSTRAINT FK_price_list_items_2 FOREIGN KEY (price_list_product_type)
+                  REFERENCES BAKERY.product_types (product_type_id)
+);
 
 CREATE TABLE BAKERY.product_warehouses (
        product_warehouse_id INTEGER NOT NULL AUTO_INCREMENT
@@ -114,7 +151,7 @@ CREATE TABLE BAKERY.product_warehouses (
      , INDEX (product_warehouse_owner)
      , CONSTRAINT FK_product_warehouses_2 FOREIGN KEY (product_warehouse_owner)
                   REFERENCES BAKERY.contragents (contragent_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.device_parameters (
        device_parameter_id INTEGER NOT NULL AUTO_INCREMENT
@@ -132,35 +169,7 @@ CREATE TABLE BAKERY.device_parameters (
      , INDEX (device_id)
      , CONSTRAINT FK_device_parameters_2 FOREIGN KEY (device_id)
                   REFERENCES BAKERY.devices (device_id)
-) DEFAULT CHARSET=utf8;
-
-CREATE TABLE BAKERY.orders (
-       order_id INTEGER NOT NULL AUTO_INCREMENT
-     , order_provider INTEGER NOT NULL
-     , order_consumer INTEGER NOT NULL
-     , order_creation_date DATETIME NOT NULL
-     , order_active INTEGER NOT NULL DEFAULT 1
-     , order_done_date DATETIME
-     , PRIMARY KEY (order_id)
-     , INDEX (order_consumer)
-     , CONSTRAINT FK_orders_1 FOREIGN KEY (order_consumer)
-                  REFERENCES BAKERY.contragents (contragent_id)
-) DEFAULT CHARSET=utf8;
-
-CREATE TABLE BAKERY.price_list_items (
-       price_list_item_id INTEGER NOT NULL AUTO_INCREMENT
-     , price_list_item_price FLOAT
-     , price_list_item_head INTEGER NOT NULL
-     , price_list_item_active INT NOT NULL DEFAULT 1
-     , price_list_product_type INTEGER NOT NULL
-     , PRIMARY KEY (price_list_item_id)
-     , INDEX (price_list_item_head)
-     , CONSTRAINT FK_price_list_items_1 FOREIGN KEY (price_list_item_head)
-                  REFERENCES BAKERY.price_list_heads (price_list_head_id)
-     , INDEX (price_list_product_type)
-     , CONSTRAINT FK_price_list_items_2 FOREIGN KEY (price_list_product_type)
-                  REFERENCES BAKERY.product_types (product_type_id)
-) DEFAULT CHARSET=utf8;
+);
 
 CREATE TABLE BAKERY.plans (
        plan_id INTEGER NOT NULL AUTO_INCREMENT
@@ -174,44 +183,10 @@ CREATE TABLE BAKERY.plans (
      , INDEX (recip_id)
      , CONSTRAINT FK_plans_2 FOREIGN KEY (recip_id)
                   REFERENCES BAKERY.recips (recip_id)
-) DEFAULT CHARSET=utf8;
-
-CREATE TABLE BAKERY.recip_parameters (
-       recip_id INTEGER NOT NULL
-     , device_parameter_id INTEGER NOT NULL
-     , INDEX (recip_id)
-     , CONSTRAINT FK_recip_parameters_1 FOREIGN KEY (recip_id)
-                  REFERENCES BAKERY.recips (recip_id)
-     , INDEX (device_parameter_id)
-     , CONSTRAINT FK_recip_parameters_2 FOREIGN KEY (device_parameter_id)
-                  REFERENCES BAKERY.device_parameters (device_parameter_id)
-) DEFAULT CHARSET=utf8;
-
-CREATE TABLE BAKERY.measures (
-       measure_id INTEGER NOT NULL AUTO_INCREMENT
-     , measure_value FLOAT NOT NULL
-     , measure_device_parameter INTEGER NOT NULL
-     , measure_time DATETIME NOT NULL
-     , measure_active INTEGER
-     , PRIMARY KEY (measure_id)
-     , INDEX (measure_device_parameter)
-     , CONSTRAINT FK_measures_1 FOREIGN KEY (measure_device_parameter)
-                  REFERENCES BAKERY.device_parameters (device_parameter_id)
-) DEFAULT CHARSET=utf8;
-
-CREATE TABLE BAKERY.recipe_effect_parts (
-       recipe_effect_part_id INTEGER NOT NULL AUTO_INCREMENT
-     , recip_effect_id INTEGER NOT NULL
-     , recip_effect_part_multiplicator FLOAT NOT NULL
-     , device_parameter_id INTEGER
-     , PRIMARY KEY (recipe_effect_part_id)
-     , INDEX (recip_effect_id)
-     , CONSTRAINT FK_recipe_effect_parts_1 FOREIGN KEY (recip_effect_id)
-                  REFERENCES BAKERY.recip_effects (recip_effect_id)
-     , INDEX (device_parameter_id)
-     , CONSTRAINT FK_recipe_effect_parts_2 FOREIGN KEY (device_parameter_id)
-                  REFERENCES BAKERY.device_parameters (device_parameter_id)
-) DEFAULT CHARSET=utf8;
+     , INDEX (plan_id)
+     , CONSTRAINT FK_plans_3 FOREIGN KEY (plan_id)
+                  REFERENCES BAKERY.plans (plan_id)
+);
 
 CREATE TABLE BAKERY.money_moves (
        money_move_id INTEGER NOT NULL AUTO_INCREMENT
@@ -232,12 +207,49 @@ CREATE TABLE BAKERY.money_moves (
      , INDEX (money_move_product)
      , CONSTRAINT FK_money_moves_3 FOREIGN KEY (money_move_product)
                   REFERENCES BAKERY.price_list_items (price_list_item_id)
-) DEFAULT CHARSET=utf8;
+);
+
+CREATE TABLE BAKERY.recip_parameters (
+       recip_id INTEGER NOT NULL
+     , device_parameter_id INTEGER NOT NULL
+     , INDEX (recip_id)
+     , CONSTRAINT FK_recip_parameters_1 FOREIGN KEY (recip_id)
+                  REFERENCES BAKERY.recips (recip_id)
+     , INDEX (device_parameter_id)
+     , CONSTRAINT FK_recip_parameters_2 FOREIGN KEY (device_parameter_id)
+                  REFERENCES BAKERY.device_parameters (device_parameter_id)
+);
+
+CREATE TABLE BAKERY.measures (
+       measure_id INTEGER NOT NULL AUTO_INCREMENT
+     , measure_value FLOAT NOT NULL
+     , measure_device_parameter INTEGER NOT NULL
+     , measure_time DATETIME NOT NULL
+     , measure_active INTEGER
+     , PRIMARY KEY (measure_id)
+     , INDEX (measure_device_parameter)
+     , CONSTRAINT FK_measures_1 FOREIGN KEY (measure_device_parameter)
+                  REFERENCES BAKERY.device_parameters (device_parameter_id)
+);
+
+CREATE TABLE BAKERY.recipe_effect_parts (
+       recipe_effect_part_id INTEGER NOT NULL AUTO_INCREMENT
+     , recip_effect_id INTEGER NOT NULL
+     , recip_effect_part_multiplicator FLOAT NOT NULL
+     , device_parameter_id INTEGER
+     , PRIMARY KEY (recipe_effect_part_id)
+     , INDEX (recip_effect_id)
+     , CONSTRAINT FK_recipe_effect_parts_1 FOREIGN KEY (recip_effect_id)
+                  REFERENCES BAKERY.recip_effects (recip_effect_id)
+     , INDEX (device_parameter_id)
+     , CONSTRAINT FK_recipe_effect_parts_2 FOREIGN KEY (device_parameter_id)
+                  REFERENCES BAKERY.device_parameters (device_parameter_id)
+);
 
 CREATE TABLE BAKERY.product_moves (
        product_move_id INT NOT NULL AUTO_INCREMENT
-     , product_move_source INTEGER NOT NULL
-     , product_move_destination INTEGER NOT NULL
+     , product_move_source INTEGER
+     , product_move_destination INTEGER
      , product_move_date DATETIME
      , product_move_money_move INTEGER
      , PRIMARY KEY (product_move_id)
@@ -253,7 +265,12 @@ CREATE TABLE BAKERY.product_moves (
      , INDEX (product_move_money_move)
      , CONSTRAINT FK_product_moves_5 FOREIGN KEY (product_move_money_move)
                   REFERENCES BAKERY.money_moves (money_move_id)
-) DEFAULT CHARSET=utf8;
+);
+
+INSERT INTO users values (1, 'root', 'password', 1, 7, 'mr. Admin');
+#
+# 	ƒвигаютс€ только положительные количества денег
+#	
 
 DELIMITER |
 DROP TRIGGER IF EXISTS  before_upd_money_moves|
@@ -279,6 +296,65 @@ CREATE TRIGGER before_ins_money_moves
 |
 DELIMITER;
 
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `bakery`.`secondRule` $$
+CREATE PROCEDURE BAKERY.secondRule (IN orderId INTEGER)
+BEGIN
+   DECLARE moneyMoveDest INTEGER ;
+   DECLARE moneyMoveSource INTEGER ;
+   DECLARE moneyMoveAmount FLOAT;
+   DECLARE moneyMoveProduct INTEGER ;
+   DECLARE moneyMoveId INTEGER ;
+
+
+   DECLARE orderProvider  INTEGER;
+   DECLARE orderConsumer INTEGER ;
+   DECLARE newOrderId INTEGER ;
+
+
+    SELECT money_move_destination INTO moneyMoveDest FROM money_moves WHERE money_move_date AND money_move_order = orderId;
+    SELECT money_move_source INTO moneyMoveSource FROM money_moves WHERE money_move_date AND money_move_order = orderId;
+    SELECT money_move_amount INTO moneyMoveAmount FROM money_moves WHERE money_move_date AND money_move_order = orderId;
+    SELECT money_move_product INTO moneyMoveProduct FROM money_moves WHERE money_move_date AND money_move_order = orderId;
+    SELECT money_move_id INTO moneyMoveId FROM money_moves WHERE money_move_date AND money_move_order = orderId;
+
+    SELECT order_provider INTO orderProvider FROM orders WHERE order_id =orderId;
+    SELECT order_consumer INTO orderConsumer FROM orders WHERE order_id =orderId;
+
+    DELETE FROM product_moves WHERE product_move_money_move = moneyMoveId;
+    DELETE FROM money_moves WHERE money_move_id = moneyMoveId;
+
+
+
+    INSERT INTO money_moves(money_move_id,money_move_desc,money_move_amount,money_move_date,money_move_destination,money_move_source,money_move_order,money_move_product)
+    VALUE(moneyMoveId,"return",moneyMoveAmount,now(),moneyMoveSource,moneyMoveDest,orderId,moneyMoveProduct);
+
+
+
+END $$
+
+DELIMITER ;
+
+
+DELIMITER |
+DROP TRIGGER IF EXISTS  before_update_order|
+CREATE TRIGGER before_update_order
+  BEFORE UPDATE ON orders FOR EACH ROW
+  BEGIN
+  	IF (NEW.order_active<=0) AND (OLD.order_active)>0 THEN
+        	CALL secondRule(OLD.order_id);
+    END IF;
+  END;
+|
+DELIMITER;
+
+#
+# 	÷ены должны быть положительными числами
+#	
+#
+#	ѕрайс содержит только активную строчку одну строчку каждого продукта
+#
 DELIMITER |
 DROP TRIGGER IF EXISTS before_upd_price_list_items|
 CREATE TRIGGER before_upd_price_list_items
@@ -302,7 +378,7 @@ DELIMITER;
 
 DELIMITER |
 DROP TRIGGER IF EXISTS before_ins_price_list_items|
-CREATE TRIGGER before_ins_price_list_items
+CREATE TRIGGER before_ins_price_list_items  
   BEFORE INSERT ON price_list_items FOR EACH ROW
   BEGIN
 	DECLARE c INTEGER DEFAULT null;
@@ -320,6 +396,10 @@ CREATE TRIGGER before_ins_price_list_items
   END;
 |
 DELIMITER;
+
+# 
+#	¬ырубание параметров вырубает устройство и зависимые рецепты
+#
 
 DELIMITER |
 DROP TRIGGER IF EXISTS  on_upd_device_parameters|
@@ -367,7 +447,7 @@ CREATE TRIGGER before_upd_measures
 	AND measure_id<>NEW.measure_id;
 	
 	IF mean is not null THEN
-		SELECT sqrt(sum(power(mean-measure_value, 2))) INTO diff FROM measures
+		SELECT sqrt(sum(power(mean-measure_value, 2))/sum(1)) INTO diff FROM measures
 		WHERE measure_time
 		    	BETWEEN ADDDATE(NEW.measure_time, -14)
 		      	AND NEW.measure_time
@@ -439,7 +519,6 @@ CREATE TRIGGER before_ins_recip_parameters
   BEFORE INSERT ON recip_parameters FOR EACH ROW
   BEGIN
   	DECLARE p INTEGER default null;
-  	DECLARE p INTEGER default 0;
   	SELECT device_parameter_id INTO p FROM device_parameters
 	  WHERE device_parameter_id IN (SELECT device_parameter_id FROM recip_parameters WHERE recip_id=NEW.recip_id)
 	  AND device_parameter_id=NEW.device_parameter_id;

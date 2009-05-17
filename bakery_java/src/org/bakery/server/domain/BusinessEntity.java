@@ -45,13 +45,17 @@ public abstract class BusinessEntity implements Serializable {
 	}	
 	
 	public String toXml() throws IntrospectionException, InvocationTargetException, IllegalAccessException{
+		return toXml(this);
+	}
+	
+	public static String toXml(Object o) throws IntrospectionException, InvocationTargetException, IllegalAccessException{
 		final String G=">";
 		final String L="<";
 		final String LE="</";
 		final String SHORT = "   ";
 		final String LONG = "      ";
 		StringBuilder tmp = new StringBuilder();
-		Class clazz = this.getClass();
+		Class clazz = o.getClass();
 		String classInstanceName = clazz.getSimpleName().toLowerCase();
 		tmp.append("\n").append(SHORT).append(L).append(classInstanceName).append(G);
 		BeanInfo inf = java.beans.Introspector.getBeanInfo(clazz, Object.class);
@@ -59,12 +63,13 @@ public abstract class BusinessEntity implements Serializable {
 		for (PropertyDescriptor prop : propDescriptors) {			
 			String propName = prop.getName();
 			Method readMethod = prop.getReadMethod();
-			Object result = readMethod.invoke(this);
+			Object result = readMethod.invoke(o);
 			tmp.append("\n").append(LONG).append(L).append(propName).append(G);	//<paramName>			
 			tmp.append(valueToString(result));
 			tmp.append(LE).append(propName).append(G);  //</paramName>			
 		}
-		tmp.append(generateAdditionalXML());
+		if (o instanceof BusinessEntity)
+		tmp.append(((BusinessEntity) o).generateAdditionalXML());
 		tmp.append("\n").append(SHORT).append(LE).append(classInstanceName).append(G);
 		return tmp.toString();		
 	};

@@ -17,11 +17,12 @@ import org.bakery.server.controllers.svc.ISvcController;
 import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
+import org.bakery.server.controllers.svc.impl.common.AuthSvc;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.persistence.AbstractDAO;
 import org.bakery.server.validation.ValidationHelper;
 
-public abstract class AbstractCommand implements ControllerAwareCommand {
+public abstract class AbstractAdminCommand implements ControllerAwareCommand {
 	private AbstractDAO mainDAO;
 
 	/**
@@ -42,7 +43,8 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		/* Extract all from request */
 		AbstractFormMode mode = AbstractFormMode.valueOf(request
 				.getParameter("mode"));
-
+		AuthSvc.writeUser(request, response);
+		
 		// fill command according to request
 		bindCommand(request);
 
@@ -59,6 +61,7 @@ public abstract class AbstractCommand implements ControllerAwareCommand {
 		SvcHelper.write(out, mainDAO, "mainData");
 		SvcHelper.writeAvailable(out, mainDAO, "available");
 		SvcHelper.writeErrors(out, beanValidationErrors);
+		
 	}
 
 	private void runCommonMode(AbstractFormMode mode) throws Exception {

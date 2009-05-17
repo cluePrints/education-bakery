@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bakery.server.controllers.svc.helper.SvcHelper;
-import org.bakery.server.controllers.svc.impl.AbstractCommand;
+import org.bakery.server.controllers.svc.impl.AbstractAdminCommand;
 import org.bakery.server.persistence.DAOFacade;
 import org.bakery.server.util.LoggingUtils;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,9 +17,7 @@ public class SvcController extends AbstractController implements ISvcController{
 
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		
-		
+			HttpServletResponse response) throws Exception {				
 		String svcName = request.getParameter("svc");
 		// FIXME: it's dumb approach
 		logger.info(LoggingUtils.dumpStringMapIntoString(request.getParameterMap()));
@@ -28,11 +26,10 @@ public class SvcController extends AbstractController implements ISvcController{
 			response.setContentType("text/html;charset=UTF-8");
 			String svcClassName = svcName;
 			Class svcClass = Class.forName(svcClassName);
-			AbstractCommand command = (AbstractCommand) svcClass.newInstance();
+			AbstractAdminCommand command = (AbstractAdminCommand) svcClass.newInstance();
 			command.init(this);						
 			command.execute(request, response, this);
 			SvcHelper.writeCurrentDate(DAOFacade, response.getWriter());
-
 		} catch (Exception ex) {			
 			signalInternalError(response.getWriter(), ex);
 			response.flushBuffer();

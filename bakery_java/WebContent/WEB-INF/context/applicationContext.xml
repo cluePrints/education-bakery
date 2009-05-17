@@ -23,6 +23,16 @@
 
 	<bean id="DAOFacade" class="org.bakery.server.persistence.DAOFacade">
 		<property name="dataSource" ref="dataSource"/>
+		<property name="userDAO">
+			<bean parent="abstractDAO">
+				<property name="targetClassName"
+					value="org.bakery.server.domain.fake.User" />
+				<property name="querySearchByName"
+					value="from User u where u.name like :searchName" />
+				<property name="queryGetAvailable"
+					value="from User u where u.active>0" />
+			</bean>
+		</property>
 		<property name="measureDAO">
 			<bean parent="abstractDAO">
 				<property name="targetClassName"
@@ -399,7 +409,9 @@
 				<value>
 					org/bakery/server/domain/fake/Environment.hbm.xml
 				</value>
-			
+				<value>
+					org/bakery/server/domain/fake/User.hbm.xml
+				</value>
 				<value>
 					org/bakery/server/domain/production/Unit.hbm.xml
 				</value>

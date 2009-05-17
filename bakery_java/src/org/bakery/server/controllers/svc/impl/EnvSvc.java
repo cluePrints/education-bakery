@@ -8,7 +8,7 @@ import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.domain.fake.Environment;
 
-public class EnvSvc extends AbstractCommand {
+public class EnvSvc extends AbstractAdminCommand {
 
 	@Override
 	protected void executeInternal(HttpServletRequest request,

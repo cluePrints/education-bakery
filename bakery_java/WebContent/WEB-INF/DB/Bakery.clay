@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <clay-model clay-version="1.4.2">
-<database-model alias="" author="" begin-script="#DEFAULT CHARSET=utf8&#13;&#10;drop schema if exists bakery;&#13;&#10;create schema bakery;&#13;&#10;use bakery;" end-script="" name="Bakery" remarks="" sql-dialect-id="jp.azzurri.clay.dialect.MySQL_5_0_Dialect" uid="117d8d5:11ed453eca4:-8000" version="1.0">
+<database-model alias="" author="" begin-script="#DEFAULT CHARSET=utf8&#13;&#10;drop schema if exists bakery;&#13;&#10;create schema bakery;&#13;&#10;use bakery;" end-script="INSERT INTO users values (1, 'root', 'password', 1, 7, 'mr. Admin');&#13;&#10;#&#13;&#10;# &#9;Двигаются только положительные количества денег&#13;&#10;#&#9;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS  before_upd_money_moves|&#13;&#10;CREATE TRIGGER before_upd_money_moves&#13;&#10;  BEFORE UPDATE ON money_moves FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;IF NEW.money_move_amount&lt;=0 THEN&#13;&#10;  &#9;&#9;SET NEW.money_move_amount=1;&#13;&#10;    END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_ins_money_moves|&#13;&#10;CREATE TRIGGER before_ins_money_moves&#13;&#10;  BEFORE INSERT ON money_moves FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;IF NEW.money_move_amount&lt;=0 THEN&#13;&#10;  &#9;&#9;SET NEW.money_move_amount=1;&#13;&#10;    END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;DELIMITER $$&#13;&#10;&#13;&#10;DROP PROCEDURE IF EXISTS `bakery`.`secondRule` $$&#13;&#10;CREATE PROCEDURE BAKERY.secondRule (IN orderId INTEGER)&#13;&#10;BEGIN&#13;&#10;   DECLARE moneyMoveDest INTEGER ;&#13;&#10;   DECLARE moneyMoveSource INTEGER ;&#13;&#10;   DECLARE moneyMoveAmount FLOAT;&#13;&#10;   DECLARE moneyMoveProduct INTEGER ;&#13;&#10;   DECLARE moneyMoveId INTEGER ;&#13;&#10;&#13;&#10;&#13;&#10;   DECLARE orderProvider  INTEGER;&#13;&#10;   DECLARE orderConsumer INTEGER ;&#13;&#10;   DECLARE newOrderId INTEGER ;&#13;&#10;&#13;&#10;&#13;&#10;    SELECT money_move_destination INTO moneyMoveDest FROM money_moves WHERE money_move_date AND money_move_order = orderId;&#13;&#10;    SELECT money_move_source INTO moneyMoveSource FROM money_moves WHERE money_move_date AND money_move_order = orderId;&#13;&#10;    SELECT money_move_amount INTO moneyMoveAmount FROM money_moves WHERE money_move_date AND money_move_order = orderId;&#13;&#10;    SELECT money_move_product INTO moneyMoveProduct FROM money_moves WHERE money_move_date AND money_move_order = orderId;&#13;&#10;    SELECT money_move_id INTO moneyMoveId FROM money_moves WHERE money_move_date AND money_move_order = orderId;&#13;&#10;&#13;&#10;    SELECT order_provider INTO orderProvider FROM orders WHERE order_id =orderId;&#13;&#10;    SELECT order_consumer INTO orderConsumer FROM orders WHERE order_id =orderId;&#13;&#10;&#13;&#10;    DELETE FROM product_moves WHERE product_move_money_move = moneyMoveId;&#13;&#10;    DELETE FROM money_moves WHERE money_move_id = moneyMoveId;&#13;&#10;&#13;&#10;&#13;&#10;&#13;&#10;    INSERT INTO money_moves(money_move_id,money_move_desc,money_move_amount,money_move_date,money_move_destination,money_move_source,money_move_order,money_move_product)&#13;&#10;    VALUE(moneyMoveId,&quot;return&quot;,moneyMoveAmount,now(),moneyMoveSource,moneyMoveDest,orderId,moneyMoveProduct);&#13;&#10;&#13;&#10;&#13;&#10;&#13;&#10;END $$&#13;&#10;&#13;&#10;DELIMITER ;&#13;&#10;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS  before_update_order|&#13;&#10;CREATE TRIGGER before_update_order&#13;&#10;  BEFORE UPDATE ON orders FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;IF (NEW.order_active&lt;=0) AND (OLD.order_active)&gt;0 THEN&#13;&#10;        &#9;CALL secondRule(OLD.order_id);&#13;&#10;    END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;#&#13;&#10;# &#9;Цены должны быть положительными числами&#13;&#10;#&#9;&#13;&#10;#&#13;&#10;#&#9;Прайс содержит только активную строчку одну строчку каждого продукта&#13;&#10;#&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_upd_price_list_items|&#13;&#10;CREATE TRIGGER before_upd_price_list_items&#13;&#10;  BEFORE UPDATE ON price_list_items FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;&#9;DECLARE c INTEGER DEFAULT null;&#13;&#10;  &#9;IF NEW.price_list_item_price&lt;=0 THEN&#13;&#10;  &#9;&#9;SET NEW.price_list_item_price=NULL;&#13;&#10;    END IF;&#13;&#10;&#13;&#10;&#9;SELECT sum(1) into c FROM price_list_items&#13;&#10;&#9;&#9;WHERE price_list_item_active&gt;0&#13;&#10;  &#9;&#9;and price_list_product_type=NEW.price_list_product_type&#13;&#10;  &#9;&#9;and price_list_item_head=NEW.price_list_item_head;&#13;&#10;&#9;IF c=1 THEN&#13;&#10;&#9;&#9;SET NEW.price_list_item_active=0;&#13;&#10;&#9;END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_ins_price_list_items|&#13;&#10;CREATE TRIGGER before_ins_price_list_items  &#13;&#10;  BEFORE INSERT ON price_list_items FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;&#9;DECLARE c INTEGER DEFAULT null;&#13;&#10;  &#9;IF NEW.price_list_item_price&lt;=0 THEN&#13;&#10;  &#9;&#9;SET NEW.price_list_item_price=NULL;&#13;&#10;    END IF;&#13;&#10;&#13;&#10;&#9;SELECT sum(1) into c FROM price_list_items&#13;&#10;&#9;&#9;WHERE price_list_item_active&gt;0&#13;&#10;  &#9;&#9;and price_list_product_type=NEW.price_list_product_type&#13;&#10;  &#9;&#9;and price_list_item_head=NEW.price_list_item_head;&#13;&#10;&#9;IF c=1 THEN&#13;&#10;&#9;&#9;SET NEW.price_list_item_active=0;&#13;&#10;&#9;END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;# &#13;&#10;#&#9;Вырубание параметров вырубает устройство и зависимые рецепты&#13;&#10;#&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS  on_upd_device_parameters|&#13;&#10;CREATE TRIGGER on_upd_device_parameters&#13;&#10;BEFORE UPDATE ON device_parameters FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;    UPDATE devices SET device_active=0&#13;&#10;&#9;    WHERE (NEW.device_parameter_active=0) AND devices.device_id=OLD.device_id AND devices.device_active=1;&#13;&#10;&#13;&#10;  &#9;UPDATE recips SET recip_active=0&#13;&#10;    &#9;WHERE (NEW.device_parameter_active=0) AND recips.recip_id IN (SELECT recip_id FROM recip_parameters WHERE device_parameter_id=2);&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS  before_ins_device_parameters|&#13;&#10;CREATE TRIGGER before_ins_device_parameters&#13;&#10;  BEFORE INSERT ON device_parameters FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;    UPDATE devices SET device_active=0 WHERE (NEW.device_parameter_active=0) AND devices.device_id=NEW.device_id AND devices.device_active=1;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;#&#13;&#10;# &#9;Рецепт может быть активным только если у него есть параметры, от которых он зависит&#13;&#10;#&#9;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_upd_measures|&#13;&#10;CREATE TRIGGER before_upd_measures&#13;&#10;  BEFORE UPDATE ON measures FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;DECLARE mean FLOAT default null;&#13;&#10;&#9;DECLARE diff FLOAT default null;&#13;&#10;&#13;&#10;&#9;# получаем среднее за две недели&#13;&#10;  &#9;SELECT sum(measure_value)/sum(1) INTO mean FROM measures&#13;&#10;&#9;WHERE measure_time&#13;&#10;    &#9;BETWEEN ADDDATE(NEW.measure_time, -14)&#13;&#10;      &#9;AND NEW.measure_time&#13;&#10;  &#9;AND measure_device_parameter=1&#13;&#10;&#9;AND measure_active=1&#13;&#10;&#9;AND measure_id&lt;&gt;NEW.measure_id;&#13;&#10;&#9;&#13;&#10;&#9;IF mean is not null THEN&#13;&#10;&#9;&#9;SELECT sqrt(sum(power(mean-measure_value, 2))/sum(1)) INTO diff FROM measures&#13;&#10;&#9;&#9;WHERE measure_time&#13;&#10;&#9;&#9;    &#9;BETWEEN ADDDATE(NEW.measure_time, -14)&#13;&#10;&#9;&#9;      &#9;AND NEW.measure_time&#13;&#10;&#9;&#9;  &#9;AND measure_device_parameter=1&#13;&#10;&#9;&#9;&#9;AND measure_active=1;&#13;&#10;&#9;&#9;IF abs(mean-NEW.measure_value)&gt; diff THEN&#13;&#10;&#9;&#9;&#9;SET NEW.measure_active=0;&#13;&#10;&#9;&#9;END IF;&#13;&#10;&#9;END IF;&#9;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_ins_measures|&#13;&#10;CREATE TRIGGER before_ins_measures&#13;&#10;  BEFORE INSERT ON measures FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;DECLARE mean FLOAT default null;&#13;&#10;&#9;DECLARE diff FLOAT default null;&#13;&#10;&#13;&#10;&#9;# получаем среднее за две недели&#13;&#10;  &#9;SELECT sum(measure_value)/sum(1) INTO mean FROM measures&#13;&#10;&#9;WHERE measure_time&#13;&#10;    &#9;BETWEEN ADDDATE(NEW.measure_time, -14)&#13;&#10;      &#9;AND NEW.measure_time&#13;&#10;  &#9;AND measure_device_parameter=1&#13;&#10;&#9;AND measure_active=1;&#13;&#10;&#9;&#13;&#10;&#9;IF mean is not null THEN&#13;&#10;&#9;&#9;SELECT sqrt(sum(power(mean-measure_value, 2))) INTO diff FROM measures&#13;&#10;&#9;&#9;WHERE measure_time&#13;&#10;&#9;&#9;    &#9;BETWEEN ADDDATE(NEW.measure_time, -14)&#13;&#10;&#9;&#9;      &#9;AND NEW.measure_time&#13;&#10;&#9;&#9;  &#9;AND measure_device_parameter=1&#13;&#10;&#9;&#9;&#9;AND measure_active=1;&#13;&#10;&#9;&#9;IF abs(mean-NEW.measure_value)&gt; diff THEN&#13;&#10;&#9;&#9;&#9;SET NEW.measure_active=0;&#13;&#10;&#9;&#9;END IF;&#13;&#10;&#9;END IF;&#9;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;#&#13;&#10;# &#9;Рецепт может зависеть от параметров только одного устройства&#13;&#10;#&#9;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_upd_recip_parameters|&#13;&#10;CREATE TRIGGER before_upd_recip_parameters&#13;&#10;  BEFORE UPDATE ON recip_parameters FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;DECLARE p INTEGER default 0;&#13;&#10;  &#9;SELECT device_parameter_id INTO p FROM device_parameters&#13;&#10;&#9;  WHERE device_parameter_id IN (SELECT device_parameter_id FROM recip_parameters WHERE recip_id=NEW.recip_id)&#13;&#10;&#9;  AND device_parameter_id=NEW.device_parameter_id;&#13;&#10;  &#9;IF p&gt;0 THEN&#13;&#10;    &#9;SET NEW.recip_id=null;&#13;&#10;  &#9;&#9;SET NEW.device_parameter_id=null;&#13;&#10;    END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_ins_recip_parameters|&#13;&#10;CREATE TRIGGER before_ins_recip_parameters&#13;&#10;  BEFORE INSERT ON recip_parameters FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;DECLARE p INTEGER default null;&#13;&#10;  &#9;SELECT device_parameter_id INTO p FROM device_parameters&#13;&#10;&#9;  WHERE device_parameter_id IN (SELECT device_parameter_id FROM recip_parameters WHERE recip_id=NEW.recip_id)&#13;&#10;&#9;  AND device_parameter_id=NEW.device_parameter_id;&#13;&#10;  &#9;IF p&gt;0 THEN&#13;&#10;    &#9;SET NEW.recip_id=null;&#13;&#10;  &#9;&#9;SET NEW.device_parameter_id=null;&#13;&#10;    END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;#&#13;&#10;# &#9;Рецепт может быть активным только если у него есть параметры, от которых он зависит&#13;&#10;#&#9;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_upd_recipes|&#13;&#10;CREATE TRIGGER before_upd_recipes&#13;&#10;  BEFORE UPDATE ON recips FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;DECLARE p INTEGER default 0;&#13;&#10;  &#9;SELECT recip_id INTO p FROM recip_parameters WHERE recip_parameters.recip_id=NEW.recip_id GROUP BY recip_id;&#13;&#10;  &#9;IF p=0 THEN&#13;&#10;     SET NEW.recip_active=0;&#13;&#10;    END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;&#13;&#10;&#13;&#10;DELIMITER |&#13;&#10;DROP TRIGGER IF EXISTS before_ins_recipes|&#13;&#10;CREATE TRIGGER before_ins_recipes&#13;&#10;  BEFORE INSERT ON recips FOR EACH ROW&#13;&#10;  BEGIN&#13;&#10;  &#9;DECLARE p INTEGER default 0;&#13;&#10;  &#9;SELECT recip_id INTO p FROM recip_parameters WHERE recip_parameters.recip_id=NEW.recip_id GROUP BY recip_id;&#13;&#10;  &#9;IF p=0 THEN&#13;&#10;     SET NEW.recip_active=0;&#13;&#10;    END IF;&#13;&#10;  END;&#13;&#10;|&#13;&#10;DELIMITER;" name="Bakery" remarks="" sql-dialect-id="jp.azzurri.clay.dialect.MySQL_5_0_Dialect" uid="117d8d5:11ed453eca4:-8000" version="1.0">
 <database-model-description/>
 <schema-list>
 <schema alias="" name="BAKERY" remarks="" uid="117d8d5:11ed453eca4:-7ffd">
@@ -561,7 +561,7 @@
 <variant type-name-pattern="INT ZEROFILL"/>
 </data-type>
 </column>
-<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="product_move_source" remarks="" uid="117d8d5:11ed453eca4:-769d">
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="product_move_source" remarks="" uid="117d8d5:11ed453eca4:-769d">
 <column-description/>
 <data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
 <variant type-name-pattern="INTEGER"/>
@@ -574,7 +574,7 @@
 <variant type-name-pattern="INTEGER ZEROFILL"/>
 </data-type>
 </column>
-<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="product_move_destination" remarks="" uid="117d8d5:11ed453eca4:-7604">
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="" mandatory="false" name="product_move_destination" remarks="" uid="117d8d5:11ed453eca4:-7604">
 <column-description/>
 <data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
 <variant type-name-pattern="INTEGER"/>
@@ -1611,6 +1611,82 @@ SELECT current_date FROM env_parameters e ORDER BY id DESC limit 0,1</table-desc
 <foreign-key-column column-name="device_parameter_id" referenced-key-column-name="device_parameter_id"/>
 </foreign-key>
 </foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="users" remarks="" uid="b9fcb0:1214af3c4cc:-7fea">
+<table-description/>
+<table-figure-bounds height="-1" width="-1" x="1200" y="871"/>
+<column-list>
+<column alias="" auto-increment="true" column-size="0" decimal-digits="0" default-value="" mandatory="true" name="user_id" remarks="" uid="b9fcb0:1214af3c4cc:-7fe8">
+<column-description/>
+<data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n)"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED ZEROFILL"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) ZEROFILL"/>
+<variant type-name-pattern="INTEGER UNSIGNED"/>
+<variant type-name-pattern="INTEGER UNSIGNED ZEROFILL"/>
+<variant type-name-pattern="INTEGER ZEROFILL"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="true" name="user_login" remarks="" uid="b9fcb0:1214af3c4cc:-7fe7">
+<column-description/>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant type-name-pattern="CHAR"/>
+<variant precision-max="255" precision-min="0" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant precision-max="255" precision-min="0" precision-variable="%n" type-name-pattern="CHAR(%n) BINARY"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="true" name="user_pwd" remarks="" uid="b9fcb0:1214af3c4cc:-7fe3">
+<column-description/>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant type-name-pattern="CHAR"/>
+<variant precision-max="255" precision-min="0" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant precision-max="255" precision-min="0" precision-variable="%n" type-name-pattern="CHAR(%n) BINARY"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="1" mandatory="false" name="user_active" remarks="" uid="b9fcb0:1214af3c4cc:-7fe2">
+<column-description/>
+<data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n)"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED ZEROFILL"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) ZEROFILL"/>
+<variant type-name-pattern="INTEGER UNSIGNED"/>
+<variant type-name-pattern="INTEGER UNSIGNED ZEROFILL"/>
+<variant type-name-pattern="INTEGER ZEROFILL"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="0" decimal-digits="0" default-value="0" mandatory="true" name="user_role" remarks="" uid="b9fcb0:1214af3c4cc:-7fdd">
+<column-description/>
+<data-type jdbc-type="4" name="INTEGER" selected-variant-pattern="INTEGER">
+<variant type-name-pattern="INTEGER"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n)"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) UNSIGNED ZEROFILL"/>
+<variant precision-max="10" precision-min="0" precision-variable="%n" type-name-pattern="INTEGER(%n) ZEROFILL"/>
+<variant type-name-pattern="INTEGER UNSIGNED"/>
+<variant type-name-pattern="INTEGER UNSIGNED ZEROFILL"/>
+<variant type-name-pattern="INTEGER ZEROFILL"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="100" decimal-digits="0" default-value="" mandatory="false" name="user_desc" remarks="" uid="7bd28d:1214db15eb8:-7fe9">
+<column-description/>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="255" precision-min="0" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+<variant precision-max="255" precision-min="0" precision-variable="%n" type-name-pattern="CHAR(%n) BINARY"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_USERS" remarks="" uid="b9fcb0:1214af3c4cc:-7fe6">
+<primary-key-description/>
+<primary-key-column name="user_id"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
 <index-list/>
 </table>
 </table-list>

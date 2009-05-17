@@ -6,22 +6,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.bakery.server.controllers.svc.ISvcController;
 import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
-import org.bakery.server.controllers.svc.helper.SvcHelper;
-import org.bakery.server.domain.accounting.Account;
+import org.bakery.server.domain.fake.User;
 
-public class AccountSvc extends AbstractAdminCommand {
+public class UserSvc extends AbstractAdminCommand {
 
 	@Override
 	public void init(SvcController controller) {
-		setMainDAO(controller.getDAOFacade().getAccountDAO());
-		setCommand(new Account());
+		setMainDAO(controller.getDAOFacade().getUserDAO());
+		setCommand(new User());
 	}
 
 	protected void executeInternal(HttpServletRequest request,
 			HttpServletResponse response, ISvcController controller,
 			AbstractFormMode mode) throws Exception {
-		SvcHelper.writeAvailable(response.getWriter(), controller.getDAOFacade().getContragentDAO(), "contragentsAvailable");	
-		SvcHelper.write(response.getWriter(), controller.getDAOFacade().getContragentDAO(), "contragents");
-
 	}
 }

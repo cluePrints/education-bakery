@@ -15,7 +15,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-public class RecipeSvc extends AbstractCommand{
+public class RecipeSvc extends AbstractAdminCommand{
 	@Override
 	public void init(SvcController controller) throws Exception {
 		setMainDAO(controller.getDAOFacade().getRecipeDAO());

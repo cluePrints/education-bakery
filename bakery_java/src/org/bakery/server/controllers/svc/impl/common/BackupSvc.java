@@ -3,7 +3,6 @@ package org.bakery.server.controllers.svc.impl.common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
@@ -16,6 +15,7 @@ import org.bakery.server.controllers.svc.ControllerAwareCommand;
 import org.bakery.server.controllers.svc.ISvcController;
 
 public class BackupSvc implements ControllerAwareCommand {
+
 	private static final String PATH = "/dumps";
 	private ISvcController controller;
 

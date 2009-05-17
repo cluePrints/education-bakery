@@ -9,7 +9,7 @@ import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.bakery.server.domain.production.ProductType;
 
-public class ProductTypeSvc extends AbstractCommand {
+public class ProductTypeSvc extends AbstractAdminCommand {
 
 	@Override
 	public void init(SvcController controller) {

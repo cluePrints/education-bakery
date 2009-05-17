@@ -9,7 +9,7 @@ import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.bakery.server.domain.hardware.Measure;
 
-public class MeasureSvc extends AbstractCommand {
+public class MeasureSvc extends AbstractAdminCommand {
 
 
 	@Override

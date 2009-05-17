@@ -11,7 +11,7 @@ import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.bakery.server.domain.hardware.DeviceParameter;
 
-public class DeviceParameterSvc extends AbstractCommand {
+public class DeviceParameterSvc extends AbstractAdminCommand {
 
 
 	@Override

@@ -9,7 +9,7 @@ import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.bakery.server.domain.log.MoneyMove;
 
-public class MoneyMoveSvc extends AbstractCommand {
+public class MoneyMoveSvc extends AbstractAdminCommand {
 
 
 	@Override

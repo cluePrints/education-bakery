@@ -8,7 +8,7 @@ import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.domain.pricing.PriceListItem;
 
-public class PriceListItemSvc extends AbstractCommand {
+public class PriceListItemSvc extends AbstractAdminCommand {
 
 	@Override
 	public void init(SvcController controller) throws Exception {

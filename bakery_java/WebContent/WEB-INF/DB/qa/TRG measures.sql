@@ -20,7 +20,7 @@ CREATE TRIGGER before_upd_measures
 	AND measure_id<>NEW.measure_id;
 	
 	IF mean is not null THEN
-		SELECT sqrt(sum(power(mean-measure_value, 2))) INTO diff FROM measures
+		SELECT sqrt(sum(power(mean-measure_value, 2))/sum(1)) INTO diff FROM measures
 		WHERE measure_time
 		    	BETWEEN ADDDATE(NEW.measure_time, -14)
 		      	AND NEW.measure_time

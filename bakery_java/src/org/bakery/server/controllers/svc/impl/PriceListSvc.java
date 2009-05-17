@@ -11,7 +11,7 @@ import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.bakery.server.domain.pricing.PriceList;
 
-public class PriceListSvc extends AbstractCommand {
+public class PriceListSvc extends AbstractAdminCommand {
 
 	@Override
 	public void init(SvcController controller) throws Exception {

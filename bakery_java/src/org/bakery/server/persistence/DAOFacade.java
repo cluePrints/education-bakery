@@ -21,6 +21,7 @@ public class DAOFacade {
 	private AbstractDAO measureDAO;
 	private AbstractDAO recipeEffectPartDAO;
 	private AbstractDAO environmentDAO;
+	private AbstractDAO userDAO;
 	public AbstractDAO getAddressDAO() {
 		return addressDAO;
 	}
@@ -142,4 +143,11 @@ public class DAOFacade {
 			org.springframework.jdbc.datasource.DriverManagerDataSource dataSource) {
 		this.dataSource = dataSource;
 	}
+	public AbstractDAO getUserDAO() {
+		return userDAO;
+	}
+	public void setUserDAO(AbstractDAO userDAO) {
+		this.userDAO = userDAO;
+	}
 }
+

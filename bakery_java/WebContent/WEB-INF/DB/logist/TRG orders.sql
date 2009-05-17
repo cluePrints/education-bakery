@@ -1,4 +1,4 @@
-﻿DELIMITER $$
+DELIMITER $$
 
 DROP PROCEDURE IF EXISTS `bakery`.`secondRule` $$
 CREATE PROCEDURE BAKERY.secondRule (IN orderId INTEGER)

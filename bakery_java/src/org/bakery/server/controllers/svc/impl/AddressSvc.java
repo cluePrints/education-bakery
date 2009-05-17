@@ -8,7 +8,7 @@ import org.bakery.server.controllers.svc.SvcController;
 import org.bakery.server.controllers.svc.beans.AbstractFormMode;
 import org.bakery.server.domain.accounting.Address;
 
-public class AddressSvc extends AbstractCommand {
+public class AddressSvc extends AbstractAdminCommand {
 
 
 	@Override
