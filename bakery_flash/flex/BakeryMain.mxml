@@ -29,7 +29,9 @@
             var svcUrl:SvcUrl = new SvcUrl;
             private function httpResultHandler(event:*){
             	if ((event.result=="") || (event.result.currentUser == null)) {
-            		Alert.show("Пользователь с таким именем и паролем не существует или был деактивирован.");
+            		if (initPassed) {
+            			Alert.show("Пользователь с таким именем и паролем не существует или был деактивирован.");
+            		}
             	} else {
             		var wnd:StartWindow = new StartWindow();
             		wnd.initialize();
@@ -38,6 +40,7 @@
             	}
             }
             private function tryLogin():void{
+            	initPassed=true;
             	formModel.login = tiLogin.text;
             	formModel.password = tiPassword.text;
             	formModel.mode="login";
@@ -48,7 +51,9 @@
             	formModel.mode=null;
             	authSvc.cancel();
             	authSvc.send(formModel);
+            	initPassed=false;
             }
+            private var initPassed:Boolean=false;
 		]]>
 	</mx:Script>				
 	<mx:VBox
