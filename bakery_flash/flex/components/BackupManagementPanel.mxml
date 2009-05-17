@@ -7,7 +7,7 @@
 		method="GET"		
 		result="httpResultHandler(event)"
 		fault="httpFaultHandler(event)"
-		url="{svcUrl.dumpSvcUrl}"/>
+		/>
 		
 	<mx:Model id="formModel">		
 		<root>
@@ -39,7 +39,8 @@
             [Bindable] private var errors:ArrayCollection = new ArrayCollection();
             var util:Util = new Util();
             var svcUrl:SvcUrl = new SvcUrl;
-			public function init():void{			
+			public function init():void{
+				mainSvc.url=svcUrl.dumpSvcUrl;			
 				mainSvc.cancel();
 				formModel.mode=null;
 				mainSvc.send(formModel);				

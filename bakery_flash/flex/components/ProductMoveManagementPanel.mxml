@@ -126,7 +126,7 @@
 				mainData['productmove'].refresh();
 			}
 			function activeToString(item:Object, column:DataGridColumn):String{				
-				return (item.active>0 ? "+" : "-"); 
+				return (item.active>0 ? "-" : "+"); 
 				
 				
 			}
@@ -182,7 +182,7 @@
 						<mx:DataGridColumn headerText="Склад-приемник"  dataField="destinationWarehouse" labelFunction="getDestinationWarehouse"  width="100"/>
 						<mx:DataGridColumn headerText="Дата отгрузки" dataField="date"   width="70"/>
 						<mx:DataGridColumn headerText="Денежные переводы" dataField="moneyMove" width="90"/>
-						<mx:DataGridColumn dataField="Перемещен" labelFunction="activeToString" width="55"/>
+						<mx:DataGridColumn headerText="Перемещен" labelFunction = "activeToString" width="55"/>
 					</mx:columns>
 				</mx:DataGrid>
 				<mx:HBox width="734" height="57">

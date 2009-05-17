@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="994" height="608" horizontalAlign="center" creationComplete="init()">
+
+<mx:HTTPService id="UserSvc" 
+		useProxy="false"
+		method="POST"
+		url = "http://localhost:8080/bakery/svc.htm?svc=org.bakery.server.controllers.svc.impl.UserSvc"
+		result="httpUserHandler(event)"
+		fault="httpFaultHandler(event)"/>	
+		<mx:Script>	
+<![CDATA[
+import mx.collections.ArrayCollection;
+[Bindable] private var users:*; 
+	function httpUserHandler(event:*){
+		
+		var maindata:*;
+		maindata = event.result.mainData;
+		users = maindata['user'];
+	
+	}
+	function httpFaultHandler(event:Event):void{
+					 mx.controls.Alert.show(event.toString())	;
+			
+			}
+	function saveUser(){
+		formModel.mode="EDIT";
+		saveFormModel();
+		UserSvc.cancel();			
+		UserSvc.send(formModel);
+			}
+	function clearAll(){
+		tiUser.text ="";
+		tiPass.text = "";
+		tiName.text = "";
+		lbId.text = "";
+		cbAdmin.selected = false;
+		cbActive.selected = false;
+		cbLogist.selected = false;
+		cbQA.selected = false;
+	}
+	function createNewUser(){
+		clearAll();
+		formModel.id="";
+		
+	}	
+	function init(){
+		formModel.mode = "FETCH";
+		UserSvc.cancel();
+		UserSvc.send(formModel);
+	}	
+	public function adminToString(item:Object, column:DataGridColumn):String{
+		//mx.controls.Alert.show(item.active)	
+		if(item.userAdmin == true){
+			return " + "
+		}else{
+			return " - "
+		}			
+		
+	}
+	public function logistToString(item:Object, column:DataGridColumn):String{
+		//mx.controls.Alert.show(item.active)	
+		if(item.userLogist == true){
+			return " + "
+		}else{
+			return " - "
+		}			
+		
+	}
+	public function QAToString(item:Object, column:DataGridColumn):String{
+		//mx.controls.Alert.show(item.active)	
+		if(item.userQA == true){
+			return " + "
+		}else{
+			return " - "
+		}			
+		
+	}
+	function write(){
+		tiUser.text = dgData.selectedItem.name;
+		tiPass.text = dgData.selectedItem.password;
+		cbAdmin.selected = dgData.selectedItem.userAdmin;
+		cbActive.selected = dgData.selectedItem.active;
+		cbLogist.selected = dgData.selectedItem.userLogist;
+		cbQA.selected = dgData.selectedItem.userQA;
+		tiName.text = dgData.selectedItem.textView;
+		lbId.text = dgData.selectedItem.id;
+	
+	}
+	
+function saveFormModel(){
+	
+ formModel.mode = "EDIT"
+      formModel.role = 7;
+      formModel.id = lbId.text;
+      formModel.name = encodeURIComponent(tiUser.text);
+      formModel.password = encodeURIComponent(tiPass.text);
+      if(cbAdmin.selected == true){
+      	formModel.userAdmin = 1;
+      }else{
+      	formModel.userAdmin = 0;
+      }
+      if(cbLogist.selected == true){
+      	formModel.userLogist = 1;
+      }else{
+      	formModel.userLogist = 0;
+      }
+       if(cbQA.selected == true){
+      	formModel.userQA = 1;
+      }else{
+      	formModel.userQA = 0;
+      }
+       
+      formModel.textView = encodeURIComponent(tiName.text);
+}
+]]>
+
+
+</mx:Script>
+<mx:Model id="formModel">
+<root>
+  <active>{cbActive.selected == true ? "1" : "0"}</active>
+      <id>{}</id>
+      <mode></mode>
+      <role>{}</role>
+      <name>{}</name>
+      <password>{}</password>
+      <userAdmin>{}</userAdmin>
+      <userLogist>{}</userLogist>
+      <userQA>{}</userQA>
+      <textView>{}</textView>	
+      </root>
+   </mx:Model>   		
+	<mx:Label text="Панель для работы с пользователями системы" fontWeight="bold" fontSize="14"/>
+	<mx:HBox width="100%" height="360">
+		<mx:DataGrid width="596" height="342"
+			dataProvider="{users}"
+			click="write()"
+			id="dgData">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Id" width="30" dataField="id" />
+				<mx:DataGridColumn headerText="Пользователь" width="60" dataField="name" id="dgName"/>
+				<mx:DataGridColumn headerText="Имя" width="60" dataField="textView" id="textView"/>
+				<mx:DataGridColumn headerText="Пароль" width="60" dataField ="password" id="password"/>
+				<mx:DataGridColumn headerText="Активен" width="40" dataField = "active" id="active"/>
+				<mx:DataGridColumn headerText="Админ." width="40" dataField = "userAdmin" labelFunction="adminToString" id="userAdmin" />
+				<mx:DataGridColumn headerText="По к-у" width="40" dataField = "userQA" labelFunction="QAToString" id="userQA"  />
+				<mx:DataGridColumn headerText="По лог." width="40" dataField = "userLogist" labelFunction="logistToString" id="userLogist" />
+			</mx:columns>
+		</mx:DataGrid>
+		<mx:VBox height="100%" width="274">
+		<mx:Label text="Работа с пользвателями" />
+		<mx:Label text="" id="lbId" width="185" visible="false"/>
+			
+		<mx:FormItem label="Пользователь:"  width="270">
+			<mx:TextInput id="tiUser" width="185">
+			</mx:TextInput>
+		</mx:FormItem>
+		<mx:FormItem label="Имя:"  width="270">
+			<mx:TextInput id="tiName" width="185">
+			</mx:TextInput>
+		</mx:FormItem>
+			
+			<mx:FormItem label="Пароль:"  width="270">
+			<mx:TextInput id="tiPass" width="185">
+			</mx:TextInput>
+		</mx:FormItem>
+	
+		<mx:FormItem label="Активен:"  width="270">
+			<mx:CheckBox id="cbActive">
+			</mx:CheckBox>
+		</mx:FormItem>
+		<mx:VBox>
+		<mx:FormItem label="Права администратора:"  width="270">
+		<mx:CheckBox id="cbAdmin"/>
+		</mx:FormItem>
+		<mx:FormItem label="Права мен-ра по качеству:"  width="270">
+		<mx:CheckBox id="cbQA"/>
+		</mx:FormItem>
+		<mx:FormItem label="ПРава мен-ра по логистике:"  width="270">
+		<mx:CheckBox id="cbLogist"/>
+		</mx:FormItem>
+		</mx:VBox>
+		<mx:HBox>
+			<mx:Button label= "Сохранить"  click="saveUser()" />
+			<mx:Button label= "Создать" click="createNewUser()"  />
+			<mx:Button label= "Отмена" click="clearAll()" />
+		</mx:HBox>
+		</mx:VBox>
+	</mx:HBox>
+</mx:VBox>

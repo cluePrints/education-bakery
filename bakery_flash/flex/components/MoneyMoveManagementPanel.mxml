@@ -211,8 +211,8 @@
 						<mx:DataGridColumn headerText="Счет-источник"  dataField="sourceAccount" labelFunction="getSourceAccountName" width="100"/>
 						<mx:DataGridColumn headerText="К-во един. продукта" dataField="amount"   width="70"/>
 						<mx:DataGridColumn headerText="Дата перевода " dataField="date" width="80"/>
-						<mx:DataGridColumn headerText="Заказ" dataField="order" labelFunction="getOrderName" width="60"/>
-						<mx:DataGridColumn headerText="Прайс" dataField="price" labelFunction="getPriceName" width="60"/>
+						<mx:DataGridColumn headerText="Заказ" dataField="order"  width="60"/>
+						<mx:DataGridColumn headerText="Прайс" dataField="price"  width="60"/>
 						<mx:DataGridColumn headerText="Описание" dataField="desc" width="70"/>
 						<mx:DataGridColumn dataField="Оплачен" labelFunction="activeToString" width="55"/>
 					</mx:columns>
