@@ -62,6 +62,14 @@
 " - Создавать и восстановливать состояние из контрольных точек БД.<BR/>" + 
 " - Изменение 'текущего времени' системы."
 			}
+			private function showQADesc():void{
+				taDesc.htmlText="" + 
+"<B>Рабочее место менеджера по качеству</B><BR/>" + 
+"Позволяет работать с :<BR/>" + 
+" - Состоянием оборудования.<BR/>"+
+" - Планами загрузки оборудования.<BR/>" + 
+" - Доступными производственными процессами.";
+			}
 			var svcUrl:SvcUrl = new SvcUrl();
 			var util:Util = new Util();
 			var user = null;
@@ -78,7 +86,7 @@
 			horizontalAlign="center"
 			verticalAlign="middle"
 			id="rootCanvas">
-		<mx:VBox width="50%" height="50%"
+		<mx:VBox width="70%" height="50%"
 			horizontalAlign="center"
 			verticalAlign="middle"
 			backgroundColor="#CCCCCC">
@@ -100,8 +108,9 @@
 							click="showAdminDesc()"
 							visible="{adminRoleAllowed}"/>
 						<mx:RadioButton label="Менеджер по качеству" groupName="workPlace" value="qa"
-							visible="{qaRoleAllowed}"/>
-						<mx:RadioButton label="Менеджер по продажам" groupName="workPlace" value="market"
+							visible="{qaRoleAllowed}"
+							click="showQADesc()"/>
+						<mx:RadioButton label="Менеджер по логистике" groupName="workPlace" value="market"
 							visible="{logistRoleAllowed}"/>
 					</mx:VBox>
 					<mx:VBox

@@ -42,9 +42,6 @@
 						<mx:VBox
 							width="70%"
 							height="100%">		
-							<mx:Label text="bbayasdy">
-							
-							</mx:Label>					
 						</mx:VBox>
 						<mx:Grid
 							width="30%"

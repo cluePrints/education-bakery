@@ -2,7 +2,8 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute"
 	xmlns:commmon="commonWindow.*"
 	xmlns:dev="qualityManager.simpledevicereport.*"
-	xmlns:util="components.util.*">	
+	xmlns:util="components.util.*"
+	creationComplete="init()">	
 	<mx:HTTPService id="authSvc" 
 		useProxy="false"
 		method="POST"		
@@ -43,6 +44,11 @@
             	authSvc.cancel();
             	authSvc.send(formModel);
             }
+            private function init():void{
+            	formModel.mode=null;
+            	authSvc.cancel();
+            	authSvc.send(formModel);
+            }
 		]]>
 	</mx:Script>				
 	<mx:VBox
@@ -67,7 +73,8 @@
 				label="Пароль"
 				required="true">				
 				<mx:TextInput
-					id="tiPassword"/>					
+					id="tiPassword"
+					displayAsPassword="true"/>					
 			</mx:FormItem>
 			<mx:HBox>
 				<mx:Button
