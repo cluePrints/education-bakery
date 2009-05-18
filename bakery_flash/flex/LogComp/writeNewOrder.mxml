@@ -371,7 +371,11 @@
 	}
 	function checkData(){
 		var result:Boolean;
-		
+		if(forDate()){
+			result = true;
+		}else{
+			return false;
+		}
 		if(dfCreationDate.text == "" || dfDoneDate.text == ""){
 			return false;
 			mx.controls.Alert.show("Вы не ввели все необходимые даты. Проверьте соответствующие поля.");
@@ -429,6 +433,30 @@
 	lbOrderDone.text = dfDoneDate.text;
 	lbCreatinDate.text = dfCreationDate.text;
 	resultVBoxOrder.visible = true;
+	}
+	function forDate(){
+		var curDateText = dfCreationDate.text;
+		var doneDateText = dfDoneDate.text; 
+		var curDate:Date = new Date();
+		var todayDate: Date = new Date();
+		var doneDate:Date = new Date();
+		var result:*;
+	
+			doneDate = DateField.stringToDate(dfDoneDate.text,"DD/MM/YY");
+			curDate = DateField.stringToDate(dfCreationDate.text,"DD/MM/YY");
+			if(curDate>todayDate || curDate>doneDate){
+				mx.controls.Alert.show("Дата создания договора должна быть больше текущей даты и меньше даты выполнения договора. Измените дату создания или дату выполнения договора","НЕДОПУСТИМАЯ ДАТА");
+				return false
+			}else{
+				result = true;
+			}
+			if(doneDate<todayDate ||doneDate< curDate){
+				mx.controls.Alert.show("Дата выполнения договора должна быть больше текущей даты и больше даты создания договора. Измените дату создания или дату выполнения договора","НЕДОПУСТИМАЯ ДАТА");	
+				return false;
+			}else{
+				result = true;
+			}
+		return result;
 	}
 		]]>
 </mx:Script>
@@ -492,7 +520,7 @@
 		</root>		
 	</mx:Model>	
 	<mx:HBox width="1244" height="416">
-	
+
 	<mx:VBox x="10" y="113" height="404" width="741" id="mainVBox" horizontalAlign="left" click="resultVBoxOrder.visible = false">
 	<mx:Label  text= "НОВЫЙ ДОГОВОР" id="headerText" fontSize="14" width="441" fontWeight="bold"/>
 	<mx:HBox>

@@ -140,13 +140,23 @@ private function changeInput(comp1:*,comp2:*){
 private function okFunction(){
 	resultVbox.visible = false;
 }
+function checkAddress(address:String){
+var result:*;
+
+	if(address.length <=9 || address.indexOf("ул")==-1 || address.indexOf("пер")==-1 || address.indexOf("st")==-1 ||address.indexOf('/[0-9]/')==-1){
+	return false;
+	}else{
+	result = true}
+	return result;
+
+}
 	function checkData(){
 		var result:Boolean;
 	
 		if(itContragentName.text == "" || itContragentAddress.text == "" ){
-			return  false;
-			mx.controls.Alert.show("Не введена необходимая информация для регистрации контаргента. Проверьте поле Имени и адреса.");
 		
+			mx.controls.Alert.show("Не введена необходимая информация для регистрации контаргента. Проверьте поле Имени и адреса.");
+			return  false;
 		}else{
 			result = true;
 		}
@@ -156,12 +166,21 @@ private function okFunction(){
 		}else{
 			result = true;
 		}
-		if(itContragentAccount.text == "" || itContragentAccountDesc.text == ""){
-			mx.controls.Alert.show("Не введена необходимая информация для регистрации счета контаргента. Проверьте поле названия и описания.");
+		if(itContragentAccount.text == "" ){
+			mx.controls.Alert.show("Отсутствует счет.");
 			return false;
 		}else{
 			result = true;
 		}
+		if(itContragentName.length<10 ){
+			mx.controls.Alert.show("Имя Контрагента не может быть меньше 10 символов");
+			return  false;
+			
+		
+		}else{
+			result = true;
+		}
+		
 	return result;
 	}
 		]]>		
