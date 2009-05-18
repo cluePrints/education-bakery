@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application
 	
-	xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundColor="#8D95FA"  width="1250" height="900" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#AEAAF7, #3833AC]">
+	xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundColor="#8D95FA"  width="1250" height="900" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#88B9E7, #88B9E7]">
 <mx:Script>
 	<![CDATA[
 		import LogComp.MathTask;
@@ -141,8 +141,8 @@
 </mx:Script>
 <mx:Canvas width="100%" >
 <mx:VBox width="100%">
-<mx:HBox  height="78">
-<mx:MenuBar id="mainMenuBar" labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)" width="368" height="27" fontWeight="bold" fontSize="10">
+<mx:HBox  height="34">
+<mx:MenuBar id="mainMenuBar" labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)" width="368" height="27" fontWeight="bold" fontSize="10" fillAlphas="[1.0, 1.0]" fillColors="[#5372F6, #5372F6]">
         <mx:XMLList>
             <menuitem label="|  РАБОТА   |" >
                 <menuitem label="Отгрузить продукцию"/>
