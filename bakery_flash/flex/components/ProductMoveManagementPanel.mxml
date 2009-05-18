@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
-	creationComplete="init()" width="95%" height="95%" xmlns:util="components.util.*">
+	creationComplete="init()" width="1056" height="95%" xmlns:util="components.util.*">
 
 		
 		<mx:HTTPService id="mainSvc" 
@@ -171,7 +171,7 @@
 	</mx:HBox>	
 		<mx:VBox  width="100%">
 		<mx:HBox x="0" y="0" width="1050" height="490">
-			<mx:VBox height="387" width="762" horizontalAlign="center" >
+			<mx:VBox height="482" width="762" horizontalAlign="center" >
 				<mx:DataGrid height="280" width="722" 
 					id="dgData" 
 					dataProvider="{mainData['productmove']}"
@@ -185,26 +185,27 @@
 						<mx:DataGridColumn headerText="Перемещен" labelFunction = "activeToString" width="55"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<mx:HBox width="734" height="57">
-					<mx:VBox height="100%" width="33%">
+				<mx:VBox width="734" height="137">
+					<mx:HBox height="26" width="728">
 						<mx:FormItem label="Склад-источник:"
 						required="true" width="100%">												
 							<mx:ComboBox id="cbSourceWarehouse"
 								dataProvider="{availableWarehouse}"
 								labelField="textView"  
-								width="100"/>
+								width="600"/>
 						</mx:FormItem>
-						
+						</mx:HBox>
+						<mx:HBox>
 						<mx:FormItem label="Склад-приемник:"
 						required="true" width="100%">												
 							<mx:ComboBox id="cbDestinationWarehouse"
 								dataProvider="{availableWarehouse}"
 								labelField="textView"  
-								width="100"/>
+								width="597"/>
 						</mx:FormItem>
 					
-					</mx:VBox>
-					<mx:VBox height="100%" width="334" >
+					</mx:HBox>
+					<mx:HBox height="32" width="726" >
 						<mx:FormItem label="Дата отгрузки:" 
 						required="true">												
 						<mx:DateField id="dfDate"
@@ -212,20 +213,20 @@
 							formatString="DD/MM/YY" width="131"/>
 						</mx:FormItem>
 						<mx:FormItem label="Денежные переводы:"
-						required="true" width="325">												
+						required="true" width="480">												
 							<mx:ComboBox id="cbMoneyMove"
 								dataProvider="{availableMoneyMoves}"
 								labelField="textView"  
-								width="150"/>
+								width="332"/>
 						</mx:FormItem>
 						
-					</mx:VBox>
-					<mx:VBox height="100%" width="116">
+					</mx:HBox>
+					<mx:HBox height="24" width="116">
 					<mx:FormItem label="Перемещен:" width="111">
 					<mx:CheckBox id="cbActive"/>
 					</mx:FormItem>
-					</mx:VBox>
-				</mx:HBox>
+					</mx:HBox>
+				</mx:VBox>
 				<mx:HBox width="100%" height="31">
 					<mx:VBox height="100%" width="33%">			
 						<mx:Button label="Переместить продукт" click="saveSelected()" width="194"/>		

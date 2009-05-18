@@ -72,6 +72,7 @@
 				errors = util.getHttpRespondedErrors(event);
 				todayDate = event.result.currentDate;
 				lbToday.text = todayDate.toString();
+				if(event.result){
 				accounts = util.extractItemCollection(event.result.accounts, 'account');	
 				availableAccounts = util.getActiveItems(accounts);
 				
@@ -83,7 +84,7 @@
 				availablePriceItems = util.getActiveItems(priceItems);	
 			
 				mainData = event.result.mainData;
-				
+				}
 				if (mainData != null ) {
 					mainData['moneymove'].filterFunction = mainFilterFunction;
 				}
@@ -197,9 +198,9 @@
 	<mx:Label text="Сегодня : "/>
 		<mx:Label text="" id="lbToday"/>
 	</mx:HBox>
-		<mx:VBox  width="100%">
-		<mx:HBox x="0" y="0" width="98%" height="460">
-			<mx:VBox height="433" width="779" horizontalAlign="center" >
+		<mx:VBox  width="100%" height="619">
+		<mx:HBox x="0" y="0" width="98%" height="523">
+			<mx:VBox height="518" width="779" horizontalAlign="center" >
 			
 				<mx:DataGrid height="282" width="756" 
 					id="dgData" 
@@ -217,59 +218,60 @@
 						<mx:DataGridColumn dataField="Оплачен" labelFunction="activeToString" width="55"/>
 					</mx:columns>
 				</mx:DataGrid>
-				<mx:HBox width="743" height="99">
-				<mx:VBox>
+				<mx:VBox width="743" height="189">
+				
 					<mx:FormItem label="Счет назначения:" 
-						required="true">												
+						required="true" width="732">												
 						<mx:ComboBox id="cbDestinationAccount"
 							dataProvider="{availableAccounts}"
 							labelField="textView" 
-							width="150"/>
+							width="606"/>
 					</mx:FormItem>
 					<mx:FormItem label="Счет-источник:" 
-						required="true">												
+						required="true" width="727">												
 						<mx:ComboBox id="cbSourceAccount"
 							dataProvider="{availableAccounts}"
 							labelField="textView" 
-							width="150"/>
+							width="618"/>
 					</mx:FormItem>
-					<mx:FormItem label="Количество единиц продукта:" required="true"  width="264">
-						<mx:TextInput id="tiAmount" width="75">
-						</mx:TextInput>
-					</mx:FormItem>
-				</mx:VBox>
-				<mx:VBox height="100%" width="246">
-						<mx:FormItem label="Дата перевода:" 
-						required="true">	
-					<mx:DateField id="dfDate"
-							text=""
-							formatString="DD/MM/YY"/>
-						</mx:FormItem>
-						<mx:FormItem label="Заказ:" 
-						required="true">												
+					<mx:FormItem label="Заказ:" 
+						required="true" width="734">												
 						<mx:ComboBox id="cbOrder"
 							dataProvider="{availableOrders}"
 							labelField="textView" 
-							width="150"/>
+							width="673"/>
 					</mx:FormItem>
-					<mx:FormItem label="Описание:" >
-						<mx:TextInput id="tiDesc" width="100">
-						</mx:TextInput>
-					</mx:FormItem>
-				</mx:VBox>
-				<mx:VBox height="95" width="186">
-					<mx:FormItem label="Прайс" width="182">
+				<mx:FormItem label="Прайс" width="739">
 					<mx:ComboBox id="cbPriceItem"
 							dataProvider="{availablePriceItems}"
 							labelField="textView" 
-							width="100"/>
+							width="678"/>
 					</mx:FormItem>
+				<mx:HBox height="26" width="740">
+						<mx:FormItem label="Дата перевода:" 
+						required="true" width="281">	
+					<mx:DateField id="dfDate"
+							text=""
+							formatString="DD/MM/YY" width="139"/>
+						</mx:FormItem>
+						
+					<mx:FormItem label="Описание:"  width="409">
+						<mx:TextInput id="tiDesc" width="357">
+						</mx:TextInput>
+					</mx:FormItem>
+				</mx:HBox>
+				<mx:HBox height="27" width="738">
+				<mx:FormItem label="Количество единиц продукта:" required="true"  width="437">
+						<mx:TextInput id="tiAmount" width="221">
+						</mx:TextInput>
+					</mx:FormItem>
+					
 				
-				<mx:FormItem label="Оплачен" width="111">
+				<mx:FormItem label="Оплачен" width="168">
 					<mx:CheckBox id="cbActive"  />
 					</mx:FormItem>
-				</mx:VBox>
 				</mx:HBox>
+				</mx:VBox>
 				<mx:HBox width="100%" height="27">
 					<mx:Button label="Сохранить" click="saveSelected()" width="173"/>
 					<mx:Button label="Отмена" click="cancel()" width="173"/>
