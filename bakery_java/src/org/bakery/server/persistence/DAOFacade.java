@@ -1,5 +1,7 @@
 package org.bakery.server.persistence;
 
+import java.util.Map;
+
 public class DAOFacade {
 	private org.springframework.jdbc.datasource.DriverManagerDataSource dataSource;
 	private AbstractDAO addressDAO;
@@ -22,6 +24,7 @@ public class DAOFacade {
 	private AbstractDAO recipeEffectPartDAO;
 	private AbstractDAO environmentDAO;
 	private AbstractDAO userDAO;
+	private Map<String, String> queries;
 	public AbstractDAO getAddressDAO() {
 		return addressDAO;
 	}
@@ -148,6 +151,12 @@ public class DAOFacade {
 	}
 	public void setUserDAO(AbstractDAO userDAO) {
 		this.userDAO = userDAO;
+	}
+	public Map<String, String> getQueries() {
+		return queries;
+	}
+	public void setQueries(Map<String, String> queries) {
+		this.queries = queries;
 	}
 }
 

@@ -2,10 +2,10 @@
 <mx:VBox horizontalAlign="center"
 	xmlns:mx="http://www.adobe.com/2006/mxml"
 	creationComplete="refresh()" width="100%" height="100%">
-	<mx:HTTPService id="reportSvc" 
+	<mx:HTTPService id="moneyMoveSvc" 
 		useProxy="false"
 		method="GET"
-		url="{svcUrl.orderStateSvcUrl}"
+		url="{svcUrl.moneyMoveSvcUrl}"
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>
@@ -23,7 +23,7 @@
 			public function refresh():void{
 				reportSvc.cancel();
 				reportSvc.send(null);
-			}			
+			}				
 			
 			var util:Util = new Util();
 			var svcUrl:SvcUrl = new SvcUrl();
@@ -33,8 +33,6 @@
 					util.httpFaultHandler(event);
 					return;
 				}
-				orderStatuses = util.extractItemCollection(event.result.orderStatuses, 'orderStatus');
-				allOrders = util.extractItemCollection(event.result.orders, 'order');
 			}		
 			function stateToString(item:Object, column:DataGridColumn):String{
 				var tmp = util.getItemById(orderStatuses, item.id);
