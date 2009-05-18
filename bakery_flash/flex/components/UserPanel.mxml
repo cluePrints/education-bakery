@@ -76,6 +76,7 @@ import mx.collections.ArrayCollection;
 		
 	}
 	function write(){
+		if(dgData.selectedIndex>=0){
 		tiUser.text = dgData.selectedItem.name;
 		tiPass.text = dgData.selectedItem.password;
 		cbAdmin.selected = dgData.selectedItem.userAdmin;
@@ -84,7 +85,7 @@ import mx.collections.ArrayCollection;
 		cbQA.selected = dgData.selectedItem.userQA;
 		tiName.text = dgData.selectedItem.textView;
 		lbId.text = dgData.selectedItem.id;
-	
+		}
 	}
 	
 function saveFormModel(){
