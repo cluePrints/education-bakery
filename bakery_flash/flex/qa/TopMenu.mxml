@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas
 	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:util="components.util.*"
 	width="100%">
 	<mx:MenuBar
 		width="100%"
@@ -18,20 +19,53 @@
 			    	<menuitem label="Сообщить о новом измеренном значении параметра устройства"/>
 			    	<menuitem label="Изменить значение параметра оборудования"/>		    	
 			    </menuitem>
-			    <menuitem label="Администрирование">
-			    	<menuitem label="Единицы измерения"/>
+			    <menuitem label="Просмотр данных">
 			    	<menuitem label="Устройства"/>
+			    	<menuitem label="Измеренные значения параметров"/>
 			    	<menuitem label="Производственные процессы"/>
 			    </menuitem>
 			</mx:XMLList>
 	</mx:MenuBar>
 		<mx:Script>
 			<![CDATA[
+				import components.RecipeManagementPanel;
+				import components.DeviceManagementPanel;
+				import components.MeasuresManagementPanel;
+				import mx.containers.HBox;
+				import components.util.ClosablePopup;
+				import mx.core.IFlexDisplayObject;
+				import mx.managers.PopUpManager;
 				import mx.controls.Alert;
 				private function menuClick(event:*){
-
+					var label:String="";
+					try{
+						if (event.target!=null && event.label!=undefined){
+							label = event.label;
+						}
+					} catch (err:Error){
+						
+					}
+					var popup:* = null;
+					if ("Устройства"==label){
+						popup = new DeviceManagementPanel();
+						popup.editable = false;
+					}
+					if ("Измеренные значения параметров"==label){
+						popup = new MeasuresManagementPanel();
+						popup.editable = false;
+					}
+					if ("Производственные процессы"==label){
+						popup = new RecipeManagementPanel();
+						popup.editable = false;
+					}
+					if (popup != null) {															
+						var p:ClosablePopup  = new ClosablePopup();
+						p.initialize();
+						p.placeholder.addChild(popup);
+						PopUpManager.addPopUp(p, this, true);
+						PopUpManager.centerPopUp(p);
+					}
 				}
-
 			]]>			
 		</mx:Script>
 </mx:Canvas>

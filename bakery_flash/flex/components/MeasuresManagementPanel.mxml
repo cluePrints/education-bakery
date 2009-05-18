@@ -30,6 +30,10 @@
             
 			[Bindable]
             private var availableDeviceParameters:ArrayCollection = new ArrayCollection();
+            
+            [Bindable]
+            public var editable:Boolean=true;
+            
 			[Bindable]
 			private var errors:ArrayCollection = new ArrayCollection();
 			private var todayDate:*;
@@ -70,16 +74,18 @@
 				loadSelectionState();
 			} 
 			private function mainFilterFunction(item:*){
-				var result:Boolean=true;
 				if (!cbShowNonActive.selected && item.active<=0)
 					return false;
 				if (!cbShowActive.selected && item.active>0)
 					return false;					
 				if (mx.utils.StringUtil.trim(edFilter.text).length>0) {
-					if (!new RegExp(edFilter.text).test(item.name))
-						return false;
+					var a = new RegExp(edFilter.text);
+					var name = getDeviceParameterName(item, null);
+					if (a.test(name)){
+						return true;
+					}												
 				}
-				return result;
+				return false;
 			} 
 			function bindSelected():void{
 				if (dgData.selectedIndex>=0){
@@ -132,7 +138,8 @@
 			<mx:Label text="Сегодня : "/>
 		<mx:Label text="" id="lbToday"/>
 		</mx:HBox>
-		<mx:VBox width="100%">
+		<mx:VBox width="100%"
+			height="100%">
 		<mx:HBox 
 			height="100%">
 			<mx:VBox height="100%" width="70%" horizontalAlign="center" >
@@ -153,7 +160,8 @@
 				<mx:VBox horizontalAlign="left">	
 					<mx:FormItem label="Значение:" 
 						required="true">												
-						<mx:TextInput id="tiValue"/>
+						<mx:TextInput id="tiValue"
+							editable="{editable}"/>
 					</mx:FormItem>
 					<mx:FormItem label="Значение:" 
 						required="true"
@@ -161,7 +169,8 @@
 						<mx:DateField
 							formatString="DD/MM/YY" 
 							id="tiDate"
-							width="90%"/>
+							width="90%"
+							enabled="{editable}"/>
 					</mx:FormItem>
 					<mx:FormItem label="Производственный параметр :" 
 						required="true"
@@ -169,6 +178,7 @@
 						<mx:ComboBox id="cbDeviceParameters"
 							dataProvider="{availableDeviceParameters}"
 							labelField="textView" width="90%"
+							enabled="{editable}"
 							/>
 					</mx:FormItem>
 					<mx:FormItem label="Активный">
@@ -176,11 +186,14 @@
 					</mx:FormItem>
 				</mx:VBox>
 				<mx:HBox horizontalAlign="center">
-					<mx:Button label="Сохранить" click="saveSelected()"/>							
-					<mx:Button label="Отмена" click="cancel()"/>
+					<mx:Button label="Сохранить" click="saveSelected()"
+						visible="{editable}"/>							
+					<mx:Button label="Отмена" click="cancel()"
+						visible="{editable}"/>
 				</mx:HBox>
 				<mx:HBox horizontalAlign="center">
-					<mx:Button label="Создать" click="createNew()"/>							
+					<mx:Button label="Создать" click="createNew()"
+						visible="{editable}"/>							
 				</mx:HBox>
 				<mx:VBox id="filterPanel">
 					<mx:Script>

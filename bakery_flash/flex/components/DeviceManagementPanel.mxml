@@ -69,8 +69,12 @@
 	            private var availableUnits:ArrayCollection = new ArrayCollection();;
 				
 				[Bindable]
+				public var editable:Boolean=true;
+				
+				[Bindable]
 	            private var errors:ArrayCollection = new ArrayCollection();
-	            	private var todayDate:*;
+	            
+	            private var todayDate:*;
 				var deviceParameters:ArrayCollection;
 				// XXX: It's dumb, change it
 				var util:Util = new Util();
@@ -210,7 +214,7 @@
 			<mx:HBox>
 				
 					
-			<mx:Label text="Панель управления устройствами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+			<mx:Label text="Технологические устройства и их параметры" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
 			<util:ContextHelpButton>
 				<util:helpText>
 					<![CDATA[
@@ -256,7 +260,8 @@
 							<mx:DataGridColumn dataField="Активн." labelFunction="util.activeToString" width="70"/>
 						</mx:columns>
 					</mx:DataGrid>
-					<mx:HBox horizontalAlign="left" height="28" width="494">	
+					<mx:HBox horizontalAlign="left" height="28" width="494"
+						visible="{editable}">	
 						<mx:FormItem label="Наименование:" 
 							required="true" width="309">												
 							<mx:TextInput id="tiName"/>
@@ -266,7 +271,8 @@
 						</mx:FormItem>
 						
 					</mx:HBox>
-					<mx:HBox horizontalAlign="center" height="27">
+					<mx:HBox horizontalAlign="center" height="27"
+						visible="{editable}">
 						<mx:Button label="Сохранить" click="saveSelected()"/>							
 						<mx:Button label="Отмена" click="cancel()"/>
 						<mx:Button label="Создать" click="createNew()"/>
@@ -321,7 +327,8 @@
 						</mx:columns>
 					</mx:DataGrid>				
 			</mx:VBox>
-			<mx:VBox height="199" width="286">
+			<mx:VBox height="199" width="286"
+				visible="{editable}">
 				<mx:FormItem label="Наименование:"
 					required="true"
 					width="100%">

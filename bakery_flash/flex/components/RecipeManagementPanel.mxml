@@ -80,6 +80,9 @@
 			[Bindable]
             private var mainData:ArrayCollection = new ArrayCollection();                  
 
+			[Bindable]
+			public var editable:Boolean=true;
+
 			[Bindable] private var devices:ArrayCollection = new ArrayCollection();
 			[Bindable] private var availableParameters:ArrayCollection = new ArrayCollection();
 			[Bindable] private var parameters:ArrayCollection = new ArrayCollection();
@@ -96,7 +99,7 @@
 											
 			[Bindable]
 	        private var errors:ArrayCollection = new ArrayCollection(); 
-	         private var todayDate:*;         
+	        private var todayDate:*;         
 			
 			var util:Util = new Util();
 			var svcUrl:SvcUrl = new SvcUrl();
@@ -375,7 +378,7 @@
 		]]>
 	</mx:Script>				
 		<mx:HBox>				
-			<mx:Label text="Панель управления рецептами" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
+			<mx:Label text="Описания производственных процессов" fontFamily="Verdana" fontWeight="bold" fontSize="14"/>
 			<util:ContextHelpButton>
 <util:helpText>
 					<![CDATA[
@@ -440,14 +443,16 @@
 
 						<mx:FormItem label="Активно:"
 							required="true" width="110">
-							<mx:CheckBox id="cbActive"/>
+							<mx:CheckBox id="cbActive"
+								enabled="{editable}"/>
 						</mx:FormItem>
 						<mx:FormItem
 							direction="horizontal"
 							label="Время:" 
 							required="true" 
 							width="100%">
-							<mx:TextInput id="tiTime" width="100%"/>
+							<mx:TextInput id="tiTime" width="100%"
+								editable="{editable}"/>
 							<util:ContextHelpButton helpText="Время выполнения в минутах. &lt;BR&gt;Должно целым числом больше нуля."/>
 						</mx:FormItem>
 						<mx:FormItem
@@ -455,16 +460,19 @@
 							direction="horizontal"
 							width="100%"
 							required="true">												
-							<mx:TextInput id="tiName" width="100%" height="25"/>							
+							<mx:TextInput id="tiName" width="100%" height="25"
+								editable="{editable}"/>							
 						</mx:FormItem>
 						<mx:FormItem
 							direction="horizontal"
 							label="Описание:"
 							width="100%">												
-							<mx:TextArea id="tiFormula" width="100%" height="25"/>
+							<mx:TextArea id="tiFormula" width="100%" height="25"
+								editable="{editable}"/>
 							<util:ContextHelpButton helpText="Описание рецепта"/>
 						</mx:FormItem>
-						<mx:HBox width="260">
+						<mx:HBox width="260"
+							visible="{editable}">
 						<mx:Button label="Сохранить" click="saveSelected()"/>							
 						<mx:Button label="Отмена" click="cancel()"/>
 						<mx:Button label="Создать" click="createNew()"/>
@@ -486,8 +494,10 @@
 				</mx:VBox>
 				<mx:VBox width="47" height="223" verticalAlign="center"
 					horizontalAlign="center">													
-					<mx:Button label="&lt;" click="addDeviceParameter()"/>
-					<mx:Button label="&gt;" click="removeDeviceParameter()"/>
+					<mx:Button label="&lt;" click="addDeviceParameter()"
+						visible="{editable}"/>
+					<mx:Button label="&gt;" click="removeDeviceParameter()"
+						visible="{editable}"/>
 					<util:ContextHelpButton>
 					<util:helpText>
 <![CDATA[
@@ -500,7 +510,8 @@
 			</util:helpText>					
 					</util:ContextHelpButton>
 				</mx:VBox>
-				<mx:VBox width="203" height="236" horizontalAlign="center">
+				<mx:VBox width="203" height="236" horizontalAlign="center"
+					visible="{editable}">
 					<mx:Label text="Все актуальные параметры"/>
 					<mx:DataGrid width="185" height="206" 
 						dataProvider="{availableParameters}"
@@ -580,16 +591,19 @@
 					direction="horizontal">
 					<mx:ComboBox id="cbChildProductType"
 						dataProvider="{availableProductTypes}"
-						labelField="name" width="100%"/>				
+						labelField="name" width="100%"
+						enabled="{editable}"/>				
 				</mx:FormItem>
 				<mx:FormItem label="Потребляемый:"
 					direction="horizontal"
 					width="90%">
-					<mx:CheckBox id="cbChildConsumed"/>
+					<mx:CheckBox id="cbChildConsumed"
+						enabled="{editable}"/>
 				</mx:FormItem>
 				<mx:HBox
 					width="90%"
-					horizontalAlign="center">
+					horizontalAlign="center"
+					visible="{editable}">
 					<mx:Button label="Новый" click="childCreateNew()"/>
 					<mx:Button 
 						id="btnChildSave"
@@ -620,15 +634,18 @@
 								id="cbEffectPartParam"
 								labelField="textView"
 								dataProvider="{selectedParameters}"
-								width="100%">
+								width="100%"
+								enabled="{editable}">
 							</mx:ComboBox>
 						</mx:FormItem>
 						<mx:FormItem
 							label="Множитель">												
 							<mx:TextInput
-								id="tiEffectPartMultiplicator"/>
+								id="tiEffectPartMultiplicator"
+								editable="{editable}"/>
 						</mx:FormItem>
-						<mx:HBox width="100%">											
+						<mx:HBox width="100%"
+							visible="{editable}">											
 							<mx:Button
 								label="Сохранить"
 								click="childPartSave()">							
