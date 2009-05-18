@@ -131,8 +131,6 @@
 		
 		orderName.selectedIndex =0;
 		writeAll();
-		
-		
 	
 	}
 	function httpFaultHandler(event:Event):void{
@@ -153,7 +151,7 @@
 		if(item == null){
 			mx.controls.Alert.show("Отсутствует движение денег по данному заказу. Вы можете создать его используя панель для работы  с движением денег.");
 		}else{
-		
+		lbOrderId.text = orderName.selectedItem.id;
 		lbSourceAccount.text = item.sourceAccount ;
 		lbDestinationAccount.text = item.destinationAccount;
 		lbAmount.text = item.amount;
@@ -200,11 +198,17 @@
 		lbContragent.text = "";
 		lbAllPrice.text = "";
 		date.text = "";
+		lbOrderId.text = "";
 	}
 	
 	function checData(){
 		var result:Boolean;
-		
+		if(checkDate()){
+			result = true;
+		}else{
+			return false;
+			
+		}
 		if(orderName.selectedItem != null){
 			result = true;
 		}else{
@@ -232,6 +236,19 @@
 		num2 = int(param2);
 		
 		lbAllPrice.text = ( num1* num2).toString();
+	
+	}
+	function checkDate(){
+		var today:Date = new Date();
+		var testDate:Date = new Date();
+		var result:*;
+		testDate = DateField.stringToDate(date.text,"DD/MM/YY");
+		if(testDate<today){
+			mx.controls.Alert.show("Счет не может быть оплачен задним числом.","НЕПРАВИЛЬНАЯ ДАТА");
+			return false;
+		}else{
+			return true;
+		}
 	
 	}
 		]]>
@@ -306,7 +323,9 @@
 	
 	<mx:Panel width="917" height="274">
 	<mx:HBox width="100%">
-		<mx:Label text="В соответствии с выбранным заказом будет осуществлен перевод средств контрагентом:" fontSize="11" fontWeight="bold"/>
+		<mx:Label text="В соответствии с  заказом № " fontSize="11" fontWeight="bold" />
+		<mx:Label text="" id="lbOrderId" />
+		<mx:Label text=" будет осуществлен перевод средств контрагентом:" fontSize="11" fontWeight="bold"/>
 		
 		<mx:Label text="" id="lbContragent" fontSize="12" width="100%"/>
 	</mx:HBox>
