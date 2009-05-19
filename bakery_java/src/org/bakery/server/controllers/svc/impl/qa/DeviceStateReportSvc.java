@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,17 +22,7 @@ public class DeviceStateReportSvc implements ControllerAwareCommand{
 			throws Exception {
 		int nAvailable = controller.getDAOFacade().getDeviceDAO().getAvailable().size();
 		int nTotal = controller.getDAOFacade().getDeviceDAO().searchByName("%", 0, 1000).size();
-		SessionFactory f = controller.getDAOFacade().getAccountDAO().getSessionFactory();
-		Session session = f.openSession();
-			Connection c = session.connection();
-			int nWorking = 0;
-			PreparedStatement stmt = c.prepareStatement(SQL_CURRENTLY_WORKING_PLANS);
-			
-			ResultSet results = stmt.executeQuery();
-			while (results.next())
-				nWorking++;
-
-		f.close();
+		int nWorking = getWorkingDevicesNum(controller);
 		PrintWriter out = response.getWriter();
 		out.write("\n<availableDevicesReport>");
 		out.write("\n<type>Свободные</type>");
@@ -49,6 +40,21 @@ public class DeviceStateReportSvc implements ControllerAwareCommand{
 		out.write("\n<amount>"+(nWorking)+"</amount>");
 		out.write("\n</availableDevicesReport>");
 		
+	}
+	static int getWorkingDevicesNum(ISvcController controller)
+			throws SQLException {
+		SessionFactory f = controller.getDAOFacade().getAccountDAO().getSessionFactory();
+		Session session = f.openSession();
+			Connection c = session.connection();
+			int nWorking = 0;
+			PreparedStatement stmt = c.prepareStatement(SQL_CURRENTLY_WORKING_PLANS);
+			
+			ResultSet results = stmt.executeQuery();
+			while (results.next())
+				nWorking++;
+
+		f.close();
+		return nWorking;
 	}
 	static final String SQL_CURRENTLY_WORKING_PLANS= 
 		"SELECT *, minute(timediff(end_date, current_datetime)) as minutesleft FROM (\n"+

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bakery.server.controllers.svc.helper.SvcHelper;
 import org.bakery.server.domain.BusinessEntity;
 import org.bakery.server.domain.accounting.Contragent;
 import org.bakery.server.domain.accounting.ProductionPlan;
@@ -58,11 +59,11 @@ public class Order extends BusinessEntity {
 
 	@Override
 	public String toString() {
-		String result=provider + "->" + consumer + ", "+creationDate;
+		String result=provider + "->" + consumer + ", "+SvcHelper.dateToString(creationDate)+"..";
 		if (doneDate == null){
 			result+="*";
 		} else {
-			result+=doneDate;
+			result+=SvcHelper.dateToString(doneDate);
 		}
 		return result;
 	}

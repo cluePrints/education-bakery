@@ -124,7 +124,7 @@ CREATE TABLE `device_parameters` (
 
 LOCK TABLES `device_parameters` WRITE;
 /*!40000 ALTER TABLE `device_parameters` DISABLE KEYS */;
-INSERT INTO `device_parameters` VALUES (2,'Давление',1,6,1,1,1,1.2),(3,'Температура',1,6,1,1,1,110),(4,'Температура',1,7,2,1,1,240),(5,'Колебание температуры',1,7,2,1,1,4),(6,'Скорость вращения',1,8,3,0,1,10);
+INSERT INTO `device_parameters` VALUES (2,'Давление',1,6,1,1,1,1.2),(3,'Температура',1,6,1,1,1,110),(4,'Температура',1,7,2,1,1,240),(5,'Колебание температуры',1,6,2,1,1,4),(6,'Скорость вращения',1,8,3,0,1,10);
 /*!40000 ALTER TABLE `device_parameters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,7 +178,7 @@ CREATE TABLE `env_parameters` (
   `id` int(11) NOT NULL auto_increment,
   `current_datetime` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `env_parameters`
@@ -186,7 +186,7 @@ CREATE TABLE `env_parameters` (
 
 LOCK TABLES `env_parameters` WRITE;
 /*!40000 ALTER TABLE `env_parameters` DISABLE KEYS */;
-INSERT INTO `env_parameters` VALUES (1,'2009-05-01 00:00:00'),(2,'2009-05-01 00:00:00');
+INSERT INTO `env_parameters` VALUES (1,'2009-05-01 00:00:00'),(2,'2009-05-01 00:00:00'),(3,'2009-05-16 00:00:00'),(4,'2009-05-18 00:00:00'),(5,'2009-05-17 00:00:00');
 /*!40000 ALTER TABLE `env_parameters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,7 +232,7 @@ DELIMITER ;;
 	AND measure_active=1;
 	
 	IF mean is not null THEN
-		SELECT sqrt(sum(power(mean-measure_value, 2))) INTO diff FROM measures
+		SELECT sqrt(sum(power(mean-measure_value, 2))/num) INTO diff FROM measures
 		WHERE measure_time
 		    	BETWEEN ADDDATE(NEW.measure_time, -14)
 		      	AND NEW.measure_time
@@ -261,7 +261,7 @@ DELIMITER ;;
 	AND measure_active=1;
 	
 	IF mean is not null THEN
-		SELECT sqrt(sum(power(mean-measure_value, 2))) INTO diff FROM measures
+		SELECT sqrt(sum(power(mean-measure_value, 2))/num) INTO diff FROM measures
 		WHERE measure_time
 		    	BETWEEN ADDDATE(NEW.measure_time, -14)
 		      	AND NEW.measure_time
@@ -420,6 +420,18 @@ INSERT INTO `price_list_heads` VALUES (1,'2009-05-01 00:00:00','Стандарт
 /*!40000 ALTER TABLE `price_list_heads` ENABLE KEYS */;
 UNLOCK TABLES;
 
+DELIMITER ;;
+/*!50003 SET SESSION SQL_MODE="STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" */;;
+/*!50003 CREATE */ /*!50017 DEFINER=`root`@`localhost` */ /*!50003 TRIGGER `before_upd_price_list_head` BEFORE UPDATE ON `price_list_heads` FOR EACH ROW BEGIN
+    IF(NEW.price_list_head_active = 0 AND OLD.price_list_head_active = 1 )THEN
+    UPDATE price_list_items SET price_list_item_active = 0 WHERE price_list_item_head = OLD.price_list_head_id;
+  END IF;
+
+  END */;;
+
+DELIMITER ;
+/*!50003 SET SESSION SQL_MODE=@OLD_SQL_MODE */;
+
 --
 -- Table structure for table `price_list_items`
 --
@@ -444,7 +456,7 @@ CREATE TABLE `price_list_items` (
 
 LOCK TABLES `price_list_items` WRITE;
 /*!40000 ALTER TABLE `price_list_items` DISABLE KEYS */;
-INSERT INTO `price_list_items` VALUES (1,99.95,1,1,5),(2,1,1,1,4),(3,5,1,1,6),(4,5,2,1,5),(5,1,3,1,4),(6,1,3,1,3),(7,1,3,1,7),(8,2,3,1,6),(9,9.95,4,1,1),(10,19.95,5,1,2),(11,20.25,5,1,1);
+INSERT INTO `price_list_items` VALUES (1,99.95,1,1,5),(2,1,1,1,4),(3,5,1,1,6),(4,5,2,1,5),(5,1,3,1,4),(6,1,3,1,3),(7,1,3,1,7),(8,2,3,1,6),(9,10.95,4,1,1),(10,15.95,5,1,2),(11,20.25,5,1,1);
 /*!40000 ALTER TABLE `price_list_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -472,11 +484,11 @@ DELIMITER ;;
   		SET NEW.price_list_item_price=NULL;
     END IF;
 
-	SELECT sum(1) into c FROM price_list_items
+	SELECT price_list_item_id into c FROM price_list_items
 		WHERE price_list_item_active>0
   		and price_list_product_type=NEW.price_list_product_type
   		and price_list_item_head=NEW.price_list_item_head;
-	IF c=1 THEN
+	IF not(c=NEW.price_list_item_id) THEN
 		SET NEW.price_list_item_active=0;
 	END IF;
   END */;;
@@ -512,7 +524,7 @@ CREATE TABLE `product_moves` (
 
 LOCK TABLES `product_moves` WRITE;
 /*!40000 ALTER TABLE `product_moves` DISABLE KEYS */;
-INSERT INTO `product_moves` VALUES (1,2,6,NULL,1),(2,2,6,'2009-05-02 00:00:00',2),(3,NULL,2,'2009-05-05 00:00:00',2);
+INSERT INTO `product_moves` VALUES (1,2,6,NULL,1),(2,6,2,'2009-05-02 00:00:00',3),(3,NULL,2,'2009-05-05 00:00:00',2);
 /*!40000 ALTER TABLE `product_moves` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -582,8 +594,8 @@ CREATE TABLE `recip_effects` (
   PRIMARY KEY  (`recip_effect_id`),
   KEY `recip_effect_product_type` (`recip_effect_product_type`),
   KEY `recip_effect_recip` (`recip_effect_recip`),
-  CONSTRAINT `FK_recip_results_1` FOREIGN KEY (`recip_effect_product_type`) REFERENCES `product_types` (`product_type_id`),
-  CONSTRAINT `FK_recip_effects_2` FOREIGN KEY (`recip_effect_recip`) REFERENCES `recips` (`recip_id`)
+  CONSTRAINT `FK_recip_effects_2` FOREIGN KEY (`recip_effect_recip`) REFERENCES `recips` (`recip_id`),
+  CONSTRAINT `FK_recip_results_1` FOREIGN KEY (`recip_effect_product_type`) REFERENCES `product_types` (`product_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
@@ -616,7 +628,7 @@ CREATE TABLE `recip_parameters` (
 
 LOCK TABLES `recip_parameters` WRITE;
 /*!40000 ALTER TABLE `recip_parameters` DISABLE KEYS */;
-INSERT INTO `recip_parameters` VALUES (1,2),(1,3),(2,5),(2,4);
+INSERT INTO `recip_parameters` VALUES (1,2),(1,3),(2,4);
 /*!40000 ALTER TABLE `recip_parameters` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -663,7 +675,7 @@ CREATE TABLE `recipe_effect_parts` (
   KEY `device_parameter_id` (`device_parameter_id`),
   CONSTRAINT `FK_recipe_effect_parts_1` FOREIGN KEY (`recip_effect_id`) REFERENCES `recip_effects` (`recip_effect_id`),
   CONSTRAINT `FK_recipe_effect_parts_2` FOREIGN KEY (`device_parameter_id`) REFERENCES `device_parameters` (`device_parameter_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `recipe_effect_parts`
@@ -671,7 +683,7 @@ CREATE TABLE `recipe_effect_parts` (
 
 LOCK TABLES `recipe_effect_parts` WRITE;
 /*!40000 ALTER TABLE `recipe_effect_parts` DISABLE KEYS */;
-INSERT INTO `recipe_effect_parts` VALUES (1,1,0.02,3),(2,1,1,NULL),(3,4,1,NULL),(4,4,0.05,4),(6,6,2,NULL),(7,6,-0.02,5),(8,5,1,NULL);
+INSERT INTO `recipe_effect_parts` VALUES (1,1,0.0002,3),(2,1,1,NULL),(3,4,1,NULL),(4,4,0.0001,4),(6,6,2,NULL),(7,6,-0.02,5),(8,5,1,NULL),(9,2,1,NULL),(10,3,2,NULL);
 /*!40000 ALTER TABLE `recipe_effect_parts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -695,7 +707,7 @@ CREATE TABLE `recips` (
 
 LOCK TABLES `recips` WRITE;
 /*!40000 ALTER TABLE `recips` DISABLE KEYS */;
-INSERT INTO `recips` VALUES (1,'Суп из топора','Литр супа из воды и топора',1,180),(2,'Хлеб черный','Немного муки и воды - будет простой хлеб',1,120);
+INSERT INTO `recips` VALUES (1,'Суп из топора','Литр супа из воды и топора',0,1800),(2,'Хлеб черный','Немного муки и воды - будет простой хлеб',1,1200);
 /*!40000 ALTER TABLE `recips` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -756,7 +768,7 @@ CREATE TABLE `users` (
   `user_role` int(11) NOT NULL default '0',
   `user_desc` char(100) default NULL,
   PRIMARY KEY  (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
@@ -764,7 +776,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'root','password',1,7,'mr. Admin');
+INSERT INTO `users` VALUES (1,'root','password',1,7,'Рут Олегович'),(2,'guest','password',1,0,'Гость Дмитриевич'),(3,'qa','password',1,4,'Иван Александрович'),(4,'logist','password',1,1,'Виктория Николаевна'),(5,'admin','password',1,2,'Администратор Петрович');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1433,4 +1445,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2009-05-17 16:36:25
+-- Dump completed on 2009-05-19 21:01:02

@@ -14,11 +14,11 @@ CREATE TRIGGER before_upd_price_list_items
   		SET NEW.price_list_item_price=NULL;
     END IF;
 
-	SELECT sum(1) into c FROM price_list_items
+	SELECT price_list_item_id into c FROM price_list_items
 		WHERE price_list_item_active>0
   		and price_list_product_type=NEW.price_list_product_type
   		and price_list_item_head=NEW.price_list_item_head;
-	IF c=1 THEN
+	IF not(c=NEW.price_list_item_id) THEN
 		SET NEW.price_list_item_active=0;
 	END IF;
   END;
