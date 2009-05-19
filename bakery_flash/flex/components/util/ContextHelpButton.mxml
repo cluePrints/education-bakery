@@ -18,8 +18,8 @@
 			public var helpScreen:UIComponent=null;			
 			
 			private function showHelpScreen():void{
-				var screen:ClosablePopup = new ClosablePopup();
-				screen.initialize();
+				var screen = PopUpManager.createPopUp(this, ClosablePopup, true);
+				PopUpManager.centerPopUp(screen);
 				if (helpScreen != null) {					
 					screen.placeholder.addChild(helpScreen);
 				} else if (helpText != null) {
@@ -29,8 +29,8 @@
 				} else {
 					screen.placeholder.addChild(this.getChildAt(0));
 				}
-				PopUpManager.addPopUp(screen, this, true);
-				PopUpManager.centerPopUp(screen);
+				
+				
 			}			
 		]]>
 	</mx:Script>

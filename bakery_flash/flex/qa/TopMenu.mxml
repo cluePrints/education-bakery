@@ -12,7 +12,8 @@
 			<mx:XMLList>
 				<menuitem label="Отчеты">
 					<menuitem label="Состояние устройств"/>
-					<menuitem label="Оценки прибыльности производственных процессов"/>
+					<menuitem label="Текущее состояние заказов"/>
+					<menuitem label="Общее состояние системы"/>
 				</menuitem>
 			    <menuitem label="Действия">
 			    	<menuitem label="Начать производственный процесс"/>
@@ -58,12 +59,16 @@
 						popup = new RecipeManagementPanel();
 						popup.editable = false;
 					}
+					if ("Текущее состояние заказов"==label){
+						popup = new OrderProductionStateChart();
+					}
+					if ("Общее состояние системы"==label){
+						popup = new SpamReport();
+					}
 					if (popup != null) {															
-						var p:ClosablePopup  = new ClosablePopup();
-						p.initialize();
-						p.placeholder.addChild(popup);
-						PopUpManager.addPopUp(p, this, true);
-						PopUpManager.centerPopUp(p);
+						var screen = PopUpManager.createPopUp(this, ClosablePopup, true);						
+						screen.placeholder.addChild(popup);
+						popup.initialize();
 					}
 				}
 			]]>			

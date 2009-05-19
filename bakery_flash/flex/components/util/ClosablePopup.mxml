@@ -5,7 +5,7 @@
 	backgroundColor="#FFFFFF">
 	<mx:HBox
 		width="100%"
-		horizontalAlign="right">
+		horizontalAlign="left">
 		<mx:Button
 			label="X"
 			click="myCloseFunc()">			

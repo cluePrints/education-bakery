@@ -5,7 +5,7 @@
 	<mx:HTTPService id="measuresSvc" 
 		useProxy="false"
 		method="POST"
-		
+		url="{svcUrl.measuresDataSvcUrl}"
 		result="httpResultHandler(event)"
 		fault="util.httpFaultHandler(event)"/>
 	<mx:Script>

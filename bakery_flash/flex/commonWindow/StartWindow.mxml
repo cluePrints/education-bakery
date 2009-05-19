@@ -53,6 +53,9 @@
 				adminRoleAllowed = (user!= null) && (user.userAdmin == true);
 				qaRoleAllowed = (user!= null) && (user.userQA == true);
 				logistRoleAllowed = (user!= null) && (user.userLogist == true);
+				if (user != null){
+					greetText = "Добро пожаловать, "+user.textView+"!";
+				}
 			}
 			private function showAdminDesc():void{
 				taDesc.htmlText="" + 
@@ -87,6 +90,8 @@
 			var util:Util = new Util();
 			var user = null;
 			[Bindable]
+			var greetText:String="";
+			[Bindable]
 			var adminRoleAllowed:Boolean=false;
 			[Bindable]
 			var qaRoleAllowed:Boolean=false;
@@ -103,8 +108,9 @@
 			horizontalAlign="center"
 			verticalAlign="middle"
 			backgroundColor="#CCCCCC">
-			<mx:Text htmlText="&lt;B&gt;Добро пожаловать в информационно-аналитическую 
-					&lt;BR/&gt;систему управления технологическим процессом&lt;/B&gt;"/>
+			<mx:Label text="{greetText}"
+				fontSize="16"
+				fontWeight="bold"/>
 			<mx:VBox 
 				width="100%"
 				height="100%">						
@@ -116,7 +122,7 @@
 						height="100%">				
 						
 						<mx:RadioButtonGroup id="workPlace"/>						
-						<mx:Label text="Доступные роли:"/>							
+						<mx:Label text="Доступные вам роли:"/>							
 						<mx:RadioButton label="Администратор системы" groupName="workPlace" value="admin"
 							click="showAdminDesc()"
 							visible="{adminRoleAllowed}"/>

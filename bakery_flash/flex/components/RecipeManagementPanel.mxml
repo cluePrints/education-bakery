@@ -46,12 +46,14 @@
 		useProxy="false"
 		method="GET"		
 		result="httpResultHandler(event)"
-		fault="util.httpFaultHandler(event)"/>
+		fault="util.httpFaultHandler(event)"
+		url="{svcUrl.mainRecipeSvcUrl}"/>
 	<mx:HTTPService id="childSvc" 
 		useProxy="false"
 		method="GET"		
 		result="httpResultHandler(event)"
-		fault="util.httpFaultHandler(event)"/>
+		fault="util.httpFaultHandler(event)"
+		url="{svcUrl.childRecipeSvcUrl}"/>
 	<mx:HTTPService id="childPartSvc" 
 		useProxy="false"
 		method="GET"
@@ -141,8 +143,6 @@
 				createNew();		
 				childCreateNew();
 				childPartCreateNew();
-				mainSvc.url = svcUrl.mainRecipeSvcUrl;
-				childSvc.url = svcUrl.childRecipeSvcUrl;		
 				mainSvc.cancel();
 				formModel.mode="FETCH";
 				mainSvc.send(formModel);				

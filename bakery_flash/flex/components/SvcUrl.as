@@ -29,6 +29,8 @@ public class SvcUrl{
 	public var devStateSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.qa.DeviceStateReportSvc";
 	public var prodStateSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.qa.ProductionStateReportSvc";
 	public var orderStateSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.qa.OrderStateReportSvc";
+	
+	public var qaSpamReportSvcUrl="http://localhost:8080/bakery/simpleSvc.htm?svc=org.bakery.server.controllers.svc.impl.qa.SpamReportSvc";
 }
 
 
