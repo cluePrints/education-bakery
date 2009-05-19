@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bakery.server.controllers.svc.ControllerAwareCommand;
 import org.bakery.server.controllers.svc.ISvcController;
-import org.bakery.server.persistence.AbstractDAO;
 
 public class SpamReportSvc implements ControllerAwareCommand{
 	public static final String DELIM="\n========================================================";
@@ -43,7 +42,6 @@ public class SpamReportSvc implements ControllerAwareCommand{
 		int nMeasuresDeclined = controller.getDAOFacade().getDeviceParameterDAO().getAvailable().size();
 		b.append("\nВсего измерений:					"+nMeasuresTotal);
 		b.append("\n-Отброшены как недействительные:	"+nMeasuresDeclined);
-	}
-	private void write(StringBuilder b, String topLabel, AbstractDAO dao){
+		response.getWriter().write(b.toString());
 	}
 }
