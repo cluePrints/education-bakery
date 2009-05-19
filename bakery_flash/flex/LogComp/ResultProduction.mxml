@@ -101,10 +101,13 @@
 			formModelResultProduct.mode=""
 			ResultProductMoveSvc.cancel();
 			ResultProductMoveSvc.send(formModelResultProduct);
+			
+		
 		
 		}
 	
 	}
+	
 	function httpMoneyMoveHandler(event:*){
 		var mainData:*;
 		mainData = event.result.mainData;
@@ -238,13 +241,13 @@
 	
 	if(dgData.selectedItem){
 		if(checkDoneOrder(dgData.selectedItem.order_id)==false){
-			//if(checkProductInOrder(dgData.selectedItem.order_id)){
+			if(checkProductInOrder(dgData.selectedItem.order_id)){
 		saveProducMove();
 		resultPanel.visible = true;
 		init();
-			//}else{
-			//	mx.controls.Alert.show("Товар для отгрузки еще не произведен.");
-			//}
+			}else{
+				mx.controls.Alert.show("Товар для отгрузки еще не произведен.");
+			}
 		}else{
 			mx.controls.Alert.show("Товар по данному заказу уже был отгружен");}	
 	}else{
@@ -256,7 +259,7 @@
 		if (items == null)
 			return null;
 		for each (var unit in items){ 
-			if (unit.moneyMove == MoneyMove) {
+			if (unit.moneyMove == MoneyMove && unit.sourceWarehouse != NULLWarehouseId) {
 				result = unit;
 			}
 		} 
@@ -264,14 +267,14 @@
 	}	
 	function checkProductInOrder(CurrentOrder:*){
 		var result:*;
-		for each (var item in activeNowOrders){
-			if (item.hasOwnProperty('id')){
-				if (item.id = CurrentOrder ){
+		var temp:*;
+		for each (var item in resultProduct){
+			temp = getItemById(moneyMoves,item.product_move_money_move);	
+				if (temp.order == CurrentOrder ){
 					return true;
 				}else{
 					result = false;
 				}
-			}			
 		}
 		return result; 		
 	}
@@ -296,7 +299,7 @@
 		formModelProductMove.destinationWarehouse = productMoveId.destinationWarehouse;
 		formModelProductMove.moneyMove = productMoveId.moneyMove;
 		formModelProductMove.date = todayDate.toString();
-		formModelProductMove.active = 1;
+		formModelProductMove.active = 0;
 		
 		ProductMoveSvc.cancel();
 		ProductMoveSvc.send(formModelProductMove);
@@ -452,7 +455,7 @@
 	<mx:Label text="" id="lbToday" />
 	</mx:HBox>
 	<mx:HBox width = "90%">
-	<mx:Label text = "Двидение денег соответствующее заказу :" fontWeight="bold"  />
+	<mx:Label text = "Движение денег соответствующее заказу :" fontWeight="bold"  />
 	<mx:Label text='' id="lbMoneyMove" width="600"/>
 	</mx:HBox>
 	</mx:Panel>

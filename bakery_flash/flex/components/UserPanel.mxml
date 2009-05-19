@@ -80,7 +80,7 @@ import mx.collections.ArrayCollection;
 		tiUser.text = dgData.selectedItem.name;
 		tiPass.text = dgData.selectedItem.password;
 		cbAdmin.selected = dgData.selectedItem.userAdmin;
-		cbActive.selected = dgData.selectedItem.active;
+		cbActive.selected = (dgData.selectedItem.active == 1);
 		cbLogist.selected = dgData.selectedItem.userLogist;
 		cbQA.selected = dgData.selectedItem.userQA;
 		tiName.text = dgData.selectedItem.textView;
@@ -152,7 +152,7 @@ function saveFormModel(){
 		<mx:Label text="Работа с пользвателями" />
 		<mx:Label text="" id="lbId" width="185" visible="false"/>
 			
-		<mx:FormItem label="Пользователь:"  width="270">
+		<mx:FormItem label="Логин:"  width="270">
 			<mx:TextInput id="tiUser" width="185">
 			</mx:TextInput>
 		</mx:FormItem>
