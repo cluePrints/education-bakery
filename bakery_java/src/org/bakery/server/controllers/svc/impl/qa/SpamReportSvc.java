@@ -47,6 +47,7 @@ public class SpamReportSvc implements ControllerAwareCommand{
 		int nMeasuresDeclined = controller.getDAOFacade().getDeviceParameterDAO().getAvailable().size();
 		b.append("\nВсего измерений:					"+nMeasuresTotal);
 		b.append("\n-Отброшены как недействительные:	"+nMeasuresDeclined);
+		response.getWriter().write(b.toString());
 	}
 	private void write(StringBuilder b, String topLabel, AbstractDAO dao){
 	}
