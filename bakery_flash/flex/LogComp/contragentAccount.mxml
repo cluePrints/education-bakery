@@ -159,6 +159,7 @@
 		lbId.text = item.id;
 		lbDesc.text = item.desc;
 		getAllPrice(lbAmount.text,lbPrice.text);
+		
 		}
 		if(contragentItem != null){
 		lbContragent.text = contragentItem.textView;
@@ -240,15 +241,18 @@
 	}
 	function checkDate(){
 		var today:Date = new Date();
+		var today1:Date = new Date();
 		var testDate:Date = new Date();
-		var result:*;
+		
 		testDate = DateField.stringToDate(date.text,"DD/MM/YY");
-		if(testDate<today){
-			mx.controls.Alert.show("Счет не может быть оплачен задним числом.","НЕПРАВИЛЬНАЯ ДАТА");
-			return false;
-		}else{
-			return true;
-		}
+		today1 = DateField.stringToDate(lbToday.text,"DD/MM/YY");
+		
+			if(testDate>=today){
+				return true;
+			}else{
+			mx.controls.Alert.show("Счет не может быть оплачен єтим числом.","НЕПРАВИЛЬНАЯ ДАТА");
+			return false;}
+		
 	
 	}
 		]]>
@@ -324,7 +328,7 @@
 	<mx:Panel width="917" height="274">
 	<mx:HBox width="100%">
 		<mx:Label text="В соответствии с  заказом № " fontSize="11" fontWeight="bold" />
-		<mx:Label text="" id="lbOrderId" />
+		<mx:Label text="" id="lbOrderId"  fontSize="12" />
 		<mx:Label text=" будет осуществлен перевод средств контрагентом:" fontSize="11" fontWeight="bold"/>
 		
 		<mx:Label text="" id="lbContragent" fontSize="12" width="100%"/>

@@ -43,13 +43,13 @@
 				break;
 		
 		}
-		test.text = mbItem;
+		//test.text = mbItem;
 	}
 	function mbMouseOver(event:*){
 	mbItem = event.index;
 	}
 	function mbItemClick(event:*){
-		test.text = event.index + mbItem*10;
+	//	test.text = event.index + mbItem*10;
 		mbSelectedItem = event.index + mbItem*10;
 		mainCanvas.removeAllChildren();
 		switch(mbSelectedItem){
@@ -141,8 +141,8 @@
 </mx:Script>
 <mx:Canvas width="100%" >
 <mx:VBox width="100%">
-<mx:HBox  height="34">
-<mx:MenuBar id="mainMenuBar" labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)" width="368" height="27" fontWeight="bold" fontSize="10" fillAlphas="[1.0, 1.0]" fillColors="[#5372F6, #5372F6]">
+<mx:HBox  height="34" width="98%">
+<mx:MenuBar id="mainMenuBar"  labelField="@label" change="mbMouseOver(event)" click="mbClick(event)" itemClick="mbItemClick(event)" width="1219" height="27" fontWeight="bold" fontSize="10" fillAlphas="[1.0, 1.0]" fillColors="[#5372F6, #5372F6]">
         <mx:XMLList>
             <menuitem label="|  РАБОТА   |" >
                 <menuitem label="Отгрузить продукцию"/>
@@ -153,16 +153,16 @@
                   
             </menuitem>
             <menuitem label="|  ПРОСМОТР  |" >
-                <menuitem label="Списока контрагентов" />
-                 <menuitem label="Списока заказов"/>
-                  <menuitem label="Списока продукции"/>
-                   <menuitem label="Списока прайсов"/>
-                    <menuitem label="Списока счетов"/>
+                <menuitem label="Списка контрагентов" />
+                 <menuitem label="Списка заказов"/>
+                  <menuitem label="Списка продукции"/>
+                   <menuitem label="Списка прайсов"/>
+                    <menuitem label="Списка счетов"/>
                   <menuitem label="Движения денег"/>
                    <menuitem label="Движения продуктов"/>
-                   <menuitem label="Списока складов"/>
-                   <menuitem label="Списока адесов"/>
-                   <menuitem label="Списока ед.измерения"/>
+                   <menuitem label="Списка складов"/>
+                   <menuitem label="Списка адесов"/>
+                   <menuitem label="Списка ед.измерения"/>
                    
             </menuitem>
             <menuitem label="|  ПОМОЩЬ  |" type="check" >
@@ -173,7 +173,6 @@
           
         </mx:XMLList>
     </mx:MenuBar>
-    <mx:Label id="test" text="" />
     </mx:HBox>
     
     <mx:Canvas id="mainCanvas" width="100%" >
