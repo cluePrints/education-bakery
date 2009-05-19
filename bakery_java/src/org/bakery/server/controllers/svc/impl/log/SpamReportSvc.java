@@ -22,20 +22,20 @@ public class SpamReportSvc implements ControllerAwareCommand{
 		int nCAvailable = controller.getDAOFacade().getContragentDAO().getAvailable().size();
 		b.append("\n\n"+DELIM);
 		b.append(DELIM);
-		b.append("1. Контрагенты");
+		b.append("\n1. Контрагенты");
 		b.append(DELIM);
 		b.append("\nВсего зарегестрировано контрагентов:			"+nCTotal);
 		b.append("\n-Допущеных к деловой активности:				"+nCAvailable);		
 		
 		b.append("\n"+DELIM);
-		b.append("2. ");
+		b.append("\n2. ");
 		b.append(DELIM);
 		b.append("\n");
 		b.append("\nВсего зарегестрировано параметров:		"+controller.getDAOFacade().getDeviceParameterDAO().searchByName("%", 0, 200).size());
 		b.append("\n-Активно контроллируется:				"+controller.getDAOFacade().getDeviceParameterDAO().getAvailable().size());
 
 		b.append("\n"+DELIM);
-		b.append("3. Измеренные значения");
+		b.append("\n3. Измеренные значения");
 		b.append(DELIM);
 		b.append("\n");
 		int nMeasuresTotal = controller.getDAOFacade().getMeasureDAO().searchByName("%", 0, 400).size();

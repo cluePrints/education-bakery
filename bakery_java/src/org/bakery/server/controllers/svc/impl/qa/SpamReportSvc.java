@@ -24,7 +24,7 @@ public class SpamReportSvc implements ControllerAwareCommand{
 		int nTotal = controller.getDAOFacade().getDeviceDAO().searchByName("%", 0, 100).size();
 		b.append("\n\n"+DELIM);
 		b.append(DELIM);
-		b.append("1. Устройства");
+		b.append("\n1. Устройства");
 		b.append(DELIM);
 		b.append("\nВсего устройств:			"+nTotal);
 		b.append("\n-Работоспособных:			"+nAvailable);
@@ -33,14 +33,14 @@ public class SpamReportSvc implements ControllerAwareCommand{
 		
 		
 		b.append("\n"+DELIM);
-		b.append("2. Измерительная аппаратура");
+		b.append("\n2. Измерительная аппаратура");
 		b.append(DELIM);
 		b.append("\n");
 		b.append("\nВсего зарегестрировано параметров:		"+controller.getDAOFacade().getDeviceParameterDAO().searchByName("%", 0, 200).size());
 		b.append("\n-Активно контроллируется:				"+controller.getDAOFacade().getDeviceParameterDAO().getAvailable().size());
 
 		b.append("\n"+DELIM);
-		b.append("3. Измеренные значения");
+		b.append("\n3. Измеренные значения");
 		b.append(DELIM);
 		b.append("\n");
 		int nMeasuresTotal = controller.getDAOFacade().getMeasureDAO().searchByName("%", 0, 400).size();
