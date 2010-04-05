@@ -1,0 +1,240 @@
+Package ua.kiev.kpi.sc.parser;
+
+
+Helpers
+  id_char = ['A'..'Z'] | ['a'..'z'];
+  all = [0..0xffff];
+  ws = [0x0000..0x0020];
+  digit = ['0'..'9'];
+
+Tokens
+
+
+  // separators
+  comma = ',';
+  dot   = '.';
+  l_bkt = '[';
+  l_brc = '{';
+  l_par = '(';
+  r_bkt = ']';
+  r_brc = '}';
+  r_par = ')';
+  semi  = ';';
+  double_quote = '"';
+
+  // operators
+
+  amp_amp = '&&';
+  assign = '=';
+  bar_bar = '||';
+  emark = '!';
+  eq = '==';
+  gt = '>';
+  gteq = '>=';
+  lt = '<';
+  lteq = '<=';
+  minus = '-';
+  neq = '!=';
+  percent = '%';
+  plus = '+';
+  slash = '/';
+  star = '*';
+  
+  // keywords
+
+  boolean = 'boolean';
+  class_token = 'class';
+  else = 'else';
+  final = 'final';
+  float = 'float';
+  for = 'for';
+  goto = 'goto';
+  if = 'if';
+  int = 'int';
+  new = 'new';
+  public = 'public';
+  return = 'return';
+  short = 'short';
+  static = 'static';
+  void = 'void';
+  while = 'while';
+  
+  string_token = 'String';
+
+  // literals
+
+  literal_boolean = 'true' | 'false';
+  literal_null = 'null';
+  char = all;
+
+  // identifier
+	whitespace = (ws)+;	
+	identifier =
+		id_char*;
+  non_negative_integer = digit*;
+Ignored Tokens
+	whitespace;
+
+Productions
+	compilation_unit =
+		{single} public_class |
+		{multi} public_class class_seq;
+	
+	class_seq = 
+		{single} not_public_class |
+		{multi} not_public_class class_seq;
+			
+	public_class = 
+		public class_token identifier l_brc class_body r_brc;
+		
+	not_public_class =
+		class_token identifier l_brc class_body r_brc;
+		
+	class_body = 
+		class_body_elem*;
+	
+	class_body_elem = 
+		{function} function_definition |
+		{variable} variable_definition semi | 
+		{constant} constant_definition semi;
+	
+	function_definition =
+		function_declaration function_body;
+	
+	variable_definition =
+		variable_type variable_name;
+	
+	constant_definition =
+		final variable_type variable_name assign literal;
+		
+	literal =
+		{string} literal_string |
+		{boolean} literal_boolean |
+		{numeric} literal_numeric |
+		{null} literal_null;
+	
+	literal_string = double_quote char_sequence;
+	
+	literal_numeric = 
+		{int} integer |
+		{frac} dot non_negative_integer |
+		{real} integer dot non_negative_integer;
+	
+	integer = 
+		{simple} non_negative_integer |
+		{positive_signed} plus non_negative_integer |
+		{negative} minus non_negative_integer;
+	
+	char_sequence = char*;
+	
+	variable_name = 
+		identifier;
+		
+	function_name = 
+		identifier;
+	
+	function_declaration = 
+		public result_type function_name l_par formal_arg_list r_par;
+		
+	result_type =
+		{void} void |
+		{variable} variable_type;
+	
+	variable_type =
+		{scalar} type |
+		{array} type l_bkt r_bkt;
+	type = 
+		{boolean} boolean |
+		{int} int |
+		{string} string_token |
+		{type} type_name;
+	
+	type_name = 
+		identifier;
+		
+	formal_arg_list = 
+		{nothing} |
+		{single_var} variable_definition |
+		{multiple_n_var} variable_definition comma formal_arg_list; 
+	
+	method_name = 
+		identifier;
+	
+	constant_name = 
+		identifier;		
+	
+	function_body = 
+/*		{empty} l_brc r_brc |
+		{empty_void_return} l_brc return semi r_brc |  
+		{empty_nonvoid_return} l_brc return expression semi r_brc|*/
+		{normal} l_brc block return expression semi r_brc |
+		{void} l_brc block return semi r_brc;
+		
+	block = 
+		{single} operator*;
+		
+	operator = 
+		{simple} expression semi |
+		{assign} variable_name assign expression semi|
+		{cond} conditional_operator |
+		{cycle} cycle_operator;
+		
+	simple_if = 
+		if l_par expression r_par l_brc block r_brc;
+		
+	conditional_operator = 
+		{simple} simple_if |
+		{else} simple_if else l_brc block r_brc;
+		
+	cycle_operator = 
+		{cycle} while l_par expression r_par l_brc block r_brc;
+	
+	expression = 
+		{simple} operand_or | 
+		{or_expr} operand_or bar_bar expression;
+	
+	operand_or = 
+		{simple} operand_and |
+		{and} operand_and amp_amp operand_or;
+	
+	operand_and = 
+		{simple} comparison_expression |
+		{eq} comparison_expression eq operand_and |
+		{neq} comparison_expression neq operand_and;
+			
+	comparison_expression = 
+		{simple} simple_expression |
+		{gt} simple_expression gt comparison_expression |
+		{lt} simple_expression lt comparison_expression |
+		{lteq} simple_expression lteq comparison_expression |
+		{gteq} simple_expression gteq comparison_expression;
+	
+	simple_expression = 
+		{simple} summand |
+		{add} summand plus simple_expression |
+		{sub} summand minus simple_expression;
+	
+	summand = 
+		{simple} multiplier |
+		{mul} multiplier star summand |
+		{div} multiplier slash summand |
+		{rem} multiplier percent summand;
+		
+	multiplier = 
+		{simple} cast |
+		{neg} emark multiplier;
+		
+	cast =
+		{simple} elemental_expression |
+		{neg} l_par variable_type r_par cast;
+		
+	elemental_expression = 
+	    {literal} literal |
+	    {identifier} identifier |
+		{arr_elem} identifier l_bkt expression r_bkt |
+		{call} identifier l_par fact_arg_list r_par |
+		{recursive} identifier dot elemental_expression;		
+				
+	fact_arg_list = 
+		{single} expression |
+		{multiple} expression comma fact_arg_list;
