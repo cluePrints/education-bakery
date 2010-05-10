@@ -5,9 +5,9 @@ package ua.kiev.kpi.sc.parser.parser;
 import ua.kiev.kpi.sc.parser.node.*;
 import ua.kiev.kpi.sc.parser.analysis.*;
 
-class TokenIndex extends AnalysisAdapter
+public class TokenIndex extends AnalysisAdapter
 {
-    int index;
+    public int index;
 
     @Override
     public void caseTComma(@SuppressWarnings("unused") TComma node)

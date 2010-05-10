@@ -30,10 +30,10 @@ public class Parser
     private final TokenIndex converter = new TokenIndex();
     private final int[] action = new int[2];
 
-    private final static int SHIFT = 0;
-    private final static int REDUCE = 1;
-    private final static int ACCEPT = 2;
-    private final static int ERROR = 3;
+    public final static int SHIFT = 0;
+    public final static int REDUCE = 1;
+    public final static int ACCEPT = 2;
+    public final static int ERROR = 3;
 
     public Parser(Lexer lexer)
     {
