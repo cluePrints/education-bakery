@@ -13,17 +13,17 @@ public class TerminalCodesModel extends AbstractTableModel{
 		tokenIdxes = actionTableModel.getTokenNamesIndexed();
 	}
 
-	@Override
+	
 	public int getColumnCount() {
 		return 2;
 	}
 
-	@Override
+	
 	public int getRowCount() {
 		return actionTableModel.TERMINAL_COUNT+1;
 	}
 
-	@Override
+	
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (columnIndex == 0) {
 			return rowIndex;

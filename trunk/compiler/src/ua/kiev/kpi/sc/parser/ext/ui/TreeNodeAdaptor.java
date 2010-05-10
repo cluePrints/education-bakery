@@ -40,17 +40,16 @@ public class TreeNodeAdaptor implements TreeNode{
 		return (Symbol) node;
 	}
 	
-	@Override
 	public Enumeration children() {
 		throw new RuntimeException("Not supproted");
 	}
 
-	@Override
+	
 	public boolean getAllowsChildren() {
 		return !isLeaf();
 	}
 
-	@Override
+	
 	public TreeNode getChildAt(int childIndex) {
 		if (isSymbol()) {
 			return null;
@@ -60,12 +59,12 @@ public class TreeNodeAdaptor implements TreeNode{
 		return null;
 	}
 
-	@Override
+	
 	public int getChildCount() {
 		return scope().getChildren().size();
 	}
 
-	@Override
+	
 	public int getIndex(TreeNode node) {
 		if (isScope()) {
 			return scope().getChildren().indexOf(((TreeNodeAdaptor)node).getNode());
@@ -74,7 +73,7 @@ public class TreeNodeAdaptor implements TreeNode{
 		}
 	}
 
-	@Override
+	
 	public TreeNode getParent() {
 		if (isScope()) {
 			return new TreeNodeAdaptor(scope().getParent());
@@ -85,12 +84,12 @@ public class TreeNodeAdaptor implements TreeNode{
 		}
 	}
 
-	@Override
+	
 	public boolean isLeaf() {
 		return isSymbol();
 	}
 	
-	@Override
+	
 	public String toString() {
 		if (isScope() && scope().getScopeHeaderSymbol() != null) {			
 			return scope().getScopeHeaderSymbol().getName();
