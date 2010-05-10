@@ -40,6 +40,7 @@ import javax.swing.tree.TreeSelectionModel;
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
 import ua.kiev.kpi.sc.parser.ext.ui.ActionTableModel;
 import ua.kiev.kpi.sc.parser.ext.ui.HelpFrame;
+import ua.kiev.kpi.sc.parser.ext.ui.Preferences;
 import ua.kiev.kpi.sc.parser.ext.ui.TerminalCodesModel;
 import ua.kiev.kpi.sc.parser.ext.ui.TreeNodeAdaptor;
 import ua.kiev.kpi.sc.parser.lexer.Lexer;
@@ -194,7 +195,6 @@ public class LexerUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				try {
-					Parser.result = "";
 					taLexerResult.setText("");
 					taRR.setText("");
 					taParsedTree.setText("");
@@ -202,7 +202,24 @@ public class LexerUI extends JFrame {
 					
 					taLexerResult.setText(runLexer());					
 					taParsedTree.setText(parseTree());
-					taRR.setText(Parser.result);
+					StringBuilder rulesTriggered = new StringBuilder();
+					for (int i=0; i<Parser.triggeredRulesInd.size(); i++)
+					{
+						rulesTriggered.append(String.format("%1$2d", Parser.triggeredRulesInd.get(i)));
+						if (i<Parser.triggeredRulesInd.size()) {
+							rulesTriggered.append(",   ");
+						}
+						if (i % 10 == 9) {
+							rulesTriggered.append("\n");
+						}
+					}
+					String rulesTriggeredStr;
+					if (Preferences.displayRulesAsNumbers) {
+						rulesTriggeredStr = rulesTriggered.toString();
+					} else {
+						rulesTriggeredStr = Parser.readableRulesTriggered;
+					}
+					taRR.setText(rulesTriggeredStr);
 					
 					scopeTreeRoot = runScoper();
 					trScopes.setModel(new DefaultTreeModel(new TreeNodeAdaptor(scopeTreeRoot)));

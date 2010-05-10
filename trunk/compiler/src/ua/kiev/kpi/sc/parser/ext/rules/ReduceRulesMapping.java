@@ -93,140 +93,143 @@ import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
 import ua.kiev.kpi.sc.parser.node.AVoidResultType;
 import ua.kiev.kpi.sc.parser.parser.Parser;
 
+@SuppressWarnings({"unchecked", "serial"})
 public class ReduceRulesMapping {
-	private static final Map<Class<?>, String> classToRepresentationMap = new HashMap<Class<?>, String>() {
-		{
-			put(ASingleCompilationUnit.class, "compilation_unit = public_class");
-			put(AMultiCompilationUnit.class,
-					"compilation_unit = public_class class_seq");
-			put(ASingleClassSeq.class, "class_seq = not_public_class");
-			put(AMultiClassSeq.class, "class_seq = not_public_class class_seq");
-			put(APublicClass.class,
-					"public_class = public TClassToken identifier TLBrc class_body TRBrc");
-			put(ANotPublicClass.class,
-					"not_public_class = TClassToken identifier TLBrc class_body TRBrc");
-			put(AClassBody.class, "class_body = class_body_elem");
-			put(AFunctionClassBodyElem.class,
-					"class_body_elem = function_definition");
-			put(AVariableClassBodyElem.class,
-					"class_body_elem = variable_definition TSemi");
-			put(AConstantClassBodyElem.class,
-					"class_body_elem = constant_definition TSemi");
-			put(AFunctionDefinition.class,
-					"function_definition = function_declaration function_body");
-			put(AVariableDefinition.class,
-					"variable_definition = variable_type variable_name");
-			put(AConstantDefinition.class,
-					"constant_definition = TFinal variable_type variable_name TAssign literal");
-			put(AStringLiteral.class, "literal = literal_string");
-			put(ABooleanLiteral.class, "literal = literal_boolean");
-			put(ANumericLiteral.class, "literal = literal_numeric");
-			put(ANullLiteral.class, "literal = literal_null");
-			put(ALiteralString.class, "TDoubleQuote char* double_quote_closing");
-			put(ADoubleQuoteClosing.class,
-					"double_quote_closing = TDoubleQuote");
-			put(AIntLiteralNumeric.class, "literal_numeric = integer");
-			put(AFracLiteralNumeric.class,
-					"literal_numeric = TDot non_negative_integer");
-			put(ARealLiteralNumeric.class,
-					"literal_numeric = integer TDot non_negative_integer");
-			put(ASimpleInteger.class, "integer = non_negative_integer");
-			put(APositiveSignedInteger.class,
-					"integer = TPlus non_negative_integer");
-			put(ANegativeInteger.class, "integer = minus non_negative_integer");
-			put(AVariableName.class, "variable_name = TIdentifier");
-			put(AFunctionName.class, "variable_name = TIdentifier");
-			put(
-					AFunctionDeclaration.class,
-					"function_declaration = TPublic result_type function_name TLPar formal_arg_list TRPar");
-			put(AVoidResultType.class, "result_type = TVoid");
-			put(AVariableResultType.class, "result_type = variable_type");
-			put(AScalarVariableType.class, "variable_type = type");
-			put(AArrayVariableType.class, "variable_type = type TLBkt TRBkt");
-			put(ABooleanType.class, "type = TBoolean");
-			put(AIntType.class, "type = TInt");
-			put(AStringType.class, "type = TStringToken");
-			put(ATypeType.class, "type = TIdentifier");
-			put(ATypeName.class, "type_name = type_name");
-			put(ANothingFormalArgList.class, "formal_arg_list = ");
-			put(ASingleVarFormalArgList.class,
-					"formal_arg_list = variable_definition TComma formal_arg_list");
-			put(AMultipleNVarFormalArgList.class,
-					"formal_arg_list = variable_definition");
-			put(AMethodName.class, "method_name = identifier");
-			put(AMethodName.class, "method_name = identifier");
-			put(AConstantName.class, "constant_name = identifier");
-			put(ANormalFunctionBody.class,
-					"function_body = TLBrc block return expression TSemi TRBrc");
-			put(AVoidFunctionBody.class,
-					"function_body = TLBrc block return TSemi TRBrc");
-			put(ASingleBlock.class, "block = operator*");
-			put(ASimpleOperator.class, "operator = expression TSemi");
-			put(AAssignOperator.class,
-					"operator = variable_name TAssign expression TSemi");
-			put(ACondOperator.class, "operator = conditional_operator");
-			put(ACycleCycleOperator.class, "operator = cycle_operator");
-			put(ASimpleIf.class,
-					"simple_if = TIf TLPar expression TRPar TLBrc block TRBrc");
-			put(AElseConditionalOperator.class,
-					"simple_if else TLBrc block TRBrc");
-			put(ASimpleConditionalOperator.class,
-					"conditional_operator = simple_if TElse TLBrc block TRBrc");
-			put(ACycleOperator.class,
-					"cycle_operator = while TLPar expression TRPar TLBrc block TRBrc");
-			put(ASimpleExpression.class, "expression = operand_or");
-			put(AOrExprExpression.class,
-					"expression = operand_or TBarBar expression");
-			put(ASimpleOperandOr.class, "operand_or = operand_and");
-			put(AAndOperandOr.class,
-					"operand_or = operand_and TAmpAmp operand_or");
-			put(ASimpleOperandAnd.class, "operand_and = comparison_expression");
-			put(AEqOperandAnd.class,
-					"operand_and = comparison_expression TEq operand_and");
-			put(ANeqOperandAnd.class,
-					"operand_and = comparison_expression TNeq operand_and");
-			put(ASimpleComparisonExpression.class,
-					"comparison_expression = simple_expression");
-			put(AGtComparisonExpression.class,
-					"comparison_expression = simple_expression TGt comparison_expression");
-			put(ALtComparisonExpression.class,
-					"comparison_expression = simple_expression TLt comparison_expression");
-			put(ALteqComparisonExpression.class,
-					"comparison_expression = simple_expression TLteq comparison_expression");
-			put(AGteqComparisonExpression.class,
-					"comparison_expression = simple_expression TGteq comparison_expression");
+	private static final Map<Class<?>, String> classToRepresentationMap = new HashMap<Class<?>, String>();
+	private static final Map<Integer, String> indToRepresentationMap = new HashMap<Integer, String>();
+	
+	private void put(Class<?> clazz, String repr) 
+	{
+		classToRepresentationMap.put(clazz, repr);
+	}
 
-			put(ASimpleSimpleExpression.class, "simple_expression = summand");
-			put(AAddSimpleExpression.class,
-					"simple_expression = summand TPlus simple_expression");
-			put(ASubSimpleExpression.class,
-					"simple_expression = summand TMinus simple_expression");
+	{
+		put(ASingleCompilationUnit.class, "compilation_unit = public_class");
+		put(AMultiCompilationUnit.class,
+				"compilation_unit = public_class class_seq");
+		put(ASingleClassSeq.class, "class_seq = not_public_class");
+		put(AMultiClassSeq.class, "class_seq = not_public_class class_seq");
+		put(APublicClass.class,
+				"public_class = public TClassToken identifier TLBrc class_body TRBrc");
+		put(ANotPublicClass.class,
+				"not_public_class = TClassToken identifier TLBrc class_body TRBrc");
+		put(AClassBody.class, "class_body = class_body_elem");
+		put(AFunctionClassBodyElem.class,
+				"class_body_elem = function_definition");
+		put(AVariableClassBodyElem.class,
+				"class_body_elem = variable_definition TSemi");
+		put(AConstantClassBodyElem.class,
+				"class_body_elem = constant_definition TSemi");
+		put(AFunctionDefinition.class,
+				"function_definition = function_declaration function_body");
+		put(AVariableDefinition.class,
+				"variable_definition = variable_type variable_name");
+		put(AConstantDefinition.class,
+				"constant_definition = TFinal variable_type variable_name TAssign literal");
+		put(AStringLiteral.class, "literal = literal_string");
+		put(ABooleanLiteral.class, "literal = literal_boolean");
+		put(ANumericLiteral.class, "literal = literal_numeric");
+		put(ANullLiteral.class, "literal = literal_null");
+		put(ALiteralString.class, "TDoubleQuote char* double_quote_closing");
+		put(ADoubleQuoteClosing.class, "double_quote_closing = TDoubleQuote");
+		put(AIntLiteralNumeric.class, "literal_numeric = integer");
+		put(AFracLiteralNumeric.class,
+				"literal_numeric = TDot non_negative_integer");
+		put(ARealLiteralNumeric.class,
+				"literal_numeric = integer TDot non_negative_integer");
+		put(ASimpleInteger.class, "integer = non_negative_integer");
+		put(APositiveSignedInteger.class,
+				"integer = TPlus non_negative_integer");
+		put(ANegativeInteger.class, "integer = minus non_negative_integer");
+		put(AVariableName.class, "variable_name = TIdentifier");
+		put(AFunctionName.class, "variable_name = TIdentifier");
+		put(
+				AFunctionDeclaration.class,
+				"function_declaration = TPublic result_type function_name TLPar formal_arg_list TRPar");
+		put(AVoidResultType.class, "result_type = TVoid");
+		put(AVariableResultType.class, "result_type = variable_type");
+		put(AScalarVariableType.class, "variable_type = type");
+		put(AArrayVariableType.class, "variable_type = type TLBkt TRBkt");
+		put(ABooleanType.class, "type = TBoolean");
+		put(AIntType.class, "type = TInt");
+		put(AStringType.class, "type = TStringToken");
+		put(ATypeType.class, "type = TIdentifier");
+		put(ATypeName.class, "type_name = type_name");
+		put(ANothingFormalArgList.class, "formal_arg_list = ");
+		put(ASingleVarFormalArgList.class,
+				"formal_arg_list = variable_definition TComma formal_arg_list");
+		put(AMultipleNVarFormalArgList.class,
+				"formal_arg_list = variable_definition");
+		put(AMethodName.class, "method_name = identifier");
+		put(AMethodName.class, "method_name = identifier");
+		put(AConstantName.class, "constant_name = identifier");
+		put(ANormalFunctionBody.class,
+				"function_body = TLBrc block return expression TSemi TRBrc");
+		put(AVoidFunctionBody.class,
+				"function_body = TLBrc block return TSemi TRBrc");
+		put(ASingleBlock.class, "block = operator*");
+		put(ASimpleOperator.class, "operator = expression TSemi");
+		put(AAssignOperator.class,
+				"operator = variable_name TAssign expression TSemi");
+		put(ACondOperator.class, "operator = conditional_operator");
+		put(ACycleCycleOperator.class, "operator = cycle_operator");
+		put(ASimpleIf.class,
+				"simple_if = TIf TLPar expression TRPar TLBrc block TRBrc");
+		put(AElseConditionalOperator.class, "simple_if else TLBrc block TRBrc");
+		put(ASimpleConditionalOperator.class,
+				"conditional_operator = simple_if TElse TLBrc block TRBrc");
+		put(ACycleOperator.class,
+				"cycle_operator = while TLPar expression TRPar TLBrc block TRBrc");
+		put(ASimpleExpression.class, "expression = operand_or");
+		put(AOrExprExpression.class,
+				"expression = operand_or TBarBar expression");
+		put(ASimpleOperandOr.class, "operand_or = operand_and");
+		put(AAndOperandOr.class, "operand_or = operand_and TAmpAmp operand_or");
+		put(ASimpleOperandAnd.class, "operand_and = comparison_expression");
+		put(AEqOperandAnd.class,
+				"operand_and = comparison_expression TEq operand_and");
+		put(ANeqOperandAnd.class,
+				"operand_and = comparison_expression TNeq operand_and");
+		put(ASimpleComparisonExpression.class,
+				"comparison_expression = simple_expression");
+		put(AGtComparisonExpression.class,
+				"comparison_expression = simple_expression TGt comparison_expression");
+		put(ALtComparisonExpression.class,
+				"comparison_expression = simple_expression TLt comparison_expression");
+		put(ALteqComparisonExpression.class,
+				"comparison_expression = simple_expression TLteq comparison_expression");
+		put(AGteqComparisonExpression.class,
+				"comparison_expression = simple_expression TGteq comparison_expression");
 
-			put(ASimpleSummand.class, "summand = multiplier");
-			put(AMulSummand.class, "summand = multiplier TStar summand");
-			put(ADivSummand.class, "summand = multiplier TSlash summand");
-			put(ARemSummand.class, "summand = multiplier TPercent summand");
-			put(ASimpleMultiplier.class, "multiplier = cast");
-			put(ANegMultiplier.class, "multiplier = TEmark multiplier");
-			put(ASimpleCast.class, "elemental_expression");
-			put(ANegCast.class, "TLPar variable_type TRPar cast");
-			put(ARecursiveElementalExpression.class,
-					"elemental_expression = TIdentifier TDot elemental_expression");
-			put(AArrElemElementalExpression.class,
-					"elemental_expression = TIdentifier TLBkt expression TRBkt");
-			put(ACallElementalExpression.class,
-					"elemental_expression = TIdentifier TLPar fact_arg_list TRPar");
-			put(ALiteralElementalExpression.class,
-					"elemental_expression = literal");
-			put(AIdentifierElementalExpression.class,
-					"elemental_expression =  TIdentifier");
-			put(ASingleVarFormalArgList.class, "expression");
-			put(AMultipleNVarFormalArgList.class,
-					"expression comma fact_arg_list");
-			put(ASingleFactArgList.class, "fact_arg_list = expression");
-			put(ASingleFactArgList.class, "fact_arg_list = expression TComma fact_arg_list");
-		}
-	};
+		put(ASimpleSimpleExpression.class, "simple_expression = summand");
+		put(AAddSimpleExpression.class,
+				"simple_expression = summand TPlus simple_expression");
+		put(ASubSimpleExpression.class,
+				"simple_expression = summand TMinus simple_expression");
+
+		put(ASimpleSummand.class, "summand = multiplier");
+		put(AMulSummand.class, "summand = multiplier TStar summand");
+		put(ADivSummand.class, "summand = multiplier TSlash summand");
+		put(ARemSummand.class, "summand = multiplier TPercent summand");
+		put(ASimpleMultiplier.class, "multiplier = cast");
+		put(ANegMultiplier.class, "multiplier = TEmark multiplier");
+		put(ASimpleCast.class, "elemental_expression");
+		put(ANegCast.class, "TLPar variable_type TRPar cast");
+		put(ARecursiveElementalExpression.class,
+				"elemental_expression = TIdentifier TDot elemental_expression");
+		put(AArrElemElementalExpression.class,
+				"elemental_expression = TIdentifier TLBkt expression TRBkt");
+		put(ACallElementalExpression.class,
+				"elemental_expression = TIdentifier TLPar fact_arg_list TRPar");
+		put(ALiteralElementalExpression.class, "elemental_expression = literal");
+		put(AIdentifierElementalExpression.class,
+				"elemental_expression =  TIdentifier");
+		put(ASingleVarFormalArgList.class, "expression");
+		put(AMultipleNVarFormalArgList.class, "expression comma fact_arg_list");
+		put(ASingleFactArgList.class, "fact_arg_list = expression");
+		put(ASingleFactArgList.class,
+				"fact_arg_list = expression TComma fact_arg_list");
+	}
 
 	public static String getRepresentation(List<?> array) {
 		String result;
@@ -246,6 +249,10 @@ public class ReduceRulesMapping {
 			result = result + "\n";
 		}
 		return result;
+	}
+	
+	public static String getRepresentation(int ruleInd) {	
+		return null;
 	}
 
 	public static String[][] createActionTable(int[][][] actionTable) {
