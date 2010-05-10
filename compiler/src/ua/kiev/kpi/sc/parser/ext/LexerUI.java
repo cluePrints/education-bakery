@@ -20,6 +20,9 @@ import java.io.StringWriter;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -34,6 +37,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
 import ua.kiev.kpi.sc.parser.ext.ui.ActionTableModel;
+import ua.kiev.kpi.sc.parser.ext.ui.HelpFrame;
 import ua.kiev.kpi.sc.parser.ext.ui.TerminalCodesModel;
 import ua.kiev.kpi.sc.parser.ext.ui.TreeNodeAdaptor;
 import ua.kiev.kpi.sc.parser.lexer.Lexer;
@@ -59,15 +63,14 @@ public class LexerUI extends JFrame {
 	private JButton btnScopedSearch;
 	private Scope scopeTreeRoot;
 	public static boolean isDebugMode;
-	void init() {
-
-		setLayout(new BorderLayout());
+	void init() {		
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
-		});
+		});												
+		
 		taCode = new JTextArea("", 50, 50);
 		taLexerResult = new JTextArea("<results>", 50, 45);
 		taLexerResult.setEditable(false);
@@ -159,6 +162,23 @@ public class LexerUI extends JFrame {
 		leftPanel.setLayout(new BorderLayout());
 		leftPanel.add(new JScrollPane(taCode));
 		leftPanel.add(btnExecute, BorderLayout.SOUTH);
+		
+		
+		JMenuBar bar = new JMenuBar();
+		JMenu helpMenu = new JMenu("Help");		
+		JMenuItem grammarItem = new JMenuItem("Grammar rules");
+		final HelpFrame hlpFrame = new HelpFrame();
+		grammarItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				hlpFrame.setVisible(true);
+			}
+		});
+		helpMenu.add(grammarItem);
+		bar.add(helpMenu);
+		leftPanel.add(bar, BorderLayout.NORTH);
+		
+		
 		setLayout(new GridLayout(1,2));
 		add(leftPanel);
 		add(tabPane);
