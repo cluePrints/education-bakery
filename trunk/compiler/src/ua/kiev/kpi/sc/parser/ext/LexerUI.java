@@ -54,6 +54,9 @@ import ua.kiev.kpi.sc.parser.parser.Parser;
 import ua.kiev.kpi.sc.parser.parser.ParserException;
 
 public class LexerUI extends JFrame {
+	private Parser parser;
+	private Start syntaxTree;
+	
 	private JTextArea taCode;
 	private JTextArea taLexerResult;
 	private JTextArea taParsedTree;
@@ -67,7 +70,6 @@ public class LexerUI extends JFrame {
 	private JTextField tfVarName;
 	private JButton btnScopedSearch;
 	private Scope scopeTreeRoot;
-	public static boolean isDebugMode;
 	void init() {		
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -224,12 +226,12 @@ public class LexerUI extends JFrame {
 					trScopes.setModel(new DefaultTreeModel(new TreeNodeAdaptor(scopeTreeRoot)));
 					
 					runScopeChecker(scopeTreeRoot);
-					tabPane.setSelectedIndex(2);
+					tabPane.setSelectedIndex(4);
 				} catch (Exception ex) {
-					tabPane.setSelectedIndex(3);
+					tabPane.setSelectedIndex(5);
 					
 					StringWriter buf = new StringWriter();
-					if (isDebugMode) {
+					if (!Preferences.productionMode) {
 						PrintWriter wr = new PrintWriter(buf);
 						ex.printStackTrace(wr);
 					}
@@ -255,11 +257,11 @@ public class LexerUI extends JFrame {
 		StringBuilder b = new StringBuilder();
 		Lexer lexer = new Lexer(new PushbackReader(new StringReader(taCode
 				.getText()), 1024));
-		Parser p = new Parser(lexer);
-		Start st = p.parse();
+		parser = new Parser(lexer);
+		syntaxTree = parser.parse();
 
 		LoggingInterpreter log = new LoggingInterpreter();
-		st.apply(log);
+		syntaxTree.apply(log);
 		b.append(log.toString());
 		return b.toString();
 	}
@@ -284,20 +286,14 @@ public class LexerUI extends JFrame {
 	}
 	
 	private Scope runScoper() throws Exception {
-		Lexer lexer = new Lexer(new PushbackReader(new StringReader(taCode.getText()), 1024));
-		Parser p = new Parser(lexer);
-		Start st = p.parse();
 		ScopeTreeBuilder intv = new ScopeTreeBuilder();
-		st.apply(intv);
+		syntaxTree.apply(intv);
 		return intv.getRootScope();
 	}
 	
 	private void runScopeChecker(Scope rootScope) throws Exception {
-		Lexer lexer = new Lexer(new PushbackReader(new StringReader(taCode.getText()), 1024));
-		Parser p = new Parser(lexer);
-		Start st = p.parse();
 		ScopeTreeChecker a = new ScopeTreeChecker(rootScope);
-		st.apply(a);
+		syntaxTree.apply(a);
 	}
 	
 	private void preloadTestCase() {
