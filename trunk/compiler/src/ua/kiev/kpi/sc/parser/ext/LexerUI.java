@@ -4,6 +4,8 @@ import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -168,10 +170,11 @@ public class LexerUI extends JFrame {
 		JMenu helpMenu = new JMenu("Help");		
 		JMenuItem grammarItem = new JMenuItem("Grammar rules");
 		final HelpFrame hlpFrame = new HelpFrame();
-		grammarItem.addMouseListener(new MouseAdapter() {
+		grammarItem.addActionListener(new ActionListener() {
+			
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				hlpFrame.setVisible(true);
+			public void actionPerformed(ActionEvent e) {
+				hlpFrame.setVisible(true);	
 			}
 		});
 		helpMenu.add(grammarItem);
