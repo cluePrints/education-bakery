@@ -109,7 +109,7 @@ public class JustTest {
 	@Test
 	public void test() throws Exception
 	{
-		BufferedReader r = new BufferedReader(new FileReader("D:\\projects\\workspaces\\university\\compiler\\src\\ua\\kiev\\kpi\\sc\\parser\\parser\\Parser.java"));
+		BufferedReader r = new BufferedReader(new FileReader("src\\ua\\kiev\\kpi\\sc\\parser\\parser\\Parser.java"));
 		String s = null;
 		Pattern p = Pattern.compile(EXP);		
 		do {

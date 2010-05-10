@@ -74,7 +74,7 @@ public class ActionTableModel extends AbstractTableModel{
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		int stateNum = rowIndex;
-		if (columnIndex == 0) {
+		if (columnIndex == 0) {	
 			return stateNum;
 		} else {
 			if (columnIndex<=1+TERMINAL_COUNT+NON_TERMINAL_COUNT) {
