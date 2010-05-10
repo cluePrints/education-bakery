@@ -94,22 +94,22 @@ import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
 import ua.kiev.kpi.sc.parser.node.AVoidResultType;
 
 public class JustTest {
-	public static String EXP = "\\s*case (\\d*): /\\* reduce (\\w*) \\*/\\s*";
+	public static String EXP = "\\s*case (\\d*): /\\* reduce (\\w*\\$?\\w*) \\*/\\s*";
 	
 	@Test
 	public void regexp()
 	{
 		Pattern p = Pattern.compile(EXP);
-		Matcher m = p.matcher("   case 12: /* reduce ASingleCompilationUnit */  ");
+		Matcher m = p.matcher("   case 12: /* reduce ASingleCompilationUnit$Blablabla */  ");
 		Assert.assertTrue(m.matches());
 		Assert.assertEquals("12", m.group(1));
-		Assert.assertEquals("ASingleCompilationUnit", m.group(2));
+		Assert.assertEquals("ASingleCompilationUnit$Blablabla", m.group(2));
 	}
 	
 	@Test
 	public void test() throws Exception
 	{
-		BufferedReader r = new BufferedReader(new FileReader("fileNameHere"));
+		BufferedReader r = new BufferedReader(new FileReader("D:\\projects\\workspaces\\university\\compiler\\src\\ua\\kiev\\kpi\\sc\\parser\\parser\\Parser.java"));
 		String s = null;
 		Pattern p = Pattern.compile(EXP);		
 		do {

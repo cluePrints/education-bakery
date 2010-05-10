@@ -182,7 +182,9 @@ public class Parser
                     }
 		    break;
                 case REDUCE:
-                	triggeredRulesInd.add(this.action[1]);
+                	if (this.action[1]<86) {
+                		triggeredRulesInd.add(this.action[1]);
+                	}
                     switch(this.action[1])
                     {
                     case 0: /* reduce ASingleCompilationUnit */
