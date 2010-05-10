@@ -178,7 +178,6 @@ public class LexerUI extends JFrame {
 		final HelpFrame hlpFrame = new HelpFrame();
 		grammarItem.addActionListener(new ActionListener() {
 			
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				hlpFrame.setVisible(true);	
 			}

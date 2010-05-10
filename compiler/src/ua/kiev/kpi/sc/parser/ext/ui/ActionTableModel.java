@@ -65,17 +65,17 @@ public class ActionTableModel extends AbstractTableModel{
 		return maxC+1;
 	}
 	
-	@Override
+	
 	public int getColumnCount() {
 		return TERMINAL_COUNT + 1/*stateNum*/ + 1/*EOF terminal*/ /*+ NON_TERMINAL_COUNT*/;
 	}
 
-	@Override
+	
 	public int getRowCount() {
 		return STATES_COUNT;
 	}
 
-	@Override
+	
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		int stateNum = rowIndex;
 		if (columnIndex == 0) {	

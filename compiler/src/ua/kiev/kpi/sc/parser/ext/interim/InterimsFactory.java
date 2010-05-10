@@ -3,14 +3,14 @@ package ua.kiev.kpi.sc.parser.ext.interim;
 import ua.kiev.kpi.sc.parser.node.Node;
 
 public class InterimsFactory {
-	private IntermsRegistry registry;
+	private InterimsRegistry registry;
 
-	public Object create(int ruleNumber, Class<? extends Node> clazz)
+	public Interim create(int ruleNumber, Class<? extends Node> clazz)
 	{
 		return null;
 	}
 	
-	public void setRegistry(IntermsRegistry registry) {
+	public void setRegistry(InterimsRegistry registry) {
 		this.registry = registry;
 	}
 }
