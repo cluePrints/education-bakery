@@ -20,7 +20,7 @@ public class TerminalCodesModel extends AbstractTableModel{
 
 	@Override
 	public int getRowCount() {
-		return actionTableModel.TERMINAL_COUNT;
+		return actionTableModel.TERMINAL_COUNT+1;
 	}
 
 	@Override

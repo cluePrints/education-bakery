@@ -2,7 +2,6 @@ package ua.kiev.kpi.sc.parser.ext.ui;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,8 +11,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import ua.kiev.kpi.sc.parser.ext.MyException;
@@ -65,7 +63,7 @@ public class ActionTableModel extends AbstractTableModel{
 	
 	@Override
 	public int getColumnCount() {
-		return TERMINAL_COUNT + NON_TERMINAL_COUNT;
+		return TERMINAL_COUNT + 1/*stateNum*/ + 1/*EOF terminal*/ /*+ NON_TERMINAL_COUNT*/;
 	}
 
 	@Override
@@ -103,9 +101,10 @@ public class ActionTableModel extends AbstractTableModel{
 	public void applyColumnHeaders(TableColumnModel model) {
 		List<String> headers = getColumnHeaders();
 		model.getColumn(0).setHeaderValue("state");
-		for (int i=1; i<headers.size(); i++) {
-			model.getColumn(i).setHeaderValue(i-1);
-			model.getColumn(i).setPreferredWidth(35);
+		for (int i=1; i<model.getColumnCount(); i++) {
+			TableColumn col = model.getColumn(i);
+			col.setHeaderValue(headers.get(i));
+			col.setPreferredWidth(35);
 		}
 	}
 	
