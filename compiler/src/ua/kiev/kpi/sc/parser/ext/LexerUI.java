@@ -37,6 +37,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
 import ua.kiev.kpi.sc.parser.ext.ui.ActionTableModel;
 import ua.kiev.kpi.sc.parser.ext.ui.HelpFrame;
@@ -205,16 +206,12 @@ public class LexerUI extends JFrame {
 					StringBuilder rulesTriggered = new StringBuilder();
 					for (int i=0; i<Parser.triggeredRulesInd.size(); i++)
 					{
-						rulesTriggered.append(String.format("%1$2d", Parser.triggeredRulesInd.get(i)));
-						if (i<Parser.triggeredRulesInd.size()) {
-							rulesTriggered.append(",   ");
-						}
-						if (i % 10 == 9) {
-							rulesTriggered.append("\n");
-						}
+						String ruleRepr = ReduceRulesMapping.getRepresentation(Parser.triggeredRulesInd.get(i));
+						rulesTriggered.append(ruleRepr);
+						rulesTriggered.append("\n");
 					}
 					String rulesTriggeredStr;
-					if (Preferences.displayRulesAsNumbers) {
+					if (Preferences.lookupRulesByIndexes) {
 						rulesTriggeredStr = rulesTriggered.toString();
 					} else {
 						rulesTriggeredStr = Parser.readableRulesTriggered;
