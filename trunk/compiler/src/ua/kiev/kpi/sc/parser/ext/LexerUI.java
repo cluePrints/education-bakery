@@ -1,5 +1,6 @@
 package ua.kiev.kpi.sc.parser.ext;
 
+import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -20,6 +21,7 @@ import java.io.StringWriter;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -30,8 +32,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
+import ua.kiev.kpi.sc.parser.ext.ui.ActionTableModel;
+import ua.kiev.kpi.sc.parser.ext.ui.TerminalCodesModel;
 import ua.kiev.kpi.sc.parser.ext.ui.TreeNodeAdaptor;
 import ua.kiev.kpi.sc.parser.lexer.Lexer;
 import ua.kiev.kpi.sc.parser.lexer.LexerException;
@@ -48,7 +51,7 @@ public class LexerUI extends JFrame {
 	private JTextArea taErrors;
 	private JTextArea taRR;
 	private JTable tblActionTable;
-	private JTable tblGotoTable;
+	private JTable terminalCodesTable;
 	private JButton btnExecute;
 	private JTabbedPane tabPane = new JTabbedPane();
 	private JTree trScopes;
@@ -56,7 +59,7 @@ public class LexerUI extends JFrame {
 	private JButton btnScopedSearch;
 	private Scope scopeTreeRoot;
 	public static boolean isDebugMode;
-	private void init() {
+	void init() {
 
 		setLayout(new BorderLayout());
 		addWindowListener(new WindowAdapter() {
@@ -86,20 +89,26 @@ public class LexerUI extends JFrame {
 		
 		
 		btnExecute = new JButton("Execute");
-		taCode.setAutoscrolls(true);
-		add(tabPane, BorderLayout.EAST);
+		taCode.setAutoscrolls(true);		
 		tabPane.addTab("Lexer", new JScrollPane(taLexerResult));
 		tabPane.addTab("RR", new JScrollPane(taRR));
 		//tabPane.addTab("Parsed tree", new JScrollPane(taParsedTree));
+		ActionTableModel model = new ActionTableModel();
+		tblActionTable = new JTable(model);
+		model.applyColumnHeaders(tblActionTable.getColumnModel());
 		
-		tblActionTable = new JTable(ReduceRulesMapping.createActionModel());
-		tblGotoTable = new JTable(ReduceRulesMapping.createGotoModel());
+		tblActionTable.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
+		JScrollPane pane = new JScrollPane(tblActionTable);
+		pane.setHorizontalScrollBar(new JScrollBar(Adjustable.HORIZONTAL));
+		tblActionTable.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
 		
-		JPanel tablesPane = new JPanel();
-		tablesPane.setLayout(new GridLayout(1,2));
-		tablesPane.add(new JScrollPane(tblActionTable));
-		tablesPane.add(new JScrollPane(tblGotoTable));
-		//tabPane.addTab("ActionTable", tablesPane);
+		terminalCodesTable = new JTable(new TerminalCodesModel(model));
+		tabPane.addTab("Terminals", new JScrollPane(terminalCodesTable));
+		
+
+		
+		
+		tabPane.addTab("ActionTable", pane);
 		
 		
 		tfVarName = new JTextField(45);
@@ -146,8 +155,13 @@ public class LexerUI extends JFrame {
 		
 		tabPane.addTab("Errors", new JScrollPane(taErrors));
 		//add(new JScrollPane(taResult), BorderLayout.EAST);
-		add(new JScrollPane(taCode), BorderLayout.WEST);
-		add(btnExecute, BorderLayout.SOUTH);
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new BorderLayout());
+		leftPanel.add(new JScrollPane(taCode));
+		leftPanel.add(btnExecute, BorderLayout.SOUTH);
+		setLayout(new GridLayout(1,2));
+		add(leftPanel);
+		add(tabPane);
 
 		preloadTestCase();
 		
@@ -184,14 +198,6 @@ public class LexerUI extends JFrame {
 				}
 			}
 		});
-	}
-
-	public static void main(String[] args) {
-		LexerUI ui = new LexerUI();
-		ui.init();
-		isDebugMode = (args != null) 
-					&& (args.length>0) 
-					&& (args[0]=="--debug");
 	}
 
 	private static String convertToken(Token t) {

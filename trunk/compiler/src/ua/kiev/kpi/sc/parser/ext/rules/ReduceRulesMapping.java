@@ -245,9 +245,6 @@ public class ReduceRulesMapping {
 		if (!result.contains("\n") && !"".equals(result)) {
 			result = result + "\n";
 		}
-		if (result.contains("class_body_elem = constant_definition TSemi")) {
-			int i=0;
-		}
 		return result;
 	}
 
