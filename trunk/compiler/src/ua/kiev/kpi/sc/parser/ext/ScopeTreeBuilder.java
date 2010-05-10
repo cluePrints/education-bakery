@@ -19,6 +19,7 @@ import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
 import ua.kiev.kpi.sc.parser.node.PVariableName;
 import ua.kiev.kpi.sc.parser.node.PVariableType;
 
+// TODO: replace this class and do this simultaneously with parsing to be efficient 
 public class ScopeTreeBuilder extends DepthFirstAdapter{	
 	private RootScope rootScope = new RootScope();
 	private Scope currentScope = rootScope;
