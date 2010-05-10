@@ -10,18 +10,18 @@ public class ActionTableModelTest {
 	@Test
 	public void testPublicIsFirstShift()
 	{
-		int publicTokenInd = 35;
-		String header = model.getColumnHeaders().get(publicTokenInd);
+		int publicTokenModelInd = 36;
+		String header = model.getColumnHeaders().get(publicTokenModelInd);
 		Assert.assertEquals("Public", header);
-		String value = (String) model.getValueAt(0, publicTokenInd);
+		String value = (String) model.getValueAt(0, publicTokenModelInd);
 		Assert.assertEquals("s1", value);
 	}
 	
 	@Test
 	public void testReduceSomething()
 	{
-		int publicTokenInd = 12;
-		String value = (String) model.getValueAt(57, publicTokenInd);
+		int publicTokenModelInd = 13;
+		String value = (String) model.getValueAt(57, publicTokenModelInd);
 		Assert.assertEquals("r27", value);
 	}
 }

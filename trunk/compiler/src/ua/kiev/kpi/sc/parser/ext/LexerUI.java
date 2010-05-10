@@ -40,6 +40,7 @@ import javax.swing.tree.TreeSelectionModel;
 import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
 import ua.kiev.kpi.sc.parser.ext.ui.ActionTableModel;
+import ua.kiev.kpi.sc.parser.ext.ui.ActionTableRenderer;
 import ua.kiev.kpi.sc.parser.ext.ui.HelpFrame;
 import ua.kiev.kpi.sc.parser.ext.ui.Preferences;
 import ua.kiev.kpi.sc.parser.ext.ui.TerminalCodesModel;
@@ -103,6 +104,7 @@ public class LexerUI extends JFrame {
 		ActionTableModel model = new ActionTableModel();
 		tblActionTable = new JTable(model);
 		model.applyColumnHeaders(tblActionTable.getColumnModel());
+		tblActionTable.setDefaultRenderer(Object.class, new ActionTableRenderer());
 		
 		tblActionTable.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
 		JScrollPane pane = new JScrollPane(tblActionTable);
