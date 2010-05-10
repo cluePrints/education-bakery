@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JTable;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class ActionTableRenderer extends DefaultTableCellRenderer{
@@ -15,23 +18,28 @@ public class ActionTableRenderer extends DefaultTableCellRenderer{
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
-		Component comp =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
+		Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
 				row, column);
-		setBackground(Color.WHITE);
+		Color newColor = Color.WHITE;
 		if (value instanceof String) {
 			String str = (String) value;
 			if (str.startsWith(ActionTableModel.PREFFIX_ERROR)) {
-				setBackground(COLOR_ERROR);
+				newColor = COLOR_ERROR;
 			}
 			if (str.startsWith(ActionTableModel.PREFFIX_REDUCE)) {
-				setBackground(COLOR_REDUCE);
+				newColor = COLOR_REDUCE;
 			}
 			if (str.startsWith(ActionTableModel.PREFFIX_SHIFT)) {
-				setBackground(COLOR_SHIFT);
+				newColor = COLOR_SHIFT;
 			}
 		} else if (value instanceof Integer){
-			setBackground(COLOR_NUMBER);
+			newColor = COLOR_NUMBER;
 		}
+		if (isSelected) {
+			newColor = newColor.darker();
+			this.setBorder(new LineBorder(newColor.darker()));
+		}
+		setBackground(newColor);
 		return comp;
 	}
 }
