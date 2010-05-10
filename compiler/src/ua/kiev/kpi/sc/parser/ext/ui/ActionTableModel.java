@@ -20,6 +20,10 @@ import ua.kiev.kpi.sc.parser.parser.Parser;
 import ua.kiev.kpi.sc.parser.parser.TokenIndex;
 
 public class ActionTableModel extends AbstractTableModel{
+	public static final String PREFFIX_ACCEPT = "ACCEPT";
+	public static final String PREFFIX_ERROR = "e";
+	public static final String PREFFIX_REDUCE = "r";
+	public static final String PREFFIX_SHIFT = "s";
 	private final int SHIFT = 0;
 	private final int REDUCE = 1;
 	private final int[][][] actionTable = Parser.actionTable;
@@ -78,19 +82,19 @@ public class ActionTableModel extends AbstractTableModel{
 			return stateNum;
 		} else {
 			if (columnIndex<=1+TERMINAL_COUNT+NON_TERMINAL_COUNT) {
-				int terminalNum = columnIndex-1;
+				int terminalNum = columnIndex-1/*Number column*/ -1/*Any terminal column*/;
 				int[][] actions = actionTable[stateNum];
 				for (int i=0; i<actions.length; i++) {
 					if (actions[i][0] == terminalNum) {
 						int type = actions[i][1];
 						if (type == Parser.SHIFT) {
-							return "s"+actions[i][2];
+							return PREFFIX_SHIFT+actions[i][2];
 						} else if (type == Parser.REDUCE) {
-							return "r"+actions[i][2];
+							return PREFFIX_REDUCE+actions[i][2];
 						} else if (type == Parser.ERROR) {
-							return "e"+actions[i][2];
+							return PREFFIX_ERROR+actions[i][2];
 						} else if (type == Parser.ACCEPT) {
-							return "ACCEPT";
+							return PREFFIX_ACCEPT;
 						}
 					}
 				}
@@ -100,8 +104,7 @@ public class ActionTableModel extends AbstractTableModel{
 	}
 	public void applyColumnHeaders(TableColumnModel model) {
 		List<String> headers = getColumnHeaders();
-		model.getColumn(0).setHeaderValue("state");
-		for (int i=1; i<model.getColumnCount(); i++) {
+		for (int i=0; i<model.getColumnCount(); i++) {
 			TableColumn col = model.getColumn(i);
 			col.setHeaderValue(headers.get(i));
 			col.setPreferredWidth(35);
@@ -114,6 +117,7 @@ public class ActionTableModel extends AbstractTableModel{
 		try {
 			LinkedList<String> result = getTokenNamesIndexed();						
 			result.add(0, "#state");
+			result.add(1, "default");
 			
 			return result;
 		} catch (Throwable th) {
