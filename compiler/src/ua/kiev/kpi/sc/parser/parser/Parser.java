@@ -19,7 +19,8 @@ public class Parser
 {
     public final Analysis ignoredTokens = new AnalysisAdapter();
     ReduceRulesMapping rr = new ReduceRulesMapping();
-    public static String result;
+    public static String readableRulesTriggered;
+    public static List<Integer> triggeredRulesInd;
     protected ArrayList nodeList;
 
     private final Lexer lexer;
@@ -48,7 +49,7 @@ public class Parser
     private void push(int numstate, ArrayList listNode, boolean hidden) throws ParserException, LexerException, IOException
     {
     	
-    	result += rr.getRepresentation(listNode);
+    	readableRulesTriggered += rr.getRepresentation(listNode);
         this.nodeList = listNode;
 
         if(!hidden)
@@ -118,6 +119,8 @@ public class Parser
     
     public Start parse() throws ParserException, LexerException, IOException
     {
+    	triggeredRulesInd = new LinkedList<Integer>();
+    	readableRulesTriggered = "";
         push(0, null, true);
         List<Node> ign = null;
         while(true)
@@ -179,6 +182,7 @@ public class Parser
                     }
 		    break;
                 case REDUCE:
+                	triggeredRulesInd.add(this.action[1]);
                     switch(this.action[1])
                     {
                     case 0: /* reduce ASingleCompilationUnit */
