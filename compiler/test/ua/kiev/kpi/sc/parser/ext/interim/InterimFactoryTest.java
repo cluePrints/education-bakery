@@ -40,7 +40,7 @@ public class InterimFactoryTest {
 		InterimsFactory f = new InterimsFactory();
 		f.setRegistry(registryMock);
 		
-		Interim result = f.create(2, NOT_EXISTING);
+		Interim result = f.create(-500, NOT_EXISTING);
 		Assert.assertNull(result);
 	}
 	
@@ -99,14 +99,15 @@ public class InterimFactoryTest {
 	private InterimsRegistry createMockRegistry() {
 		InterimsRegistry registryMock = EasyMock.createMock(InterimsRegistry.class);		
 		Interim i1 = new Interim1();
-		Interim i2 = new Interim1();
-		Interim i3 = new Interim1();
+		Interim i2 = new Interim2();
+		Interim i3 = new Interim3();
 		List<Interim> lst = new LinkedList<Interim>();
 		lst.add(i1);
 		lst.add(i2);
 		lst.add(i3);
 		
-		EasyMock.expect(registryMock.lookupAll()).andReturn(lst);
+		EasyMock.expect(registryMock.lookupAll()).andReturn(lst).anyTimes();
+		EasyMock.replay(registryMock);
 		return registryMock;
 	}
 }
