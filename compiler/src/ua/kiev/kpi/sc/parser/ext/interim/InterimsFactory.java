@@ -9,7 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 public class InterimsFactory {
-	private InterimsRegistry registry;
+	private InterimsRegistry registry = new InterimRegistryImpl();
 
 	public Interim create(final int currentRuleNum, final Class<? extends Node> currentNodeFoldedClass)
 	{

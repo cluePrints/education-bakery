@@ -37,6 +37,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import com.google.common.collect.Iterables;
+
+import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
 import ua.kiev.kpi.sc.parser.ext.ui.ActionTableModel;
@@ -62,6 +65,7 @@ public class LexerUI extends JFrame {
 	private JTextArea taParsedTree;
 	private JTextArea taErrors;
 	private JTextArea taRR;
+	private JTextArea taPoliz;
 	private JTable tblActionTable;
 	private JTable terminalCodesTable;
 	private JButton btnExecute;
@@ -94,6 +98,10 @@ public class LexerUI extends JFrame {
 		taRR = new JTextArea("<RR>", 50, 45);
 		taRR.setEditable(false);
 		taRR.setBackground(Color.GRAY);
+		
+		taPoliz = new JTextArea("<Poliz here>", 50, 45);
+		taPoliz.setEditable(false);
+		taPoliz.setBackground(Color.GRAY);
 		
 		trScopes = new JTree();
 		
@@ -164,6 +172,9 @@ public class LexerUI extends JFrame {
 		
 		tabPane.addTab("Scopes", p);
 		
+		tabPane.addTab("RR", new JScrollPane(taRR));
+		tabPane.addTab("Poliz", new JScrollPane(taPoliz));
+		
 		tabPane.addTab("Errors", new JScrollPane(taErrors));
 		//add(new JScrollPane(taResult), BorderLayout.EAST);
 		JPanel leftPanel = new JPanel();
@@ -185,8 +196,7 @@ public class LexerUI extends JFrame {
 		helpMenu.add(grammarItem);
 		bar.add(helpMenu);
 		leftPanel.add(bar, BorderLayout.NORTH);
-		
-		
+			
 		setLayout(new GridLayout(1,2));
 		add(leftPanel);
 		add(tabPane);
@@ -201,15 +211,16 @@ public class LexerUI extends JFrame {
 				try {
 					taLexerResult.setText("");
 					taRR.setText("");
+					taPoliz.setText("");
 					taParsedTree.setText("");
 					tabPane.setSelectedIndex(0);									
 					
 					taLexerResult.setText(runLexer());					
 					taParsedTree.setText(parseTree());
 					StringBuilder rulesTriggered = new StringBuilder();
-					for (int i=0; i<Parser.triggeredRulesInd.size(); i++)
+					for (Integer ind : Parser.triggeredRulesInd)
 					{
-						String ruleRepr = ReduceRulesMapping.getRepresentation(Parser.triggeredRulesInd.get(i));
+						String ruleRepr = ReduceRulesMapping.getRepresentation(ind);
 						rulesTriggered.append(ruleRepr);
 						rulesTriggered.append("\n");
 					}
@@ -221,13 +232,21 @@ public class LexerUI extends JFrame {
 					}
 					taRR.setText(rulesTriggeredStr);
 					
+					
+					StringBuilder b = new StringBuilder();
+					for (Translation t : Parser.poliz)
+					{
+						b.append(t.toString());
+					}					
+					taPoliz.setText(b.toString());
+					
 					scopeTreeRoot = runScoper();
 					trScopes.setModel(new DefaultTreeModel(new TreeNodeAdaptor(scopeTreeRoot)));
 					
 					runScopeChecker(scopeTreeRoot);
 					tabPane.setSelectedIndex(4);
 				} catch (Exception ex) {
-					tabPane.setSelectedIndex(5);
+					tabPane.setSelectedIndex(6);
 					
 					StringWriter buf = new StringWriter();
 					if (!Preferences.productionMode) {

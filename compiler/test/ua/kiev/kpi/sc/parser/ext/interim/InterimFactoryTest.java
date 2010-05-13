@@ -11,6 +11,7 @@ import org.junit.Test;
 import ua.kiev.kpi.sc.parser.node.AIntLiteralNumeric;
 import ua.kiev.kpi.sc.parser.node.ANullLiteral;
 import ua.kiev.kpi.sc.parser.node.ANumericLiteral;
+import ua.kiev.kpi.sc.parser.node.Node;
 import ua.kiev.kpi.sc.parser.node.PLiteral;
 import ua.kiev.kpi.sc.parser.node.TLBkt;
 import ua.kiev.kpi.sc.parser.node.TPublic;
@@ -115,10 +116,16 @@ public class InterimFactoryTest {
 }
 
 @TriggeredFor(ruleIdArray={1}, reductedNodesArray={TStar.class})
-class Interim1 implements Interim {}
+class Interim1 extends DummyInterim {}
 
 @TriggeredFor(ruleIdArray={1}, reductedNodesArray={TStar.class})
-class Interim2 implements Interim {}
+class Interim2 extends DummyInterim {}
 
 @TriggeredFor(ruleIdArray={2, 5, 11, 92}, reductedNodesArray={TLBkt.class, TRBkt.class, PLiteral.class})
-class Interim3 implements Interim {}
+class Interim3 extends DummyInterim {}
+class DummyInterim implements Interim
+{
+	public Translation translate(Node node) {
+		return null;
+	}	
+}
