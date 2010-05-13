@@ -9,7 +9,16 @@ import com.google.common.collect.Lists;
 
 public class InterimRegistryImpl implements InterimsRegistry {
 	private PackageLookup lookup = new PackageLookup();
-	public Iterable<? extends Interim> lookupAll() {
+	private Iterable<? extends Interim> cache = null;
+	
+	public synchronized Iterable<? extends Interim> lookupAll() {
+		if (cache == null) {
+			cache = lookup();
+		}
+		return cache;
+	}
+	
+	private Iterable<? extends Interim> lookup() {
 		Iterable<Class<? extends Interim>> classes;
 		try {
 			classes = lookup.getClasses("ua.kiev.kpi.sc.parser.ext.interim.impl", Interim.class);			
