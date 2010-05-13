@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import ua.kiev.kpi.sc.parser.node.AIntLiteralNumeric;
 import ua.kiev.kpi.sc.parser.node.ANullLiteral;
+import ua.kiev.kpi.sc.parser.node.ANumericLiteral;
 import ua.kiev.kpi.sc.parser.node.PLiteral;
 import ua.kiev.kpi.sc.parser.node.TLBkt;
 import ua.kiev.kpi.sc.parser.node.TPublic;
@@ -68,11 +69,11 @@ public class InterimFactoryTest {
 		f.setRegistry(registryMock);
 		
 		Interim result = f.create(-51, UNIQUIE_1);
-		Assert.assertNull(result);
+		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof Interim3);
 		
 		result = f.create(-51, UNIQUE_2);
-		Assert.assertNull(result);
+		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof Interim3);
 	}
 	
@@ -84,24 +85,25 @@ public class InterimFactoryTest {
 		f.setRegistry(registryMock);
 		
 		Interim result = f.create(-51, PLiteral.class);
-		Assert.assertNull(result);
+		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof Interim3);
 		
 		result = f.create(-51, ANullLiteral.class);
-		Assert.assertNull(result);
+		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof Interim3);
 		
-		result = f.create(-51, AIntLiteralNumeric.class);
-		Assert.assertNull(result);
+		result = f.create(-51, ANumericLiteral.class);
+		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof Interim3);
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	private InterimsRegistry createMockRegistry() {
 		InterimsRegistry registryMock = EasyMock.createMock(InterimsRegistry.class);		
 		Interim i1 = new Interim1();
 		Interim i2 = new Interim2();
 		Interim i3 = new Interim3();
-		List<Interim> lst = new LinkedList<Interim>();
+		List lst = new LinkedList<Interim>();
 		lst.add(i1);
 		lst.add(i2);
 		lst.add(i3);

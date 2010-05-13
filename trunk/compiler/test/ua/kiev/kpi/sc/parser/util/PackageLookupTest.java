@@ -9,7 +9,7 @@ public class PackageLookupTest {
 	public void test() throws ClassNotFoundException
 	{
 		PackageLookup lookup = new PackageLookup();
-		Iterable<Class<?>> classes = lookup.getClasses(getClass().getPackage().getName());
+		Iterable<?> classes = lookup.getClasses(getClass().getPackage().getName(), getClass());
 		Assert.assertTrue(classes.iterator().hasNext());
 	}
 }

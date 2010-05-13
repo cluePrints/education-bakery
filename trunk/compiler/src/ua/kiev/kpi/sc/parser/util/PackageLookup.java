@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 // TODO: move me to other project
 public class PackageLookup {
-	public Iterable<Class<?>> getClasses(String pckgname)
+	public <T> Iterable<Class<? extends T>> getClasses(String pckgname, Class<T> parent)
 			throws ClassNotFoundException {
-		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+		ArrayList<Class<? extends T>> classes = new ArrayList<Class<? extends T>>();
 		// Get a File object for the package
 		File directory = null;
 		try {
@@ -33,8 +33,11 @@ public class PackageLookup {
 				// we are only interested in .class files
 				if (files[i].endsWith(".class")) {
 					// removes the .class extension
-					classes.add(Class.forName(pckgname + '.'
-							+ files[i].substring(0, files[i].length() - 6)));
+					Class<?> clazz = Class.forName(pckgname + '.'
+							+ files[i].substring(0, files[i].length() - 6));
+					if (parent != null && parent.isAssignableFrom(clazz)) {
+						classes.add(clazz.asSubclass(parent));
+					}
 				}
 			}
 		} else {
@@ -42,6 +45,5 @@ public class PackageLookup {
 					+ " does not appear to be a valid package");
 		}
 		return classes;
-	}
-
+	}	
 }
