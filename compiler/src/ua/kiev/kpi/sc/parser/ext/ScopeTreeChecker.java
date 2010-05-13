@@ -189,9 +189,8 @@ public class ScopeTreeChecker extends DepthFirstAdapter{
 						funcName));
 			
 			}
-			Symbol sym = classScope.getDeclaredSymbol(funcName);		
-			if (sym != null && sym instanceof FuncSymbol) {
-				FuncSymbol func = (FuncSymbol) sym;
+			FuncSymbol func = classScope.getDeclaredFuncSymbol(funcName);		
+			if (func != null) {
 				// TODO: check params
 			} else {
 				throw new MyException(String.format("Function %3$s for class %2$s was not found (line %1$d). ",
@@ -202,9 +201,8 @@ public class ScopeTreeChecker extends DepthFirstAdapter{
 		} else {
 			// call()
 			Scope classScope = currentScope.getParentClassScope();
-			Symbol sym = classScope.getDeclaredSymbol(funcName);		
-			if (sym != null && sym instanceof FuncSymbol) {
-				FuncSymbol func = (FuncSymbol) sym;
+			FuncSymbol func = classScope.getDeclaredFuncSymbol(funcName);		
+			if (func != null) {
 				// TODO: check params
 			} else {
 				throw new MyException(String.format("Function %3$s for class %2$s was not found (line %1$d). ",
@@ -213,7 +211,6 @@ public class ScopeTreeChecker extends DepthFirstAdapter{
 						funcName));
 			}
 		}
-		//variableUsageEncountered(node.getIdentifier().getLine(), node.getIdentifier().getText());
 		super.caseACallElementalExpression(node);
 		
 	}
@@ -230,18 +227,18 @@ public class ScopeTreeChecker extends DepthFirstAdapter{
 	}
 
 
-	private Symbol variableUsageEncountered(int line, String name) {
-		Symbol var = currentScope.getVisibleSymbol(name);
+	private VarSymbol variableUsageEncountered(int line, String name) {
+		VarSymbol var = currentScope.getVisibleVarSymbol(name);
 		if (var == null) {
 			Scope classScope = currentScope.getParentClassScope();
 			if (classScope != null) {
-				var = classScope.getVisibleSymbol(name);
+				var = classScope.getVisibleVarSymbol(name);
 			}
 			if (var == null && lastVarClass != null) {
 				classScope = lastVarClass.getScope();
 			}
 			if (classScope != null) {
-				var = classScope.getVisibleSymbol(name);
+				var = classScope.getVisibleVarSymbol(name);
 			}
 		}
 		if (var == null) {

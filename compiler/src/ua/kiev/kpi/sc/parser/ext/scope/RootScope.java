@@ -2,6 +2,7 @@ package ua.kiev.kpi.sc.parser.ext.scope;
 
 import ua.kiev.kpi.sc.parser.ext.id.Symbol;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
+import ua.kiev.kpi.sc.parser.ext.id.VarSymbol;
 
 
 public class RootScope extends Scope{
@@ -17,10 +18,9 @@ public class RootScope extends Scope{
 	 */
 	private static final Scope EMPTY_SCOPE = new Scope(null) {
 		public void addIdentifier(Symbol id) {};
-		@Override
-		public Symbol getDeclaredSymbol(String name) {
+		protected <T extends Symbol> T getDeclaredSymbol(String name, java.lang.Class<T> clazz) {
 			return null;
-		}
+		};
 		
 		@Override
 		public Symbol getScopeHeaderSymbol() {
@@ -28,8 +28,8 @@ public class RootScope extends Scope{
 		}
 		
 		@Override
-		public Symbol getVisibleSymbol(String name) {
+		public VarSymbol getVisibleVarSymbol(String name) {
 			return null;
-		}
+		};
 	};
 }

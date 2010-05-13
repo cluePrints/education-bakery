@@ -1,23 +1,34 @@
 package ua.kiev.kpi.sc.parser.ext;
 
+import java.util.Collections;
+import java.util.List;
+
 import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
 import ua.kiev.kpi.sc.parser.ext.id.FuncSymbol;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.id.VarSymbol;
 import ua.kiev.kpi.sc.parser.ext.scope.RootScope;
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
+import ua.kiev.kpi.sc.parser.node.AArrayVariableType;
 import ua.kiev.kpi.sc.parser.node.AClassBody;
 import ua.kiev.kpi.sc.parser.node.AConstantDefinition;
 import ua.kiev.kpi.sc.parser.node.ACycleCycleOperator;
 import ua.kiev.kpi.sc.parser.node.AFunctionDeclaration;
+import ua.kiev.kpi.sc.parser.node.AMultipleNVarFormalArgList;
 import ua.kiev.kpi.sc.parser.node.ANormalFunctionBody;
 import ua.kiev.kpi.sc.parser.node.ANotPublicClass;
+import ua.kiev.kpi.sc.parser.node.ANothingFormalArgList;
 import ua.kiev.kpi.sc.parser.node.APublicClass;
+import ua.kiev.kpi.sc.parser.node.AScalarVariableType;
 import ua.kiev.kpi.sc.parser.node.ASimpleIf;
+import ua.kiev.kpi.sc.parser.node.ASingleVarFormalArgList;
 import ua.kiev.kpi.sc.parser.node.AVariableDefinition;
 import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
+import ua.kiev.kpi.sc.parser.node.PFormalArgList;
 import ua.kiev.kpi.sc.parser.node.PVariableName;
 import ua.kiev.kpi.sc.parser.node.PVariableType;
+
+import com.google.common.collect.Lists;
 
 // TODO: replace this class and do this simultaneously with parsing to be efficient 
 public class ScopeTreeBuilder extends DepthFirstAdapter{	
@@ -64,11 +75,53 @@ public class ScopeTreeBuilder extends DepthFirstAdapter{
 	public void inAFunctionDeclaration(AFunctionDeclaration node) {
 		FuncSymbol func = new FuncSymbol();
 		func.setName(node.getFunctionName().toString());
+		
+		PFormalArgList lst = node.getFormalArgList();
+		List<VarSymbol> params = Lists.newLinkedList();
+		do {
+			if (lst instanceof ASingleVarFormalArgList) {
+				ASingleVarFormalArgList single = (ASingleVarFormalArgList) lst;
+				lst = single.getFormalArgList(); 
+				
+				AVariableDefinition def = (AVariableDefinition) single.getVariableDefinition();
+				VarSymbol var = buildVar(def);
+				params.add(var);
+			} else if (lst instanceof AMultipleNVarFormalArgList){
+				AMultipleNVarFormalArgList multi = (AMultipleNVarFormalArgList) lst;
+				AVariableDefinition def = (AVariableDefinition) multi.getVariableDefinition();
+				VarSymbol var = buildVar(def);
+				params.add(var);
+			}
+		} while (lst instanceof ASingleVarFormalArgList);
+		func.setParams(params);
+		
 		currentScope = new Scope(currentScope, func);
 		
 		currentScope.setDefLine(node.getLPar().getLine());
 		currentScope.setDefPos(node.getLPar().getPos());
 		super.inAFunctionDeclaration(node);
+	}
+
+	private VarSymbol buildVar(AVariableDefinition def) {
+		String varName = def.getVariableName().toString();
+		String typeName;
+		boolean isArray = false;
+		PVariableType type = def.getVariableType();
+		if (type instanceof AArrayVariableType) {
+			isArray = true;	
+			typeName = ((AArrayVariableType) type).getType().toString();
+		} else if (type instanceof AScalarVariableType) {
+			isArray = false;
+			typeName = type.toString();
+		} else {
+			throw new MyException("Unknown var declaration type");
+		}
+		VarSymbol symbol = new VarSymbol();
+		symbol.setArray(isArray);
+		symbol.setAssignable(true);
+		symbol.setName(varName);
+		symbol.setType(typeName);
+		return symbol;
 	}	
 	
 	@Override

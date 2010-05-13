@@ -1,13 +1,20 @@
 package ua.kiev.kpi.sc.parser.ext.scope;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+import ua.kiev.kpi.sc.parser.ext.id.FuncSymbol;
 import ua.kiev.kpi.sc.parser.ext.id.ScopeException;
 import ua.kiev.kpi.sc.parser.ext.id.Symbol;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
+import ua.kiev.kpi.sc.parser.ext.id.VarSymbol;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
 /**
  * No statics is cool thing for scoping.
  * No declarations in loop/if headers is cool.
@@ -16,7 +23,7 @@ import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 public class Scope {
 	private Scope parent;
 	private Symbol headerSymbol;
-	private Map<String, Symbol> declaredIdentifiers = new HashMap<String, Symbol>();
+	private Multimap<String, Symbol> declaredIdentifiers = HashMultimap.create();
 	private List<Scope> childScopes = new LinkedList<Scope>();
 	
 	public Scope(Scope parent) {
@@ -50,10 +57,44 @@ public class Scope {
 	}
 	
 	public void addIdentifier(Symbol id) {
-		if (isSymbolVisible(id.getName()) && !(getVisibleSymbol(id.getName()) instanceof TypeSymbol)) {
-			throw new ScopeException("Symbol '"+id.getName()+"' is already defined.");
-		}
+		assertNoSuchVariableDeclared(id);
+		assertNoSuchFunctionDeclared(id);
 		declaredIdentifiers.put(id.getName(), id);
+	}
+	
+	private void assertNoSuchVariableDeclared(Symbol id)
+	{
+		if (id instanceof VarSymbol) {
+			Collection<Symbol> symbols = declaredIdentifiers.get(id.getName());
+			for (Symbol symbol : symbols) {
+				if (symbol instanceof VarSymbol) {
+					throw new ScopeException("Variable '"+id.getName()+"' already exists in current scope");
+				}
+			}
+		}
+	}
+	
+	private void assertNoSuchFunctionDeclared(Symbol sym)
+	{		
+		if (sym instanceof FuncSymbol) {
+			final FuncSymbol func = (FuncSymbol) sym;
+
+			Collection<Symbol> symbols = declaredIdentifiers.get(sym.getName());
+			Iterable<FuncSymbol> funcs = Iterables.filter(symbols, FuncSymbol.class);
+			
+			funcs = Iterables.filter(funcs, new Predicate<FuncSymbol>() {
+				public boolean apply(FuncSymbol input) {
+					boolean sameName = func.getName().equals(input.getName());
+					boolean sameArgList = func.getParams().equals(input.getParams());
+					return sameName && sameArgList;
+				}
+			});
+			
+			Iterator<FuncSymbol> fIterator = funcs.iterator();
+			if (fIterator.hasNext()) {
+				throw new ScopeException("Function '" + func.getName() + "' already exists in current scope");
+			}
+		}
 	}
 	
 	public void addChildScope(Scope scope) {
@@ -74,17 +115,11 @@ public class Scope {
 	public int getChildScopesCount() {
 		return childScopes.size();
 	}
-	
-	/**
-	 * Get identifier from this scope or some of the parent's.
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public Symbol getVisibleSymbol(String name) {
-		Symbol result = getDeclaredSymbol(name);	
+
+	public VarSymbol getVisibleVarSymbol(String name) {
+		VarSymbol result = getDeclaredVarSymbol(name);	
 		if (result == null) {			
-			result = parent.getVisibleSymbol(name);
+			result = parent.getVisibleVarSymbol(name);
 		}
 		
 		/*
@@ -99,15 +134,36 @@ public class Scope {
 		return result;
 	}
 	
-	/**
-	 * 
-	 * Get identifier from this scope only
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public Symbol getDeclaredSymbol(String name) {
-		return declaredIdentifiers.get(name);		
+	public VarSymbol getDeclaredVarSymbol(String name)
+	{
+		return getDeclaredSymbol(name, VarSymbol.class);
+	}
+	
+	public FuncSymbol getDeclaredFuncSymbol(String name)
+	{
+		return getDeclaredSymbol(name, FuncSymbol.class);
+	}
+	
+	protected <T extends Symbol> T getDeclaredSymbol(final String name, Class<T> clazz) {
+		Collection<Symbol> symbols = declaredIdentifiers.get(name);
+		Iterable<T> vars = Iterables.filter(symbols, clazz);
+		
+		vars = Iterables.filter(vars, new Predicate<T>() {
+			public boolean apply(T input) {				
+				return name.equals(input.getName());
+			}
+		});
+		
+		Iterator<T> vIterator = vars.iterator();
+		T result = null;
+		if (vIterator.hasNext()) {
+			result = vIterator.next();
+			if (vIterator.hasNext()) {
+				throw new ScopeException("Two same typed symbols found in scope: "+name+"\n"+vIterator.next()+"\n"+result);
+			}
+		}
+		
+		return result;		
 	}
 	
 	public Scope getSymbolDeclarationScope(String name) {
@@ -123,25 +179,7 @@ public class Scope {
 	}
 	
 	public TypeSymbol getClassSymbol(String name) {
-		Symbol possiblyClass = getRoot().getDeclaredSymbol(name);
-		if (possiblyClass instanceof TypeSymbol) {
-			return (TypeSymbol) possiblyClass;
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns true if identifier is visible from this scope
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public boolean isSymbolVisible(String name) {
-		return getVisibleSymbol(name) != null;
-	}
-	
-	public boolean isSymbolDeclared(String name) {
-		return getDeclaredSymbol(name) != null;
+		return getRoot().getDeclaredSymbol(name, TypeSymbol.class);
 	}
 	
 	public Symbol getHeaderSymbol() {
