@@ -2,16 +2,24 @@
 
 package ua.kiev.kpi.sc.parser.parser;
 
-import ua.kiev.kpi.sc.parser.lexer.*;
-import ua.kiev.kpi.sc.parser.node.*;
-import ua.kiev.kpi.sc.parser.analysis.*;
-import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
-
-import java.util.*;
-
-import java.io.DataInputStream;
 import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Queue;
+
+import ua.kiev.kpi.sc.parser.analysis.Analysis;
+import ua.kiev.kpi.sc.parser.analysis.AnalysisAdapter;
+import ua.kiev.kpi.sc.parser.ext.interim.Interim;
+import ua.kiev.kpi.sc.parser.ext.interim.InterimsFactory;
+import ua.kiev.kpi.sc.parser.ext.interim.Translation;
+import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
+import ua.kiev.kpi.sc.parser.lexer.Lexer;
+import ua.kiev.kpi.sc.parser.lexer.LexerException;
+import ua.kiev.kpi.sc.parser.node.*;
 
 
 @SuppressWarnings(value={"nls", "unchecked"})
@@ -21,6 +29,8 @@ public class Parser
     ReduceRulesMapping rr = new ReduceRulesMapping();
     public static String readableRulesTriggered;
     public static List<Integer> triggeredRulesInd;
+    public static LinkedList<Translation> poliz;
+    private static InterimsFactory interimFactory = new InterimsFactory();
     protected ArrayList nodeList;
 
     private final Lexer lexer;
@@ -66,6 +76,20 @@ public class Parser
         State s = (State) this.stack.next();
         s.state = numstate;
         s.nodes = this.nodeList;
+        
+        if (numstate < 86) {    
+        	Object obj = nodeList.get(0);
+        	if (obj instanceof Node) {
+        		Node node = (Node) obj;        	
+        		Interim interim = interimFactory.create(this.action[1], node.getClass());
+        		if (interim != null) {
+        			Translation translation = interim.translate(node);
+        			poliz.push(translation);
+        		} else {
+        			//poliz.push(Translation.EMPTY);
+        		}
+        	}
+        }
     }
 
     private int goTo(int index)
@@ -120,6 +144,7 @@ public class Parser
     public Start parse() throws ParserException, LexerException, IOException
     {
     	triggeredRulesInd = new LinkedList<Integer>();
+    	poliz = new LinkedList<Translation>();
     	readableRulesTriggered = "";
         push(0, null, true);
         List<Node> ign = null;
@@ -739,7 +764,7 @@ public class Parser
 			push(goTo(42), list, true);
 		    }
 		    break;
-                    }
+                    }                    
                     break;
                 case ACCEPT:
                     {
