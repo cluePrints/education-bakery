@@ -26,7 +26,6 @@ public class InterimsFactory {
 					}
 					for (Class<? extends Node> clazz : trig.reductedNodesArray()) {
 						if (clazz.isAssignableFrom(currentNodeFoldedClass)) {
-							;;
 							return true;
 						}
 					}
