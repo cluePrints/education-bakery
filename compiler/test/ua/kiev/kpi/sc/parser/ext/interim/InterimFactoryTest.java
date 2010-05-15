@@ -8,11 +8,12 @@ import junit.framework.Assert;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-import ua.kiev.kpi.sc.parser.node.AIntLiteralNumeric;
 import ua.kiev.kpi.sc.parser.node.ANullLiteral;
 import ua.kiev.kpi.sc.parser.node.ANumericLiteral;
+import ua.kiev.kpi.sc.parser.node.EOF;
 import ua.kiev.kpi.sc.parser.node.Node;
 import ua.kiev.kpi.sc.parser.node.PLiteral;
+import ua.kiev.kpi.sc.parser.node.TClassToken;
 import ua.kiev.kpi.sc.parser.node.TLBkt;
 import ua.kiev.kpi.sc.parser.node.TPublic;
 import ua.kiev.kpi.sc.parser.node.TRBkt;
@@ -24,24 +25,18 @@ public class InterimFactoryTest {
 	private static final Class<TLBkt> UNIQUIE_1 = TLBkt.class;
 	private static final Class<TStar> HAS_DUPLICATE = TStar.class;
 	private static final Class<TPublic> NOT_EXISTING = TPublic.class;
-
+	
+	private InterimsFactory f = createFactory();
+	
 	@Test(expected=Throwable.class)
 	public void doubleFoundThrowsException()
 	{
-		InterimsRegistry registryMock = createMockRegistry();
-		InterimsFactory f = new InterimsFactory();
-		f.setRegistry(registryMock);
-		
 		f.create(1, HAS_DUPLICATE);
 	}
 	
 	@Test
 	public void notFoundReturnsNull()
 	{
-		InterimsRegistry registryMock = createMockRegistry();
-		InterimsFactory f = new InterimsFactory();
-		f.setRegistry(registryMock);
-		
 		Interim result = f.create(-500, NOT_EXISTING);
 		Assert.assertNull(result);
 	}
@@ -49,10 +44,6 @@ public class InterimFactoryTest {
 	@Test
 	public void lookupById()
 	{
-		InterimsRegistry registryMock = createMockRegistry();
-		InterimsFactory f = new InterimsFactory();
-		f.setRegistry(registryMock);
-		
 		Interim result = f.create(2, NOT_EXISTING);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof Interim3);
@@ -65,10 +56,6 @@ public class InterimFactoryTest {
 	@Test
 	public void lookupByClass()
 	{
-		InterimsRegistry registryMock = createMockRegistry();
-		InterimsFactory f = new InterimsFactory();
-		f.setRegistry(registryMock);
-		
 		Interim result = f.create(-51, UNIQUIE_1);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof Interim3);
@@ -81,10 +68,6 @@ public class InterimFactoryTest {
 	@Test
 	public void lookupByClassIsPolymorphic()
 	{
-		InterimsRegistry registryMock = createMockRegistry();
-		InterimsFactory f = new InterimsFactory();
-		f.setRegistry(registryMock);
-		
 		Interim result = f.create(-51, PLiteral.class);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(result instanceof Interim3);
@@ -98,16 +81,41 @@ public class InterimFactoryTest {
 		Assert.assertTrue(result instanceof Interim3);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Test
+	public void emptyIdAnnotationWorks()
+	{
+		Interim result = f.create(-11, TClassToken.class);
+		Assert.assertTrue(result instanceof Interim4);
+	}
+	
+	@Test
+	public void emptyClassAnnotationWorks()
+	{
+		Interim result = f.create(3, EOF.class);
+		Assert.assertTrue(result instanceof Interim5);
+	}
+
+	private InterimsFactory createFactory() {
+		InterimsRegistry registryMock = createMockRegistry();
+		InterimsFactory f = new InterimsFactory();
+		f.setRegistry(registryMock);
+		return f;
+	}
+	
+	
+	
+	@SuppressWarnings({ "unchecked", "serial" })
 	private InterimsRegistry createMockRegistry() {
-		InterimsRegistry registryMock = EasyMock.createMock(InterimsRegistry.class);		
-		Interim i1 = new Interim1();
-		Interim i2 = new Interim2();
-		Interim i3 = new Interim3();
-		List lst = new LinkedList<Interim>();
-		lst.add(i1);
-		lst.add(i2);
-		lst.add(i3);
+		InterimsRegistry registryMock = EasyMock.createMock(InterimsRegistry.class);
+		List lst = new LinkedList<Interim>(){
+			{
+			add(new Interim1());
+			add(new Interim2());
+			add(new Interim3());
+			add(new Interim4());
+			add(new Interim5());
+			}
+		};
 		
 		EasyMock.expect(registryMock.lookupAll()).andReturn(lst).anyTimes();
 		EasyMock.replay(registryMock);
@@ -123,6 +131,13 @@ class Interim2 extends DummyInterim {}
 
 @TriggeredFor(ruleIdArray={2, 5, 11, 92}, reductedNodesArray={TLBkt.class, TRBkt.class, PLiteral.class})
 class Interim3 extends DummyInterim {}
+
+@TriggeredFor(ruleIdArray={}, reductedNodesArray={TClassToken.class})
+class Interim4 extends DummyInterim {}
+
+@TriggeredFor(ruleIdArray={3}, reductedNodesArray={})
+class Interim5 extends DummyInterim {}
+
 class DummyInterim implements Interim
 {
 	public Translation translate(Node node) {
