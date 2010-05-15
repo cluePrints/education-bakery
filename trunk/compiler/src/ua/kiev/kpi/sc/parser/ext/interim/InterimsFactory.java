@@ -21,13 +21,13 @@ public class InterimsFactory {
 					if (ruleId == currentRuleNum) {
 						return true;
 					}
-					if (currentNodeFoldedClass == null) {
-						return false;
-					}
-					for (Class<? extends Node> clazz : trig.reductedNodesArray()) {
-						if (clazz.isAssignableFrom(currentNodeFoldedClass)) {
-							return true;
-						}
+				}
+				if (currentNodeFoldedClass == null) {
+					return false;
+				}
+				for (Class<? extends Node> clazz : trig.reductedNodesArray()) {
+					if (clazz.isAssignableFrom(currentNodeFoldedClass)) {
+						return true;
 					}
 				}
 				return false;
