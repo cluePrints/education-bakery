@@ -1,0 +1,371 @@
+package ua.kiev.kpi.sc.parser.ext.interim.walker;
+
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
+import ua.kiev.kpi.sc.parser.ext.MyException;
+import ua.kiev.kpi.sc.parser.ext.interim.Translation;
+import ua.kiev.kpi.sc.parser.ext.interim.Translation.AbstractTranslation;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.Comment;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.FuncPointer;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.JumpAlways;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.JumpIfFalse;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.LabelDeclaration;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.Literal;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.Operation;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.TypePointer;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.VariablePointer;
+import ua.kiev.kpi.sc.parser.node.AAddSimpleExpression;
+import ua.kiev.kpi.sc.parser.node.AAndOperandOr;
+import ua.kiev.kpi.sc.parser.node.AArrElemElementalExpression;
+import ua.kiev.kpi.sc.parser.node.AArrayVariableType;
+import ua.kiev.kpi.sc.parser.node.AAssignOperator;
+import ua.kiev.kpi.sc.parser.node.ABooleanLiteral;
+import ua.kiev.kpi.sc.parser.node.ACallElementalExpression;
+import ua.kiev.kpi.sc.parser.node.ACondOperator;
+import ua.kiev.kpi.sc.parser.node.AConstantClassBodyElem;
+import ua.kiev.kpi.sc.parser.node.AConstantDefinition;
+import ua.kiev.kpi.sc.parser.node.ACycleCycleOperator;
+import ua.kiev.kpi.sc.parser.node.ACycleOperator;
+import ua.kiev.kpi.sc.parser.node.ADivSummand;
+import ua.kiev.kpi.sc.parser.node.AFunctionClassBodyElem;
+import ua.kiev.kpi.sc.parser.node.AGtComparisonExpression;
+import ua.kiev.kpi.sc.parser.node.AGteqComparisonExpression;
+import ua.kiev.kpi.sc.parser.node.AIdentifierElementalExpression;
+import ua.kiev.kpi.sc.parser.node.AIntLiteralNumeric;
+import ua.kiev.kpi.sc.parser.node.ALtComparisonExpression;
+import ua.kiev.kpi.sc.parser.node.ALteqComparisonExpression;
+import ua.kiev.kpi.sc.parser.node.AMulSummand;
+import ua.kiev.kpi.sc.parser.node.ANegMultiplier;
+import ua.kiev.kpi.sc.parser.node.ANormalFunctionBody;
+import ua.kiev.kpi.sc.parser.node.AOrExprExpression;
+import ua.kiev.kpi.sc.parser.node.ARecursiveElementalExpression;
+import ua.kiev.kpi.sc.parser.node.ARemSummand;
+import ua.kiev.kpi.sc.parser.node.ASubSimpleExpression;
+import ua.kiev.kpi.sc.parser.node.AVariableClassBodyElem;
+import ua.kiev.kpi.sc.parser.node.AVariableDefinition;
+import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
+
+public class InterimRepresentationBuilder extends DepthFirstAdapter {
+	private LinkedList<Translation> polizStack;
+	private LinkedList<Translation> additionalDataStack;
+	private Translation lastElemBeforeThisBlock;
+
+	public InterimRepresentationBuilder() {
+		reset();
+	}
+
+	public void reset() {
+		polizStack = new LinkedList<Translation>();
+		additionalDataStack = new LinkedList<Translation>();
+		polizStack.add(new Comment(">>START<<"));
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		Iterator<Translation> it = polizStack.descendingIterator();
+		while (it.hasNext()) {
+			Translation t = it.next();
+			if (t instanceof Comment) {
+				continue;
+			}
+			String comment = null;
+			if (t instanceof AbstractTranslation) {
+				comment = ((AbstractTranslation) t).getComment();
+			}
+			b.append(t);
+			if (comment != null) {
+				b.append("\n\n      // ");
+				b.append(comment);
+				b.append("\n");
+			}
+			if (it.hasNext() && comment == null) {
+				b.append(", ");
+			}
+		}
+		return b.toString();
+	}
+
+	/**
+	 * while (expr) { block; }
+	 * 
+	 * is converted to:
+	 * 
+	 * :LABEL0 expr LABEL1 jmpFalse block LABEL0 jmpAlways :LABEL1
+	 * 
+	 */
+	@Override
+	public void inACycleCycleOperator(ACycleCycleOperator node) {
+		mark();
+		LabelDeclaration label0 = LabelDeclaration.getInstance();
+		polizStack.push(label0);
+		additionalDataStack.push(label0);
+		super.inACycleCycleOperator(node);
+	}
+
+	private void mark() {
+		lastElemBeforeThisBlock = polizStack.peek();
+	}
+
+	@Override
+	public void outACycleCycleOperator(ACycleCycleOperator node) {
+		//addComment("while (" + node.getExpression() + ")");
+		LabelDeclaration label0 = (LabelDeclaration) additionalDataStack.pop();
+
+		Deque<Translation> blockData = new LinkedList<Translation>();
+		if (!polizStack.isEmpty()) {
+			Translation tmp = null;
+			do {
+				tmp = polizStack.pop();
+				blockData.push(tmp);
+			} while (tmp != label0 && !polizStack.isEmpty());
+			if (blockData.pop() != label0) {
+				throw new MyException(
+						"Oopsie... something expected on stack was not found");
+			}
+		} else {
+			throw new MyException(
+					"Oopsie... something expected on stack was not found");
+		}
+
+		Translation expr = blockData.pop();
+
+		LabelDeclaration label1 = LabelDeclaration.getInstance();
+
+		polizStack.push(label0);
+		polizStack.push(expr);
+		polizStack.push(label1.getPointer());
+		while (!blockData.isEmpty()) {
+			polizStack.push(blockData.pop());
+		}
+		polizStack.push(new JumpIfFalse());
+
+		polizStack.push(label0.getPointer());
+		polizStack.push(new JumpAlways());
+		polizStack.push(label1);
+
+		super.outACycleCycleOperator(node);
+	}
+
+	@Override
+	public void outABooleanLiteral(ABooleanLiteral node) {
+		polizStack.push(new Literal(node.toString()));
+	}
+
+	@Override
+	public void outAIntLiteralNumeric(AIntLiteralNumeric node) {
+		polizStack.push(new Literal(node.toString()));
+	}	
+
+
+	@Override
+	public void outAVariableDefinition(AVariableDefinition node) {
+		polizStack.push(new Literal(node.getVariableName().toString()));
+		if (node.getVariableType() instanceof AArrayVariableType) {
+			polizStack.push(new TypePointer(((AArrayVariableType) node
+					.getVariableType()).getType()));
+			polizStack.push(Operation.DEF_ARR());
+
+		} else {
+			polizStack.push(new TypePointer(node.getVariableType()));
+			polizStack.push(Operation.DEF_VAR());
+
+		}
+	}
+
+	@Override
+	public void outAConstantDefinition(AConstantDefinition node) {
+		polizStack.push(new Literal(node.getVariableName().toString()));
+
+		if (node.getVariableType() instanceof AArrayVariableType) {
+			polizStack.push(new TypePointer(((AArrayVariableType) node
+					.getVariableType()).getType()));
+			polizStack.push(Operation.DEF_ARR());
+
+		} else {
+			polizStack.push(new TypePointer(node.getVariableType()));
+			polizStack.push(Operation.DEF_VAR());
+
+		}
+		polizStack.push(Operation.MOD_FINAL());
+	}
+
+	@Override
+	public void outAAssignOperator(AAssignOperator node) {
+		polizStack.push(new VariablePointer(node.getVariableName()));
+		polizStack.push(Operation.ASSIGN());
+	}
+
+	/**
+	 * TODO: simple_if = if l_par expression r_par l_brc block r_brc;
+	 * 
+	 * conditional_operator = {simple} simple_if | {else} simple_if else l_brc
+	 * block r_brc;
+	 */
+
+	@Override
+	public void outAOrExprExpression(AOrExprExpression node) {
+		polizStack.push(Operation.OR());
+	}
+
+	@Override
+	public void outAAndOperandOr(AAndOperandOr node) {
+		polizStack.push(Operation.AND());
+	}
+
+	@Override
+	public void outAAddSimpleExpression(AAddSimpleExpression node) {
+		polizStack.push(Operation.ADD());
+	}
+
+	@Override
+	public void outASubSimpleExpression(ASubSimpleExpression node) {
+		polizStack.push(Operation.SUB());
+	}
+
+	@Override
+	public void outAGtComparisonExpression(AGtComparisonExpression node) {
+		polizStack.push(Operation.GT());
+	}
+
+	@Override
+	public void outALtComparisonExpression(ALtComparisonExpression node) {
+		polizStack.push(Operation.LT());
+	}
+
+	@Override
+	public void outALteqComparisonExpression(ALteqComparisonExpression node) {
+		polizStack.push(Operation.LE());
+	}
+
+	@Override
+	public void outAGteqComparisonExpression(AGteqComparisonExpression node) {
+		polizStack.push(Operation.GE());
+	}
+
+	@Override
+	public void outAMulSummand(AMulSummand node) {
+		polizStack.push(Operation.MUL());
+	}
+
+	@Override
+	public void outADivSummand(ADivSummand node) {
+		polizStack.push(Operation.DIV());
+	}
+
+	@Override
+	public void outARemSummand(ARemSummand node) {
+		polizStack.push(Operation.MOD());
+	}
+
+	@Override
+	public void outANegMultiplier(ANegMultiplier node) {
+		polizStack.push(Operation.NEGATION());
+	}
+
+	/**
+	 * TODO: {neg} l_par variable_type r_par cast; Ignore that?
+	 */
+
+	@Override
+	public void outAArrElemElementalExpression(AArrElemElementalExpression node) {
+		polizStack.push(Operation.ARRAY_ACCESS());
+	}
+
+	@Override
+	public void outACallElementalExpression(ACallElementalExpression node) {
+		polizStack.push(new FuncPointer(node.getIdentifier()));
+		polizStack.push(Operation.FUNC_CALL());
+	}
+
+	@Override
+	public void outAIdentifierElementalExpression(
+			AIdentifierElementalExpression node) {
+		polizStack.push(new VariablePointer(node));
+	}
+
+	@Override
+	public void outARecursiveElementalExpression(
+			ARecursiveElementalExpression node) {
+		polizStack.push(new VariablePointer(node.getIdentifier()));
+		super.outARecursiveElementalExpression(node);
+	}
+
+	/**
+	 * TODO: arglist
+	 * 
+	 * fact_arg_list = {single} expression | {multiple} expression comma
+	 * fact_arg_list;
+	 */
+
+	@Override
+	public void outAVoidFunctionBody(AVoidFunctionBody node) {
+		polizStack.push(Operation.EMPTY_RETURN());
+	}
+
+	@Override
+	public void outANormalFunctionBody(ANormalFunctionBody node) {
+		polizStack.push(Operation.RETURN());
+	}
+
+	private void addComment(String str) {
+		if (lastElemBeforeThisBlock instanceof AbstractTranslation) {
+			((AbstractTranslation) lastElemBeforeThisBlock).setComment(str);
+		}
+		lastElemBeforeThisBlock = null;
+	}
+
+	
+	@Override
+	public void inAConstantClassBodyElem(AConstantClassBodyElem node) {
+		mark();
+	}
+	
+	@Override
+	public void inAFunctionClassBodyElem(AFunctionClassBodyElem node) {
+		mark();
+	}
+	
+	@Override
+	public void inAVariableClassBodyElem(AVariableClassBodyElem node) {
+		mark();
+	}
+	
+	@Override
+	public void inACondOperator(ACondOperator node) {
+		mark();
+	}
+	
+	@Override
+	public void inACycleOperator(ACycleOperator node) {
+		mark();
+	}
+
+	@Override
+	public void outAConstantClassBodyElem(AConstantClassBodyElem node) {
+		addComment(node.toString());
+	}
+	
+	@Override
+	public void outAVariableClassBodyElem(AVariableClassBodyElem node) {
+		addComment(node.toString());
+	}
+	
+	@Override
+	public void outAFunctionClassBodyElem(AFunctionClassBodyElem node) {
+		addComment(node.toString());
+	}
+
+	@Override
+	public void outACondOperator(ACondOperator node) {
+		addComment(node.toString());
+	}
+	
+	@Override
+	public void outACycleOperator(ACycleOperator node) {
+		addComment(node.toString());
+	}
+}

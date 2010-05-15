@@ -40,6 +40,7 @@ import javax.swing.tree.TreeSelectionModel;
 import com.google.common.collect.Iterables;
 
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
+import ua.kiev.kpi.sc.parser.ext.interim.walker.InterimRepresentationBuilder;
 import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
 import ua.kiev.kpi.sc.parser.ext.ui.ActionTableModel;
@@ -233,25 +234,23 @@ public class LexerUI extends JFrame {
 					taRR.setText(rulesTriggeredStr);
 					
 					
-					StringBuilder b = new StringBuilder();
-					for (Translation t : Parser.poliz)
-					{
-						b.append(t.toString());
-					}					
-					taPoliz.setText(b.toString());
+					InterimRepresentationBuilder w = new InterimRepresentationBuilder();
+					syntaxTree.apply(w);
+					taPoliz.setText(w.toString());
 					
 					scopeTreeRoot = runScoper();
 					trScopes.setModel(new DefaultTreeModel(new TreeNodeAdaptor(scopeTreeRoot)));
 					
 					runScopeChecker(scopeTreeRoot);
-					tabPane.setSelectedIndex(4);
-				} catch (Exception ex) {
 					tabPane.setSelectedIndex(6);
+				} catch (Exception ex) {
+					tabPane.setSelectedIndex(7);
 					
 					StringWriter buf = new StringWriter();
 					if (!Preferences.productionMode) {
 						PrintWriter wr = new PrintWriter(buf);
 						ex.printStackTrace(wr);
+						ex.printStackTrace();
 					}
 					taErrors.setText(ex.getLocalizedMessage()+"\n"+buf.toString());
 				}

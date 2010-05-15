@@ -16,6 +16,7 @@ import ua.kiev.kpi.sc.parser.analysis.AnalysisAdapter;
 import ua.kiev.kpi.sc.parser.ext.interim.Interim;
 import ua.kiev.kpi.sc.parser.ext.interim.InterimsFactory;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.LabelDeclaration;
 import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
 import ua.kiev.kpi.sc.parser.lexer.Lexer;
 import ua.kiev.kpi.sc.parser.lexer.LexerException;
@@ -143,6 +144,7 @@ public class Parser
     
     public Start parse() throws ParserException, LexerException, IOException
     {
+    	LabelDeclaration.reset();
     	triggeredRulesInd = new LinkedList<Integer>();
     	poliz = new LinkedList<Translation>();
     	readableRulesTriggered = "";

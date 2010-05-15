@@ -21,6 +21,9 @@ class NotPublicTest {
 		if (arg < 0) {
 			someVar = ZERO;
 		}
+		while (true) {
+			someVar = 0;
+		}
 		return someVar;
 	}
 }
