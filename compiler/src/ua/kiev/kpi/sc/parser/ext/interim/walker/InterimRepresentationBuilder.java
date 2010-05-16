@@ -30,6 +30,7 @@ import ua.kiev.kpi.sc.parser.node.AConstantDefinition;
 import ua.kiev.kpi.sc.parser.node.ACycleCycleOperator;
 import ua.kiev.kpi.sc.parser.node.ACycleOperator;
 import ua.kiev.kpi.sc.parser.node.ADivSummand;
+import ua.kiev.kpi.sc.parser.node.AElseConditionalOperator;
 import ua.kiev.kpi.sc.parser.node.AFunctionClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AGtComparisonExpression;
 import ua.kiev.kpi.sc.parser.node.AGteqComparisonExpression;
@@ -43,6 +44,8 @@ import ua.kiev.kpi.sc.parser.node.ANormalFunctionBody;
 import ua.kiev.kpi.sc.parser.node.AOrExprExpression;
 import ua.kiev.kpi.sc.parser.node.ARecursiveElementalExpression;
 import ua.kiev.kpi.sc.parser.node.ARemSummand;
+import ua.kiev.kpi.sc.parser.node.ASimpleConditionalOperator;
+import ua.kiev.kpi.sc.parser.node.ASimpleIf;
 import ua.kiev.kpi.sc.parser.node.ASubSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AVariableClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AVariableDefinition;
@@ -103,18 +106,33 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
 		polizStack.push(label0);
 		additionalDataStack.push(label0);
-		super.inACycleCycleOperator(node);
 	}
-
-	private void mark() {
-		lastElemBeforeThisBlock = polizStack.peek();
-	}
-
+	
 	@Override
 	public void outACycleCycleOperator(ACycleCycleOperator node) {
-		//addComment("while (" + node.getExpression() + ")");
+		// get marker of block start
 		LabelDeclaration label0 = (LabelDeclaration) additionalDataStack.pop();
+		
+		// get block
+		Deque<Translation> blockData = popBlock(label0);
 
+		Translation expr = blockData.pop();
+
+		LabelDeclaration label1 = LabelDeclaration.getInstance();
+
+		polizStack.push(label0);
+		polizStack.push(expr);
+		polizStack.push(label1.getPointer());
+		
+		addToPoliz(blockData);
+		
+		polizStack.push(new JumpIfFalse());
+		polizStack.push(label0.getPointer());
+		polizStack.push(new JumpAlways());
+		polizStack.push(label1);
+	}
+
+	private Deque<Translation> popBlock(LabelDeclaration label0) {
 		Deque<Translation> blockData = new LinkedList<Translation>();
 		if (!polizStack.isEmpty()) {
 			Translation tmp = null;
@@ -130,26 +148,76 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 			throw new MyException(
 					"Oopsie... something expected on stack was not found");
 		}
-
-		Translation expr = blockData.pop();
-
-		LabelDeclaration label1 = LabelDeclaration.getInstance();
-
-		polizStack.push(label0);
-		polizStack.push(expr);
-		polizStack.push(label1.getPointer());
+		return blockData;
+	}
+	
+	private void addToPoliz(Deque<Translation> blockData) {
 		while (!blockData.isEmpty()) {
 			polizStack.push(blockData.pop());
 		}
-		polizStack.push(new JumpIfFalse());
-
-		polizStack.push(label0.getPointer());
-		polizStack.push(new JumpAlways());
-		polizStack.push(label1);
-
-		super.outACycleCycleOperator(node);
 	}
 
+	
+	/**
+	 * if (expr) {
+	 * 	 block1;
+	 * }  
+	 * 
+	 * is translated into:
+	 * expr LABEL0 jmpFalse 
+	 *   block1
+	 * :LABEL0
+	 */
+	@Override
+	public void inASimpleIf(ASimpleIf node) {
+		mark();
+		LabelDeclaration label0 = LabelDeclaration.getInstance();
+		polizStack.push(label0);
+		additionalDataStack.push(label0);
+	}
+	
+	@Override
+	public void outASimpleIf(ASimpleIf node) {
+		// get marker of block start
+		LabelDeclaration label0 = (LabelDeclaration) additionalDataStack.pop();
+		
+		// get block
+		Deque<Translation> blockData = popBlock(label0);
+
+		Translation expr = blockData.pop();
+
+		polizStack.push(expr);
+		polizStack.push(label0.getPointer());
+		polizStack.push(new JumpIfFalse());
+		
+		addToPoliz(blockData);		
+
+		polizStack.push(label0);
+	}
+	
+	
+	/**
+	 * TODO: simple_if = if l_par expression r_par l_brc block r_brc;
+	 * 
+	 * conditional_operator = {simple} simple_if | {else} simple_if else l_brc
+	 * block r_brc;
+	 * 
+	 * if (expr) {
+	 * 	 block1;
+	 * } else {
+	 *   block2;
+	 * }
+	 * 
+	 * 
+	 * is translated into:
+	 * expr LABEL0 jmpFalse 
+	 *   block1
+	 * LABEL1 jmpAlways 
+	 * :LABEL0
+	 *   block2 
+	 * :LABEL1 
+	 */
+	
 	@Override
 	public void outABooleanLiteral(ABooleanLiteral node) {
 		polizStack.push(new Literal(node.toString()));
@@ -197,14 +265,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public void outAAssignOperator(AAssignOperator node) {
 		polizStack.push(new VariablePointer(node.getVariableName()));
 		polizStack.push(Operation.ASSIGN());
-	}
-
-	/**
-	 * TODO: simple_if = if l_par expression r_par l_brc block r_brc;
-	 * 
-	 * conditional_operator = {simple} simple_if | {else} simple_if else l_brc
-	 * block r_brc;
-	 */
+	}	
 
 	@Override
 	public void outAOrExprExpression(AOrExprExpression node) {
@@ -311,6 +372,10 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		polizStack.push(Operation.RETURN());
 	}
 
+	private void mark() {
+		lastElemBeforeThisBlock = polizStack.peek();
+	}
+	
 	private void addComment(String str) {
 		if (lastElemBeforeThisBlock instanceof AbstractTranslation) {
 			((AbstractTranslation) lastElemBeforeThisBlock).setComment(str);
@@ -334,8 +399,14 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		mark();
 	}
 	
+	
 	@Override
-	public void inACondOperator(ACondOperator node) {
+	public void inASimpleConditionalOperator(ASimpleConditionalOperator node) {
+		mark();
+	}
+	
+	@Override
+	public void inAElseConditionalOperator(AElseConditionalOperator node) {
 		mark();
 	}
 	
@@ -358,11 +429,18 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public void outAFunctionClassBodyElem(AFunctionClassBodyElem node) {
 		addComment(node.toString());
 	}
-
+	
 	@Override
-	public void outACondOperator(ACondOperator node) {
-		addComment(node.toString());
+	public void outASimpleConditionalOperator(ASimpleConditionalOperator node) {
+		addComment("if ("+((ASimpleIf)node.getSimpleIf()).getExpression().toString()+")");
 	}
+	
+	@Override
+	public void outAElseConditionalOperator(AElseConditionalOperator node) {
+		addComment("if ("+((ASimpleIf)node.getSimpleIf()).getExpression().toString()+")");
+	}
+
+
 	
 	@Override
 	public void outACycleOperator(ACycleOperator node) {
