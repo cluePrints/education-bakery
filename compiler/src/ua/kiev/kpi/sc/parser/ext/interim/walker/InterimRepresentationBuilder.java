@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
 import ua.kiev.kpi.sc.parser.ext.MyException;
+import ua.kiev.kpi.sc.parser.ext.interim.InvisibleTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation.AbstractTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Comment;
@@ -14,6 +15,7 @@ import ua.kiev.kpi.sc.parser.ext.interim.repr.JumpAlways;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.JumpIfFalse;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.LabelDeclaration;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Literal;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.Marker;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Operation;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.TypePointer;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.VariablePointer;
@@ -45,6 +47,7 @@ import ua.kiev.kpi.sc.parser.node.ARecursiveElementalExpression;
 import ua.kiev.kpi.sc.parser.node.ARemSummand;
 import ua.kiev.kpi.sc.parser.node.ASimpleConditionalOperator;
 import ua.kiev.kpi.sc.parser.node.ASimpleIf;
+import ua.kiev.kpi.sc.parser.node.ASingleBlock;
 import ua.kiev.kpi.sc.parser.node.ASubSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AVariableClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AVariableDefinition;
@@ -52,7 +55,10 @@ import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
 
 public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	private LinkedList<Translation> polizStack;
-	private LinkedList<Translation> additionalDataStack;
+	/**
+	 * For delimiting blocks, we're pushing block start label when entering block and popping it when leaving block
+	 */
+	private LinkedList<Translation> blockLabelsStack;
 	private Translation lastElemBeforeThisBlock;
 
 	public InterimRepresentationBuilder() {
@@ -61,7 +67,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	public void reset() {
 		polizStack = new LinkedList<Translation>();
-		additionalDataStack = new LinkedList<Translation>();
+		blockLabelsStack = new LinkedList<Translation>();
 		polizStack.add(new Comment(">>START<<"));
 	}
 
@@ -69,9 +75,9 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public String toString() {
 		StringBuilder b = new StringBuilder();
 		Iterator<Translation> it = polizStack.descendingIterator();
-		while (it.hasNext()) {
+		while (it.hasNext()) {			
 			Translation t = it.next();
-			if (t instanceof Comment) {
+			if (t instanceof InvisibleTranslation) {
 				continue;
 			}
 			String comment = null;
@@ -104,34 +110,33 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		mark();
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
 		polizStack.push(label0);
-		additionalDataStack.push(label0);
+		blockLabelsStack.push(label0);
 	}
 
 	@Override
 	public void outACycleCycleOperator(ACycleCycleOperator node) {
 		// get marker of block start
-		LabelDeclaration label0 = (LabelDeclaration) additionalDataStack.pop();
+		Marker marker = (Marker) blockLabelsStack.pop();
 
 		// get block
-		Deque<Translation> blockData = popBlock(label0);
+		Deque<Translation> blockData = popBlock(marker);
 
-		Translation expr = blockData.pop();
-
-		LabelDeclaration label1 = LabelDeclaration.getInstance();
-
-		polizStack.push(label0);
-		polizStack.push(expr);
+		while (blockLabelsStack.peek() instanceof Marker) {
+			blockLabelsStack.peek();
+		}
+				
+		LabelDeclaration label0 = (LabelDeclaration) blockLabelsStack.pop();
+		LabelDeclaration label1 = LabelDeclaration.getInstance();			
+		
 		polizStack.push(label1.getPointer());
-
-		addToPoliz(blockData);
-
 		polizStack.push(new JumpIfFalse());
+		addToPoliz(blockData);
 		polizStack.push(label0.getPointer());
 		polizStack.push(new JumpAlways());
 		polizStack.push(label1);
 	}
 
-	private Deque<Translation> popBlock(LabelDeclaration label0) {
+	private Deque<Translation> popBlock(Marker label0) {
 		Deque<Translation> blockData = new LinkedList<Translation>();
 		if (!polizStack.isEmpty()) {
 			Translation tmp = null;
@@ -139,9 +144,11 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 				tmp = polizStack.pop();
 				blockData.push(tmp);
 			} while (tmp != label0 && !polizStack.isEmpty());
-			if (blockData.pop() != label0) {
+			if (blockData.peek() != label0) {
 				throw new MyException(
 						"Oopsie... something expected on stack was not found");
+			} else {
+				blockData.pop();
 			}
 		} else {
 			throw new MyException(
@@ -156,6 +163,18 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		}
 	}
 
+
+	@Override
+	public void inASingleBlock(ASingleBlock node) {
+		Marker marker = Marker.getInstance();
+		polizStack.push(marker);
+		blockLabelsStack.push(marker);
+	}
+	
+	@Override
+	public void outASingleBlock(ASingleBlock node) {
+	}
+	
 	/**
 	 * if (expr) { block1; }
 	 * 
@@ -164,22 +183,17 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void inASimpleIf(ASimpleIf node) {
 		mark();
-		LabelDeclaration label0 = LabelDeclaration.getInstance();
-		polizStack.push(label0);
-		additionalDataStack.push(label0);
 	}
-
+	
 	@Override
 	public void outASimpleIf(ASimpleIf node) {
 		// get marker of block start
-		LabelDeclaration label0 = (LabelDeclaration) additionalDataStack.pop();
+		Marker marker = (Marker) blockLabelsStack.pop();
 
 		// get block
-		Deque<Translation> blockData = popBlock(label0);
-
-		Translation expr = blockData.pop();
-
-		polizStack.push(expr);
+		Deque<Translation> blockData = popBlock(marker);
+		
+		LabelDeclaration label0 = LabelDeclaration.getInstance();
 		polizStack.push(label0.getPointer());
 		polizStack.push(new JumpIfFalse());
 
