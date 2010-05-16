@@ -24,7 +24,6 @@ import ua.kiev.kpi.sc.parser.node.AArrayVariableType;
 import ua.kiev.kpi.sc.parser.node.AAssignOperator;
 import ua.kiev.kpi.sc.parser.node.ABooleanLiteral;
 import ua.kiev.kpi.sc.parser.node.ACallElementalExpression;
-import ua.kiev.kpi.sc.parser.node.ACondOperator;
 import ua.kiev.kpi.sc.parser.node.AConstantClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AConstantDefinition;
 import ua.kiev.kpi.sc.parser.node.ACycleCycleOperator;
@@ -107,12 +106,12 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		polizStack.push(label0);
 		additionalDataStack.push(label0);
 	}
-	
+
 	@Override
 	public void outACycleCycleOperator(ACycleCycleOperator node) {
 		// get marker of block start
 		LabelDeclaration label0 = (LabelDeclaration) additionalDataStack.pop();
-		
+
 		// get block
 		Deque<Translation> blockData = popBlock(label0);
 
@@ -123,9 +122,9 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		polizStack.push(label0);
 		polizStack.push(expr);
 		polizStack.push(label1.getPointer());
-		
+
 		addToPoliz(blockData);
-		
+
 		polizStack.push(new JumpIfFalse());
 		polizStack.push(label0.getPointer());
 		polizStack.push(new JumpAlways());
@@ -150,23 +149,17 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		}
 		return blockData;
 	}
-	
+
 	private void addToPoliz(Deque<Translation> blockData) {
 		while (!blockData.isEmpty()) {
 			polizStack.push(blockData.pop());
 		}
 	}
 
-	
 	/**
-	 * if (expr) {
-	 * 	 block1;
-	 * }  
+	 * if (expr) { block1; }
 	 * 
-	 * is translated into:
-	 * expr LABEL0 jmpFalse 
-	 *   block1
-	 * :LABEL0
+	 * is translated into: expr LABEL0 jmpFalse block1 :LABEL0
 	 */
 	@Override
 	public void inASimpleIf(ASimpleIf node) {
@@ -175,12 +168,12 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		polizStack.push(label0);
 		additionalDataStack.push(label0);
 	}
-	
+
 	@Override
 	public void outASimpleIf(ASimpleIf node) {
 		// get marker of block start
 		LabelDeclaration label0 = (LabelDeclaration) additionalDataStack.pop();
-		
+
 		// get block
 		Deque<Translation> blockData = popBlock(label0);
 
@@ -189,35 +182,25 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		polizStack.push(expr);
 		polizStack.push(label0.getPointer());
 		polizStack.push(new JumpIfFalse());
-		
-		addToPoliz(blockData);		
+
+		addToPoliz(blockData);
 
 		polizStack.push(label0);
 	}
-	
-	
+
 	/**
 	 * TODO: simple_if = if l_par expression r_par l_brc block r_brc;
 	 * 
 	 * conditional_operator = {simple} simple_if | {else} simple_if else l_brc
 	 * block r_brc;
 	 * 
-	 * if (expr) {
-	 * 	 block1;
-	 * } else {
-	 *   block2;
-	 * }
+	 * if (expr) { block1; } else { block2; }
 	 * 
 	 * 
-	 * is translated into:
-	 * expr LABEL0 jmpFalse 
-	 *   block1
-	 * LABEL1 jmpAlways 
-	 * :LABEL0
-	 *   block2 
-	 * :LABEL1 
+	 * is translated into: expr LABEL0 jmpFalse block1 LABEL1 jmpAlways :LABEL0
+	 * block2 :LABEL1
 	 */
-	
+
 	@Override
 	public void outABooleanLiteral(ABooleanLiteral node) {
 		polizStack.push(new Literal(node.toString()));
@@ -226,8 +209,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void outAIntLiteralNumeric(AIntLiteralNumeric node) {
 		polizStack.push(new Literal(node.toString()));
-	}	
-
+	}
 
 	@Override
 	public void outAVariableDefinition(AVariableDefinition node) {
@@ -265,7 +247,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public void outAAssignOperator(AAssignOperator node) {
 		polizStack.push(new VariablePointer(node.getVariableName()));
 		polizStack.push(Operation.ASSIGN());
-	}	
+	}
 
 	@Override
 	public void outAOrExprExpression(AOrExprExpression node) {
@@ -375,7 +357,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	private void mark() {
 		lastElemBeforeThisBlock = polizStack.peek();
 	}
-	
+
 	private void addComment(String str) {
 		if (lastElemBeforeThisBlock instanceof AbstractTranslation) {
 			((AbstractTranslation) lastElemBeforeThisBlock).setComment(str);
@@ -383,33 +365,31 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		lastElemBeforeThisBlock = null;
 	}
 
-	
 	@Override
 	public void inAConstantClassBodyElem(AConstantClassBodyElem node) {
 		mark();
 	}
-	
+
 	@Override
 	public void inAFunctionClassBodyElem(AFunctionClassBodyElem node) {
 		mark();
 	}
-	
+
 	@Override
 	public void inAVariableClassBodyElem(AVariableClassBodyElem node) {
 		mark();
 	}
-	
-	
+
 	@Override
 	public void inASimpleConditionalOperator(ASimpleConditionalOperator node) {
 		mark();
 	}
-	
+
 	@Override
 	public void inAElseConditionalOperator(AElseConditionalOperator node) {
 		mark();
 	}
-	
+
 	@Override
 	public void inACycleOperator(ACycleOperator node) {
 		mark();
@@ -419,29 +399,31 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public void outAConstantClassBodyElem(AConstantClassBodyElem node) {
 		addComment(node.toString());
 	}
-	
+
 	@Override
 	public void outAVariableClassBodyElem(AVariableClassBodyElem node) {
 		addComment(node.toString());
 	}
-	
+
 	@Override
 	public void outAFunctionClassBodyElem(AFunctionClassBodyElem node) {
 		addComment(node.toString());
 	}
-	
+
 	@Override
 	public void outASimpleConditionalOperator(ASimpleConditionalOperator node) {
-		addComment("if ("+((ASimpleIf)node.getSimpleIf()).getExpression().toString()+")");
+		addComment("if ("
+				+ ((ASimpleIf) node.getSimpleIf()).getExpression().toString()
+				+ ")");
 	}
-	
+
 	@Override
 	public void outAElseConditionalOperator(AElseConditionalOperator node) {
-		addComment("if ("+((ASimpleIf)node.getSimpleIf()).getExpression().toString()+")");
+		addComment("if ("
+				+ ((ASimpleIf) node.getSimpleIf()).getExpression().toString()
+				+ ")");
 	}
 
-
-	
 	@Override
 	public void outACycleOperator(ACycleOperator node) {
 		addComment(node.toString());
