@@ -23,6 +23,7 @@ public class Operation extends AbstractTranslation {
 	public static Operation NEGATION() { return operation("NEG", 1);}
 	public static Operation ARRAY_ACCESS() { return operation("ARRAY_ACCESS", 2);}
 	public static Operation FUNC_CALL() { return operation("CALL", 2);}
+	public static Operation FUNC_DECL() { return operation("DECL", 2);}
 	
 	private static Operation operation(final String repr, final int args) {
 		return new Operation() {

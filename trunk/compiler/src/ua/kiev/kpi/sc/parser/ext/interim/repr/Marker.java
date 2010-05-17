@@ -29,4 +29,9 @@ public class Marker extends AbstractTranslation implements InvisibleTranslation 
 	public LabelPointer getPointer() {
 		return new LabelPointer(this.num);
 	}
+	
+	@Override
+	public String toString() {
+		return "MARKER:"+String.valueOf(num);
+	}
 }

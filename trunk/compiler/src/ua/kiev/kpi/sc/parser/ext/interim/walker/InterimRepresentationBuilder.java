@@ -3,6 +3,7 @@ package ua.kiev.kpi.sc.parser.ext.interim.walker;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
 import ua.kiev.kpi.sc.parser.ext.MyException;
@@ -33,6 +34,7 @@ import ua.kiev.kpi.sc.parser.node.ACycleOperator;
 import ua.kiev.kpi.sc.parser.node.ADivSummand;
 import ua.kiev.kpi.sc.parser.node.AElseConditionalOperator;
 import ua.kiev.kpi.sc.parser.node.AFunctionClassBodyElem;
+import ua.kiev.kpi.sc.parser.node.AFunctionDeclaration;
 import ua.kiev.kpi.sc.parser.node.AGtComparisonExpression;
 import ua.kiev.kpi.sc.parser.node.AGteqComparisonExpression;
 import ua.kiev.kpi.sc.parser.node.AIdentifierElementalExpression;
@@ -60,7 +62,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	 * For delimiting blocks, we're pushing block start label when entering block and popping it when leaving block
 	 */
 	private LinkedList<Translation> blockLabelsStack;
-	private Translation lastElemBeforeThisBlock;
+	private LinkedList<Translation> lastElemBeforeThisBlock;
 
 	public InterimRepresentationBuilder() {
 		reset();
@@ -69,6 +71,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public void reset() {
 		polizStack = new LinkedList<Translation>();
 		blockLabelsStack = new LinkedList<Translation>();
+		lastElemBeforeThisBlock = new LinkedList<Translation>();
 		polizStack.add(new Comment(">>START<<"));
 	}
 
@@ -109,7 +112,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public void inACycleCycleOperator(ACycleCycleOperator node) {
 		mark();
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
-		polizStack.push(label0);
+		addToPoliz(label0);
 		blockLabelsStack.push(label0);
 	}
 
@@ -128,12 +131,12 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		LabelDeclaration label0 = (LabelDeclaration) blockLabelsStack.pop();
 		LabelDeclaration label1 = LabelDeclaration.getInstance();			
 		
-		polizStack.push(label1.getPointer());
-		polizStack.push(new JumpIfFalse());
+		addToPoliz(label1.getPointer());
+		addToPoliz(new JumpIfFalse());
 		addToPoliz(blockData);
-		polizStack.push(label0.getPointer());
-		polizStack.push(new JumpAlways());
-		polizStack.push(label1);
+		addToPoliz(label0.getPointer());
+		addToPoliz(new JumpAlways());
+		addToPoliz(label1);
 	}
 
 	private Deque<Translation> popBlock(Marker label0) {
@@ -159,7 +162,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	private void addToPoliz(Deque<Translation> blockData) {
 		while (!blockData.isEmpty()) {
-			polizStack.push(blockData.pop());
+			addToPoliz(blockData.pop());
 		}
 	}
 
@@ -167,7 +170,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void inASingleBlock(ASingleBlock node) {
 		Marker marker = Marker.getInstance();
-		polizStack.push(marker);
+		addToPoliz(marker);
 		blockLabelsStack.push(marker);
 	}
 	
@@ -197,12 +200,16 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		Deque<Translation> blockData = popBlock(marker);
 		
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
-		polizStack.push(label0.getPointer());
-		polizStack.push(new JumpIfFalse());
+		addToPoliz(label0.getPointer());
+		addToPoliz(new JumpIfFalse());
 
 		addToPoliz(blockData);
 
-		polizStack.push(label0);
+		addToPoliz(label0);
+	}
+
+	private void addToPoliz(Translation t) {
+		polizStack.push(t);
 	}
 
 	/**
@@ -243,7 +250,8 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public void outAElseConditionalOperator(AElseConditionalOperator node) {
 		addComment("if ("
 				+ ((ASimpleIf) node.getSimpleIf()).getExpression().toString()
-				+ ")");
+				+ ")"
+				+ " {...} else {...}");
 		
 		// get marker of block start
 		Marker marker = (Marker) blockLabelsStack.pop();
@@ -252,54 +260,54 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		Deque<Translation> blockData = popBlock(marker);
 		LabelDeclaration label0 = (LabelDeclaration) polizStack.pop();
 		LabelDeclaration label1 = LabelDeclaration.getInstance();
-		polizStack.push(label1.getPointer());
-		polizStack.push(new JumpAlways());
-		polizStack.push(label0);
+		addToPoliz(label1.getPointer());
+		addToPoliz(new JumpAlways());
+		addToPoliz(label0);
 		addToPoliz(blockData);
-		polizStack.push(label1);	
+		addToPoliz(label1);	
 	}
 	
 
 	@Override
 	public void outABooleanLiteral(ABooleanLiteral node) {
-		polizStack.push(new Literal(node.toString()));
+		addToPoliz(new Literal(node.toString()));
 	}
 
 	@Override
 	public void outAIntLiteralNumeric(AIntLiteralNumeric node) {
-		polizStack.push(new Literal(node.toString()));
+		addToPoliz(new Literal(node.toString()));
 	}
 
 	@Override
 	public void outAVariableDefinition(AVariableDefinition node) {
-		polizStack.push(new Literal(node.getVariableName().toString()));
+		addToPoliz(new Literal(node.getVariableName().toString()));
 		if (node.getVariableType() instanceof AArrayVariableType) {
-			polizStack.push(new TypePointer(((AArrayVariableType) node
+			addToPoliz(new TypePointer(((AArrayVariableType) node
 					.getVariableType()).getType()));
-			polizStack.push(Operation.DEF_ARR());
+			addToPoliz(Operation.DEF_ARR());
 
 		} else {
-			polizStack.push(new TypePointer(node.getVariableType()));
-			polizStack.push(Operation.DEF_VAR());
+			addToPoliz(new TypePointer(node.getVariableType()));
+			addToPoliz(Operation.DEF_VAR());
 
 		}
 	}
 
 	@Override
 	public void outAConstantDefinition(AConstantDefinition node) {
-		polizStack.push(new Literal(node.getVariableName().toString()));
+		addToPoliz(new Literal(node.getVariableName().toString()));
 
 		if (node.getVariableType() instanceof AArrayVariableType) {
-			polizStack.push(new TypePointer(((AArrayVariableType) node
+			addToPoliz(new TypePointer(((AArrayVariableType) node
 					.getVariableType()).getType()));
-			polizStack.push(Operation.DEF_ARR());
+			addToPoliz(Operation.DEF_ARR());
 
 		} else {
-			polizStack.push(new TypePointer(node.getVariableType()));
-			polizStack.push(Operation.DEF_VAR());
+			addToPoliz(new TypePointer(node.getVariableType()));
+			addToPoliz(Operation.DEF_VAR());
 
 		}
-		polizStack.push(Operation.MOD_FINAL());
+		addToPoliz(Operation.MOD_FINAL());
 	}
 
 	@Override
@@ -320,68 +328,68 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void outAAssignOperator(AAssignOperator node) {
 		addComment(node.toString());
-		polizStack.push(new VariablePointer(node.getVariableName()));
-		polizStack.push(Operation.ASSIGN());
+		addToPoliz(new VariablePointer(node.getVariableName()));
+		addToPoliz(Operation.ASSIGN());
 	}
 
 	@Override
 	public void outAOrExprExpression(AOrExprExpression node) {
-		polizStack.push(Operation.OR());
+		addToPoliz(Operation.OR());
 	}
 
 	@Override
 	public void outAAndOperandOr(AAndOperandOr node) {
-		polizStack.push(Operation.AND());
+		addToPoliz(Operation.AND());
 	}
 
 	@Override
 	public void outAAddSimpleExpression(AAddSimpleExpression node) {
-		polizStack.push(Operation.ADD());
+		addToPoliz(Operation.ADD());
 	}
 
 	@Override
 	public void outASubSimpleExpression(ASubSimpleExpression node) {
-		polizStack.push(Operation.SUB());
+		addToPoliz(Operation.SUB());
 	}
 
 	@Override
 	public void outAGtComparisonExpression(AGtComparisonExpression node) {
-		polizStack.push(Operation.GT());
+		addToPoliz(Operation.GT());
 	}
 
 	@Override
 	public void outALtComparisonExpression(ALtComparisonExpression node) {
-		polizStack.push(Operation.LT());
+		addToPoliz(Operation.LT());
 	}
 
 	@Override
 	public void outALteqComparisonExpression(ALteqComparisonExpression node) {
-		polizStack.push(Operation.LE());
+		addToPoliz(Operation.LE());
 	}
 
 	@Override
 	public void outAGteqComparisonExpression(AGteqComparisonExpression node) {
-		polizStack.push(Operation.GE());
+		addToPoliz(Operation.GE());
 	}
 
 	@Override
 	public void outAMulSummand(AMulSummand node) {
-		polizStack.push(Operation.MUL());
+		addToPoliz(Operation.MUL());
 	}
 
 	@Override
 	public void outADivSummand(ADivSummand node) {
-		polizStack.push(Operation.DIV());
+		addToPoliz(Operation.DIV());
 	}
 
 	@Override
 	public void outARemSummand(ARemSummand node) {
-		polizStack.push(Operation.MOD());
+		addToPoliz(Operation.MOD());
 	}
 
 	@Override
 	public void outANegMultiplier(ANegMultiplier node) {
-		polizStack.push(Operation.NEGATION());
+		addToPoliz(Operation.NEGATION());
 	}
 
 	/**
@@ -390,25 +398,25 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outAArrElemElementalExpression(AArrElemElementalExpression node) {
-		polizStack.push(Operation.ARRAY_ACCESS());
+		addToPoliz(Operation.ARRAY_ACCESS());
 	}
 
 	@Override
 	public void outACallElementalExpression(ACallElementalExpression node) {
-		polizStack.push(new FuncPointer(node.getIdentifier()));
-		polizStack.push(Operation.FUNC_CALL());
+		addToPoliz(new FuncPointer(node.getIdentifier()));
+		addToPoliz(Operation.FUNC_CALL());
 	}
 
 	@Override
 	public void outAIdentifierElementalExpression(
 			AIdentifierElementalExpression node) {
-		polizStack.push(new VariablePointer(node));
+		addToPoliz(new VariablePointer(node));
 	}
 
 	@Override
 	public void outARecursiveElementalExpression(
 			ARecursiveElementalExpression node) {
-		polizStack.push(new VariablePointer(node.getIdentifier()));
+		addToPoliz(new VariablePointer(node.getIdentifier()));
 		super.outARecursiveElementalExpression(node);
 	}
 
@@ -421,33 +429,88 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outAVoidFunctionBody(AVoidFunctionBody node) {
-		polizStack.push(Operation.EMPTY_RETURN());
+		addToPoliz(Operation.EMPTY_RETURN());
 	}
 
 	@Override
 	public void outANormalFunctionBody(ANormalFunctionBody node) {
-		polizStack.push(Operation.RETURN());
+		addToPoliz(Operation.RETURN());
 	}
 
 	private void mark() {
-		lastElemBeforeThisBlock = polizStack.peek();
+		lastElemBeforeThisBlock.push(polizStack.peek());
 	}
 
-	private void addComment(String str) {
-		if (lastElemBeforeThisBlock instanceof AbstractTranslation) {
-			((AbstractTranslation) lastElemBeforeThisBlock).setComment(str);
+	private void addComment(String str) {		
+		if (lastElemBeforeThisBlock.peek() instanceof AbstractTranslation) {
+			((AbstractTranslation) lastElemBeforeThisBlock.peek()).setComment(str);
 		}
-		lastElemBeforeThisBlock = null;
+		lastElemBeforeThisBlock.pop();
 	}
 
 	@Override
 	public void inAConstantClassBodyElem(AConstantClassBodyElem node) {
 		mark();
 	}
+	
+	/**
+	 * 
+	 * TODO:
+	 * function_declaration = 
+		public result_type function_name l_par formal_arg_list r_par;
+		
+			function_definition =
+		function_declaration function_body;
+		
+		:LABEL0 result_type name param_count type1 name1 DEF_VAR type2 name2 DEF_VAR
+		  function_body
+		LABEL0 DEF_FUNC
+	 */
+	@Override
+	public void inAFunctionDeclaration(AFunctionDeclaration node) {		
+		addToPoliz(new TypePointer(node.getResultType()));
+		addToPoliz(new Literal(node.getFunctionName().toString()));
+		int count;
+		// TODO: fix / pray about this - special place in hell reserved for such coders
+		String str = node.toString().replace(" ", "");
+		if (str.contains("()")) {
+			count = 0;
+		} else {
+			count = 1;
+			for (int i=0; i<str.length(); i++) {
+				if (str.charAt(i) == ',') {
+					count++;
+				}
+			}
+		}		
+		
+		addToPoliz(new Literal(String.valueOf(count)));
+	}	
+	@Override
+	public void outAFunctionDeclaration(AFunctionDeclaration node) {
+		addComment(node.toString());
+	}
 
 	@Override
 	public void inAFunctionClassBodyElem(AFunctionClassBodyElem node) {
 		mark();
+		Marker marker = Marker.getInstance();
+		addToPoliz(marker);
+		blockLabelsStack.push(marker);
+	}
+	
+	@Override
+	public void outAFunctionClassBodyElem(AFunctionClassBodyElem node) {
+		Marker m = (Marker) blockLabelsStack.pop();
+		Deque<Translation> block = popBlock(m);
+		Marker m2 = (Marker)blockLabelsStack.pop();
+		Deque<Translation> decl = popBlock(m2);
+		LabelDeclaration label0 = LabelDeclaration.getInstance();
+		addToPoliz(label0);
+		addToPoliz(decl);
+		addToPoliz(block);
+		addToPoliz(label0.getPointer());
+		addToPoliz(Operation.FUNC_DECL());
 	}
 
 	@Override
@@ -467,11 +530,6 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outAVariableClassBodyElem(AVariableClassBodyElem node) {
-		addComment(node.toString());
-	}
-
-	@Override
-	public void outAFunctionClassBodyElem(AFunctionClassBodyElem node) {
 		addComment(node.toString());
 	}
 
