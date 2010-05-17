@@ -47,6 +47,7 @@ import ua.kiev.kpi.sc.parser.node.ARecursiveElementalExpression;
 import ua.kiev.kpi.sc.parser.node.ARemSummand;
 import ua.kiev.kpi.sc.parser.node.ASimpleConditionalOperator;
 import ua.kiev.kpi.sc.parser.node.ASimpleIf;
+import ua.kiev.kpi.sc.parser.node.ASimpleOperator;
 import ua.kiev.kpi.sc.parser.node.ASingleBlock;
 import ua.kiev.kpi.sc.parser.node.ASubSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AVariableClassBodyElem;
@@ -77,14 +78,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		Iterator<Translation> it = polizStack.descendingIterator();
 		while (it.hasNext()) {			
 			Translation t = it.next();
-			if (t instanceof InvisibleTranslation) {
-				continue;
-			}
 			String comment = null;
 			if (t instanceof AbstractTranslation) {
 				comment = ((AbstractTranslation) t).getComment();
 			}
-			b.append(t);
+			if (!(t instanceof InvisibleTranslation)) {
+				b.append(t);
+			}
 			if (comment != null) {
 				b.append("\n\n      // ");
 				b.append(comment);
@@ -206,7 +206,6 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	}
 
 	/**
-	 * TODO: simple_if = if l_par expression r_par l_brc block r_brc;
 	 * 
 	 * conditional_operator = {simple} simple_if | {else} simple_if else l_brc
 	 * block r_brc;
@@ -304,7 +303,23 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	}
 
 	@Override
+	public void inASimpleOperator(ASimpleOperator node) {
+		mark();		
+	}
+	
+	@Override
+	public void outASimpleOperator(ASimpleOperator node) {
+		addComment(node.toString());
+	}
+	
+	@Override
+	public void inAAssignOperator(AAssignOperator node) {
+		mark();
+	}
+	
+	@Override
 	public void outAAssignOperator(AAssignOperator node) {
+		addComment(node.toString());
 		polizStack.push(new VariablePointer(node.getVariableName()));
 		polizStack.push(Operation.ASSIGN());
 	}

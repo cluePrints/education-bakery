@@ -10,7 +10,7 @@ public class Operation extends AbstractTranslation {
 	public static Operation ADD() { return operation("ADD", 2);}
 	public static Operation SUB() { return operation("SUB", 2);}
 	public static Operation RETURN() { return operation("RETURN", 1);}
-	public static Operation EMPTY_RETURN() { return operation("RETURN;}",1);}
+	public static Operation EMPTY_RETURN() { return operation("RETURN;",1);}
 	public static Operation OR() { return operation("OR", 2);}
 	public static Operation AND() { return operation("AND", 2);}
 	public static Operation GT() { return operation("GT", 2);}
