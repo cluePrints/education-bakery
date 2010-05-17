@@ -3,8 +3,9 @@ package ua.kiev.kpi.sc.parser.ext.interim.repr;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ua.kiev.kpi.sc.parser.ext.interim.InvisibleTranslation;
+import ua.kiev.kpi.sc.parser.ext.interim.Translation.AbstractTranslation;
 
-public class Marker implements InvisibleTranslation {
+public class Marker extends AbstractTranslation implements InvisibleTranslation {
 	private static final AtomicInteger count = new AtomicInteger(0);
 	private int num;
 
