@@ -44,7 +44,9 @@ import ua.kiev.kpi.sc.parser.node.ALteqComparisonExpression;
 import ua.kiev.kpi.sc.parser.node.AMulSummand;
 import ua.kiev.kpi.sc.parser.node.ANegMultiplier;
 import ua.kiev.kpi.sc.parser.node.ANormalFunctionBody;
+import ua.kiev.kpi.sc.parser.node.ANotPublicClass;
 import ua.kiev.kpi.sc.parser.node.AOrExprExpression;
+import ua.kiev.kpi.sc.parser.node.APublicClass;
 import ua.kiev.kpi.sc.parser.node.ARecursiveElementalExpression;
 import ua.kiev.kpi.sc.parser.node.ARemSummand;
 import ua.kiev.kpi.sc.parser.node.ASimpleConditionalOperator;
@@ -55,6 +57,7 @@ import ua.kiev.kpi.sc.parser.node.ASubSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AVariableClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AVariableDefinition;
 import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
+import ua.kiev.kpi.sc.parser.node.TIdentifier;
 
 public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	private LinkedList<Translation> polizStack;
@@ -85,7 +88,8 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 			if (t instanceof AbstractTranslation) {
 				comment = ((AbstractTranslation) t).getComment();
 			}
-			if (!(t instanceof InvisibleTranslation)) {
+			boolean isTranslationVisible = !(t instanceof InvisibleTranslation);
+			if (isTranslationVisible) {
 				b.append(t);
 			}
 			if (comment != null) {
@@ -93,7 +97,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 				b.append(comment);
 				b.append("\n");
 			}
-			if (it.hasNext() && comment == null) {
+			if (it.hasNext() && comment == null && isTranslationVisible) {
 				b.append(", ");
 			}
 		}
@@ -511,6 +515,48 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		addToPoliz(block);
 		addToPoliz(label0.getPointer());
 		addToPoliz(Operation.FUNC_DECL());
+	}
+	
+	@Override
+	public void inAPublicClass(APublicClass node) {
+		mark();
+		Marker marker = Marker.getInstance();
+		addToPoliz(marker);
+		blockLabelsStack.push(marker);
+	}
+		
+	@Override
+	public void outAPublicClass(APublicClass node) {
+		String className = node.getIdentifier().toString();
+		outAClass(className);
+	}
+	
+	@Override
+	public void inANotPublicClass(ANotPublicClass node) {
+		mark();
+		Marker marker = Marker.getInstance();
+		addToPoliz(marker);
+		blockLabelsStack.push(marker);
+	}
+	
+	@Override
+	public void outANotPublicClass(ANotPublicClass node) {
+		String className = node.getIdentifier().toString();
+		outAClass(className);
+	}
+	
+	private void outAClass(String className) {
+		addComment("START class "+className);
+		Marker m = (Marker) blockLabelsStack.pop();
+		Deque<Translation> block = popBlock(m);
+		LabelDeclaration label0 = LabelDeclaration.getInstance();
+		addToPoliz(label0);
+		addToPoliz(new Literal(className));
+		addToPoliz(block);
+		mark();
+		addComment("END class "+className);
+		addToPoliz(label0.getPointer());
+		addToPoliz(Operation.CLASS_DECL());
 	}
 
 	@Override
