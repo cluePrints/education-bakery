@@ -7,8 +7,9 @@ public class Operation extends AbstractTranslation {
 	
 	public static Operation DEF_VAR() { return operation("DEF_VAR", 2);}
 	public static Operation DEF_ARR() { return operation("DEF_ARR", 2);}
-	public static Operation FUNC_DECL() { return operation("DEF_FUNC", 2);}
-	public static Operation CLASS_DECL() { return operation("DEF_ÑLASS", 2);}
+	public static Operation FUNC_DECL() { return operation("DEF_FUNC", -1);}
+	public static Operation CLASS_DECL() { return operation("DEF_ÑLASS", -1);}
+	public static Operation FUNC_CALL() { return operation("CALL", -1);}
 	
 	public static Operation MOD_FINAL() { return operation("MOD_FINAL", 1);}
 	public static Operation RETURN() { return operation("RETURN", 1);}
@@ -30,7 +31,7 @@ public class Operation extends AbstractTranslation {
 	public static Operation MOD() { return operation("MOD", 2);}
 	
 	public static Operation ARRAY_ACCESS() { return operation("ARRAY_ACCESS", 2);}
-	public static Operation FUNC_CALL() { return operation("CALL", 2);}
+	
 	
 	
 	private static Operation operation(final String repr, final int args) {

@@ -3,7 +3,6 @@ package ua.kiev.kpi.sc.parser.ext.interim.walker;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
 import ua.kiev.kpi.sc.parser.ext.MyException;
@@ -20,6 +19,7 @@ import ua.kiev.kpi.sc.parser.ext.interim.repr.Marker;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Operation;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.TypePointer;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.VariablePointer;
+import ua.kiev.kpi.sc.parser.ext.ui.Preferences;
 import ua.kiev.kpi.sc.parser.node.AAddSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AAndOperandOr;
 import ua.kiev.kpi.sc.parser.node.AArrElemElementalExpression;
@@ -57,7 +57,7 @@ import ua.kiev.kpi.sc.parser.node.ASubSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AVariableClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AVariableDefinition;
 import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
-import ua.kiev.kpi.sc.parser.node.TIdentifier;
+import ua.kiev.kpi.sc.parser.node.Node;
 
 public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	private LinkedList<Translation> polizStack;
@@ -92,7 +92,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 			if (isTranslationVisible) {
 				b.append(t);
 			}
-			if (comment != null) {
+			if (comment != null && Preferences.showCommentsForInterim) {
 				b.append("\n\n      // ");
 				b.append(comment);
 				b.append("\n");
@@ -408,6 +408,8 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void outACallElementalExpression(ACallElementalExpression node) {
 		addToPoliz(new FuncPointer(node.getIdentifier()));
+		int count = calcArguments(node);
+		addToPoliz(new Literal(String.valueOf(count)));
 		addToPoliz(Operation.FUNC_CALL());
 	}
 
@@ -416,20 +418,17 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 			AIdentifierElementalExpression node) {
 		addToPoliz(new VariablePointer(node));
 	}
+	
+	@Override
+	public void inARecursiveElementalExpression(
+			ARecursiveElementalExpression node) {
+		addToPoliz(new VariablePointer(node.getIdentifier()));
+	}
 
 	@Override
 	public void outARecursiveElementalExpression(
 			ARecursiveElementalExpression node) {
-		addToPoliz(new VariablePointer(node.getIdentifier()));
-		super.outARecursiveElementalExpression(node);
 	}
-
-	/**
-	 * TODO: arglist
-	 * 
-	 * fact_arg_list = {single} expression | {multiple} expression comma
-	 * fact_arg_list;
-	 */
 
 	@Override
 	public void outAVoidFunctionBody(AVoidFunctionBody node) {
@@ -459,7 +458,6 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	/**
 	 * 
-	 * TODO:
 	 * function_declaration = 
 		public result_type function_name l_par formal_arg_list r_par;
 		
@@ -476,6 +474,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		addToPoliz(new Literal(node.getFunctionName().toString()));
 		int count;
 		// TODO: fix / pray about this - special place in hell reserved for such coders
+		count = calcArguments(node);		
+		
+		addToPoliz(new Literal(String.valueOf(count)));
+	}
+
+	private int calcArguments(Node node) {
+		int count;
 		String str = node.toString().replace(" ", "");
 		if (str.contains("()")) {
 			count = 0;
@@ -486,9 +491,8 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 					count++;
 				}
 			}
-		}		
-		
-		addToPoliz(new Literal(String.valueOf(count)));
+		}
+		return count;
 	}	
 	@Override
 	public void outAFunctionDeclaration(AFunctionDeclaration node) {
@@ -519,10 +523,15 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void inAPublicClass(APublicClass node) {
-		mark();
+		addCommentNow(" class "+node.getIdentifier().toString()+ " {");
 		Marker marker = Marker.getInstance();
 		addToPoliz(marker);
 		blockLabelsStack.push(marker);
+	}
+
+	private void addCommentNow(String text) {
+		mark();
+		addComment(text);
 	}
 		
 	@Override
@@ -533,7 +542,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void inANotPublicClass(ANotPublicClass node) {
-		mark();
+		addCommentNow(" class "+node.getIdentifier().toString()+ " {");
 		Marker marker = Marker.getInstance();
 		addToPoliz(marker);
 		blockLabelsStack.push(marker);
@@ -546,15 +555,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	}
 	
 	private void outAClass(String className) {
-		addComment("START class "+className);
+		addCommentNow("END class "+className);
 		Marker m = (Marker) blockLabelsStack.pop();
 		Deque<Translation> block = popBlock(m);
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
-		addToPoliz(label0);
+		addToPoliz(label0);		
 		addToPoliz(new Literal(className));
-		addToPoliz(block);
-		mark();
-		addComment("END class "+className);
+		addToPoliz(block);		
 		addToPoliz(label0.getPointer());
 		addToPoliz(Operation.CLASS_DECL());
 	}
