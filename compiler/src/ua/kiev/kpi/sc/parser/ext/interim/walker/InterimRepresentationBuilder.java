@@ -103,6 +103,16 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		}
 		return b.toString();
 	}
+	
+	@Override
+	public void inAIdentifierElementalExpression(
+			AIdentifierElementalExpression node) {
+		// TODO: check if is not reserved word
+		// TODO: equality operator
+		// TODO: 5+true
+		// TODO: &&, ||
+		throw new RuntimeException("");
+	}
 
 	/**
 	 * while (expr) { block; }
