@@ -10,6 +10,6 @@ public class JumpAlways implements Translation {
 	
 	@Override
 	public String toString() {
-		return "jmpAlways";
+		return "JMP";
 	}
 }

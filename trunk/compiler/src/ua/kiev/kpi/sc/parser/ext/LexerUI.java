@@ -37,9 +37,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import com.google.common.collect.Iterables;
-
-import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.walker.InterimRepresentationBuilder;
 import ua.kiev.kpi.sc.parser.ext.rules.ReduceRulesMapping;
 import ua.kiev.kpi.sc.parser.ext.scope.Scope;
@@ -110,8 +107,7 @@ public class LexerUI extends JFrame {
 		btnExecute = new JButton("Execute");
 		taCode.setAutoscrolls(true);		
 		tabPane.addTab("Lexer", new JScrollPane(taLexerResult));
-		tabPane.addTab("RR", new JScrollPane(taRR));
-		//tabPane.addTab("Parsed tree", new JScrollPane(taParsedTree));
+		tabPane.addTab("RR", new JScrollPane(taRR));		
 		ActionTableModel model = new ActionTableModel();
 		tblActionTable = new JTable(model);
 		model.applyColumnHeaders(tblActionTable.getColumnModel());
@@ -173,7 +169,7 @@ public class LexerUI extends JFrame {
 		
 		tabPane.addTab("Scopes", p);
 		
-		tabPane.addTab("RR", new JScrollPane(taRR));
+		tabPane.addTab("Debug tree", new JScrollPane(taParsedTree));
 		tabPane.addTab("Poliz", new JScrollPane(taPoliz));
 		
 		tabPane.addTab("Errors", new JScrollPane(taErrors));

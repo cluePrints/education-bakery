@@ -10,6 +10,6 @@ public class JumpIfFalse implements Translation {
 	
 	@Override
 	public String toString() {
-		return "jmpFalse";
+		return "JMP_FALSE";
 	}
 }
