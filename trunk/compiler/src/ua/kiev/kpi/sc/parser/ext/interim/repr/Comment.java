@@ -1,7 +1,7 @@
 package ua.kiev.kpi.sc.parser.ext.interim.repr;
 
+import ua.kiev.kpi.sc.parser.ext.interim.AbstractTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.InvisibleTranslation;
-import ua.kiev.kpi.sc.parser.ext.interim.Translation.AbstractTranslation;
 
 public class Comment extends AbstractTranslation implements
 		InvisibleTranslation {

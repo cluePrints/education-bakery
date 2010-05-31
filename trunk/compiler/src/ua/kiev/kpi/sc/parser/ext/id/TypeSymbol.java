@@ -6,14 +6,21 @@ import java.util.List;
 
 public class TypeSymbol extends Symbol{	
 	public static final List<Symbol> reservedSymbols;
+	public static final TypeSymbol T_VOID = new ReservedTypeSymbol("void");
+	public static final TypeSymbol T_INT = new ReservedTypeSymbol("int");
+	public static final TypeSymbol T_FLOAT = new ReservedTypeSymbol("float");
+	public static final TypeSymbol T_DOUBLE = new ReservedTypeSymbol("double");
+	public static final TypeSymbol T_STRING = new ReservedTypeSymbol("String");
+	public static final TypeSymbol T_INTEGER = new ReservedTypeSymbol("Integer");
+	public static final TypeSymbol T_BOOLEAN = new ReservedTypeSymbol("boolean");
 	static {
 		LinkedList<Symbol> tmp = new LinkedList<Symbol>();
-		tmp.add(new ReservedTypeSymbol("void"));
-		tmp.add(new ReservedTypeSymbol("int"));
-		tmp.add(new ReservedTypeSymbol("float"));
-		tmp.add(new ReservedTypeSymbol("double"));
-		tmp.add(new ReservedTypeSymbol("String"));
-		tmp.add(new ReservedTypeSymbol("Integer"));
+		tmp.add(T_INT);
+		tmp.add(T_VOID);
+		tmp.add(T_FLOAT);
+		tmp.add(T_DOUBLE);
+		tmp.add(T_STRING);
+		tmp.add(T_INTEGER);
 		ReservedTypeSymbol boolType = new ReservedTypeSymbol("boolean");
 		tmp.add(new ReservedValueSymbol("true", boolType));
 		tmp.add(new ReservedValueSymbol("false", boolType));

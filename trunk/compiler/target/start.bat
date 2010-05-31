@@ -1,0 +1,1 @@
+java -classpath "classes;google-collections-1.0.jar" ua.kiev.kpi.sc.parser.ext.CompilerGUI

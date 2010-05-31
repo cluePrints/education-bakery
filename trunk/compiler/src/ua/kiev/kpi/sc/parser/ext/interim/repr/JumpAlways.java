@@ -1,6 +1,6 @@
 package ua.kiev.kpi.sc.parser.ext.interim.repr;
 
-import ua.kiev.kpi.sc.parser.ext.interim.Translation.AbstractTranslation;
+import ua.kiev.kpi.sc.parser.ext.interim.AbstractTranslation;
 
 public class JumpAlways extends AbstractTranslation {
 	public static JumpAlways getInstance() 
