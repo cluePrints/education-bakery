@@ -144,15 +144,120 @@ public class ActionTableModel extends AbstractTableModel{
 			
 			LinkedList<String> result = new LinkedList<String>();
 			
-			
-			for (int i=0; i<TERMINAL_COUNT; i++) {
-				result.add(classToIdx.get(Integer.valueOf(i)).getSimpleName().substring(1)); 
+			if (classToIdx.size() != 0) {
+				for (int i=0; i<TERMINAL_COUNT; i++) {
+					result.add(classToIdx.get(Integer.valueOf(i)).getSimpleName().substring(1)); 
+				}
+				result.add("EOF");
+			} else {
+				result.addAll(getTokenNamesOld());
 			}
-			result.add("EOF");
+			
 			return result;
 		} catch (Throwable th) {
 			throw new RuntimeException(th);
 		}
+	}
+	
+	private static List<String> getTokenNamesOld() 
+	{
+		List<String> lst = new LinkedList<String>(){{
+			add("Comma");
+			add("Dot");
+			add("LBkt");
+			add("LBrc");
+			add("LPar");
+			add("RBkt");
+			add("RBrc");
+			add("RPar");
+			add("Semi");
+			add("DoubleQuote");
+			add("AmpAmp");
+			add("Assign");
+			add("BarBar");
+			add("Emark");
+			add("Eq");
+			add("Gt");
+			add("Gteq");
+			add("Lt");
+			add("Lteq");
+			add("Minus");
+			add("Neq");
+			add("Percent");
+			add("Plus");
+			add("Slash");
+			add("Star");
+			add("Boolean");
+			add("ClassToken");
+			add("Else");
+			add("Final");
+			add("Float");
+			add("For");
+			add("If");
+			add("Int");
+			add("New");
+			add("Public");
+			add("Return");
+			add("Short");
+			add("Static");
+			add("Void");
+			add("While");
+			add("StringToken");
+			add("LiteralBoolean");
+			add("LiteralNull");
+			add("Identifier");
+			add("NonNegativeInteger");
+			add("Char");
+			add("EOF");
+			add("Comma");
+			add("Dot");
+			add("LBkt");
+			add("LBrc");
+			add("LPar");
+			add("RBkt");
+			add("RBrc");
+			add("RPar");
+			add("Semi");
+			add("DoubleQuote");
+			add("AmpAmp");
+			add("Assign");
+			add("BarBar");
+			add("Emark");
+			add("Eq");
+			add("Gt");
+			add("Gteq");
+			add("Lt");
+			add("Lteq");
+			add("Minus");
+			add("Neq");
+			add("Percent");
+			add("Plus");
+			add("Slash");
+			add("Star");
+			add("Boolean");
+			add("ClassToken");
+			add("Else");
+			add("Final");
+			add("Float");
+			add("For");
+			add("If");
+			add("Int");
+			add("New");
+			add("Public");
+			add("Return");
+			add("Short");
+			add("Static");
+			add("Void");
+			add("While");
+			add("StringToken");
+			add("LiteralBoolean");
+			add("LiteralNull");
+			add("Identifier");
+			add("NonNegativeInteger");
+			add("Char");
+			add("EOF");
+		}};
+		return lst;
 	}
 	
 	private static Class[] getClasses(String packageName) {

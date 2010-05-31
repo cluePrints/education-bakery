@@ -3000,8 +3000,8 @@ public class Parser
 
 
 
-    public static int[][][] actionTable;
-/*      {
+    public static int[][][] actionTable = 
+        {
 			{{-1, ERROR, 0}, {34, SHIFT, 1}, },
 			{{-1, ERROR, 1}, {26, SHIFT, 4}, },
 			{{-1, ERROR, 2}, {46, ACCEPT, -1}, },
@@ -3170,9 +3170,9 @@ public class Parser
 			{{-1, ERROR, 165}, {6, SHIFT, 167}, },
 			{{-1, REDUCE, 52}, },
 			{{-1, REDUCE, 55}, },
-        };*/
-    public static int[][][] gotoTable;
-/*      {
+        };
+    public static int[][][] gotoTable = 
+      {
 			{{-1, 2}, },
 			{{-1, 6}, {7, 10}, },
 			{{-1, 3}, },
@@ -3216,9 +3216,8 @@ public class Parser
 			{{-1, 28}, },
 			{{-1, 87}, },
 			{{-1, 78}, },
-        };*/
-    private static String[] errorMessages;
-/*      {
+        };
+    private static String[] errorMessages =      {
 			"expecting: 'public'",
 			"expecting: 'class'",
 			"expecting: EOF",
@@ -3231,44 +3230,44 @@ public class Parser
 			"expecting: 'boolean', 'int', 'void', 'String', identifier",
 			"expecting: '}'",
 			"expecting: ';'",
-			"expecting: '.', '(', '"', '!', '-', '+', 'if', 'return', 'while', literal boolean, 'null', identifier, non negative integer",
+			"expecting: '.', '(', '\"', '!', '-', '+', 'if', 'return', 'while', literal boolean, 'null', identifier, non negative integer",
 			"expecting: ',', ')', ';', '='",
 			"expecting: ',', ')', ';'",
 			"expecting: ']'",
 			"expecting: '='",
 			"expecting: '('",
 			"expecting: non negative integer",
-			"expecting: '"', char",
-			"expecting: '.', '(', '"', '!', '-', '+', literal boolean, 'null', identifier, non negative integer",
+			"expecting: '\"', char",
+			"expecting: '.', '(', '\"', '!', '-', '+', literal boolean, 'null', identifier, non negative integer",
 			"expecting: ',', ']', ')', ';', '&&', '||', '==', '>', '>=', '<', '<=', '-', '!=', '%', '+', '/', '*'",
 			"expecting: '.', '[', '(', ';', '&&', '=', '||', '==', '>', '>=', '<', '<=', '-', '!=', '%', '+', '/', '*'",
 			"expecting: ',', '.', ']', ')', ';', '&&', '||', '==', '>', '>=', '<', '<=', '-', '!=', '%', '+', '/', '*'",
 			"expecting: 'return'",
-			"expecting: '.', '(', '}', '"', '!', '-', '+', 'if', 'return', 'while', literal boolean, 'null', identifier, non negative integer",
-			"expecting: '.', '(', '}', '"', '!', '-', '+', 'else', 'if', 'return', 'while', literal boolean, 'null', identifier, non negative integer",
+			"expecting: '.', '(', '}', '\"', '!', '-', '+', 'if', 'return', 'while', literal boolean, 'null', identifier, non negative integer",
+			"expecting: '.', '(', '}', '\"', '!', '-', '+', 'else', 'if', 'return', 'while', literal boolean, 'null', identifier, non negative integer",
 			"expecting: ',', ']', ')', ';', '||'",
 			"expecting: ',', ']', ')', ';', '&&', '||'",
 			"expecting: ',', ']', ')', ';', '&&', '||', '==', '!='",
 			"expecting: ',', ']', ')', ';', '&&', '||', '==', '>', '>=', '<', '<=', '!='",
 			"expecting: ',', ']', ')', ';', '&&', '||', '==', '>', '>=', '<', '<=', '-', '!=', '+'",
 			"expecting: ')', identifier",
-			"expecting: '.', '"', '-', '+', literal boolean, 'null', non negative integer",
+			"expecting: '.', '\"', '-', '+', literal boolean, 'null', non negative integer",
 			"expecting: ')', 'boolean', 'int', 'String', identifier",
 			"expecting: ')'",
 			"expecting: ',', '.', '[', '(', ']', ')', ';', '&&', '||', '==', '>', '>=', '<', '<=', '-', '!=', '%', '+', '/', '*'",
-			"expecting: '.', '"', '-', '+', literal boolean, 'null', identifier, non negative integer",
-			"expecting: '.', '(', ';', '"', '!', '-', '+', literal boolean, 'null', identifier, non negative integer",
+			"expecting: '.', '\"', '-', '+', literal boolean, 'null', identifier, non negative integer",
+			"expecting: '.', '(', ';', '\"', '!', '-', '+', literal boolean, 'null', identifier, non negative integer",
 			"expecting: ',', ')'",
-			"expecting: '.', '(', '"', '-', '+', literal boolean, 'null', identifier, non negative integer",
-			"expecting: '.', '(', '}', '"', '!', '-', '+', 'if', 'while', literal boolean, 'null', identifier, non negative integer",
+			"expecting: '.', '(', '\"', '-', '+', literal boolean, 'null', identifier, non negative integer",
+			"expecting: '.', '(', '}', '\"', '!', '-', '+', 'if', 'while', literal boolean, 'null', identifier, non negative integer",
 			"expecting: ',', ']', ')', ';'",
-        };*/
-    private static int[] errors;
-/*      {
+        };
+    private static int[] errors =
+       {
 			0, 1, 2, 3, 4, 4, 2, 3, 5, 5, 2, 6, 6, 7, 8, 7, 9, 7, 7, 10, 6, 6, 11, 11, 5, 4, 7, 7, 6, 10, 4, 4, 4, 4, 3, 6, 6, 12, 6, 13, 14, 15, 6, 3, 16, 17, 17, 18, 8, 19, 20, 18, 18, 17, 17, 21, 21, 22, 23, 21, 21, 21, 23, 16, 24, 25, 26, 25, 25, 11, 27, 28, 29, 30, 31, 21, 21, 21, 25, 32, 33, 34, 21, 35, 21, 19, 21, 19, 36, 21, 23, 23, 20, 20, 37, 20, 20, 18, 20, 38, 5, 25, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 25, 11, 39, 35, 40, 19, 21, 35, 35, 21, 15, 39, 35, 21, 11, 10, 11, 41, 42, 27, 28, 28, 29, 29, 29, 29, 30, 30, 31, 31, 31, 34, 5, 21, 5, 5, 21, 20, 21, 25, 6, 10, 10, 35, 41, 41, 35, 6, 25, 10, 10, 26, 25, 
-        };*/
+        };
 
-    static 
+    /*static 
     {
         try
         {
@@ -3337,5 +3336,5 @@ public class Parser
         {
             throw new RuntimeException("The file \"parser.dat\" is either missing or corrupted.");
         }
-    }
+    }*/
 }

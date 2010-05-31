@@ -111,7 +111,6 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		// TODO: equality operator
 		// TODO: 5+true
 		// TODO: &&, ||
-		throw new RuntimeException("");
 	}
 
 	/**

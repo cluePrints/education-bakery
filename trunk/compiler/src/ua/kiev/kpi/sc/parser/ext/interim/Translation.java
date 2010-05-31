@@ -10,14 +10,9 @@ public interface Translation {
 	
 	public abstract class AbstractTranslation implements Translation {
 		private String comment;
-		private int argsRequired;
 
 		public int getArgsRequired() {
-			return argsRequired;
-		}
-
-		public void setArgsRequired(int argsRequired) {
-			this.argsRequired = argsRequired;
+			return 0;
 		}
 
 		public String getComment() {
