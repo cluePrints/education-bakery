@@ -194,14 +194,6 @@ public class ReduceRulesMapping {
 		put(83, AIdentifierElementalExpression.class, "elemental_expression =  TIdentifier");
 		put(84, ASingleFactArgList.class, "fact_arg_list = expression");
 		put(85, AMultipleFactArgList.class, "fact_arg_list = expression TComma fact_arg_list");
-		/*
-		 * TODO: think about representing those: 
-		put(86, ATerminal$ClassBodyElem.class, );
-		put(87, ANonTerminal$ClassBodyElem.class, );
-		put(88, ATerminal$Char.class, );
-		put(89, ANonTerminal$Char.class, );
-		put(90, ATerminal$Operator.class, );
-		put(91, ANonTerminal$Operator.class, );*/
 	}
 
 	public static String getRepresentation(List<?> array) {

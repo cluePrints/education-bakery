@@ -2,7 +2,7 @@ package ua.kiev.kpi.sc.parser.ext.interim.repr;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ua.kiev.kpi.sc.parser.ext.interim.Translation.AbstractTranslation;
+import ua.kiev.kpi.sc.parser.ext.interim.AbstractTranslation;
 
 public class LabelDeclaration extends AbstractTranslation {
 	private static final AtomicInteger count = new AtomicInteger(0);

@@ -6,9 +6,10 @@ import java.util.LinkedList;
 
 import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
 import ua.kiev.kpi.sc.parser.ext.MyException;
+import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
+import ua.kiev.kpi.sc.parser.ext.interim.AbstractTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.InvisibleTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
-import ua.kiev.kpi.sc.parser.ext.interim.Translation.AbstractTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Comment;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.FuncPointer;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.JumpAlways;
@@ -16,9 +17,9 @@ import ua.kiev.kpi.sc.parser.ext.interim.repr.JumpIfFalse;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.LabelDeclaration;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Literal;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Marker;
-import ua.kiev.kpi.sc.parser.ext.interim.repr.Operation;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.TypePointer;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.VariablePointer;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.op.Operation;
 import ua.kiev.kpi.sc.parser.ext.ui.Preferences;
 import ua.kiev.kpi.sc.parser.node.AAddSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AAndOperandOr;
@@ -111,6 +112,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		// TODO: equality operator
 		// TODO: 5+true
 		// TODO: &&, ||
+
 	}
 
 	/**
@@ -283,17 +285,17 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outABooleanLiteral(ABooleanLiteral node) {
-		addToPoliz(new Literal(node.toString()));
+		addToPoliz(new Literal(node.toString(), TypeSymbol.T_BOOLEAN));
 	}
 
 	@Override
 	public void outAIntLiteralNumeric(AIntLiteralNumeric node) {
-		addToPoliz(new Literal(node.toString()));
+		addToPoliz(new Literal(node.toString(), TypeSymbol.T_INT));
 	}
 
 	@Override
 	public void outAVariableDefinition(AVariableDefinition node) {
-		addToPoliz(new Literal(node.getVariableName().toString()));
+		addToPoliz(new Literal(node.getVariableName().toString(), TypeSymbol.T_STRING));
 		if (node.getVariableType() instanceof AArrayVariableType) {
 			addToPoliz(new TypePointer(((AArrayVariableType) node
 					.getVariableType()).getType()));
@@ -308,7 +310,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outAConstantDefinition(AConstantDefinition node) {
-		addToPoliz(new Literal(node.getVariableName().toString()));
+		addToPoliz(new Literal(node.getVariableName().toString(), TypeSymbol.T_STRING));
 
 		if (node.getVariableType() instanceof AArrayVariableType) {
 			addToPoliz(new TypePointer(((AArrayVariableType) node
@@ -418,7 +420,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public void outACallElementalExpression(ACallElementalExpression node) {
 		addToPoliz(new FuncPointer(node.getIdentifier()));
 		int count = calcArguments(node);
-		addToPoliz(new Literal(String.valueOf(count)));
+		addToPoliz(new Literal(String.valueOf(count), TypeSymbol.T_INT));
 		addToPoliz(Operation.FUNC_CALL());
 	}
 
@@ -480,12 +482,12 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void inAFunctionDeclaration(AFunctionDeclaration node) {		
 		addToPoliz(new TypePointer(node.getResultType()));
-		addToPoliz(new Literal(node.getFunctionName().toString()));
+		addToPoliz(new Literal(node.getFunctionName().toString(), TypeSymbol.T_STRING));
 		int count;
 		// TODO: fix / pray about this - special place in hell reserved for such coders
 		count = calcArguments(node);		
 		
-		addToPoliz(new Literal(String.valueOf(count)));
+		addToPoliz(new Literal(String.valueOf(count), TypeSymbol.T_INT));
 	}
 
 	private int calcArguments(Node node) {
@@ -569,7 +571,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		Deque<Translation> block = popBlock(m);
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
 		addToPoliz(label0);		
-		addToPoliz(new Literal(className));
+		addToPoliz(new Literal(className, TypeSymbol.T_STRING));
 		addToPoliz(block);		
 		addToPoliz(label0.getPointer());
 		addToPoliz(Operation.CLASS_DECL());
