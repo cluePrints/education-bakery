@@ -1,11 +1,17 @@
 package ua.kiev.kpi.sc.parser.ext.interim.repr;
 
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
+import ua.kiev.kpi.sc.parser.ext.interim.Translation.AbstractTranslation;
 
-public class JumpIfFalse implements Translation {
+public class JumpIfFalse extends AbstractTranslation{
 	public static JumpIfFalse getInstance() 
 	{		
 		return new JumpIfFalse();
+	}
+	
+	@Override
+	public int getArgsRequired() {
+		return 2;
 	}
 	
 	@Override
