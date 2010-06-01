@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ua.kiev.kpi.sc.parser.node.AAddSimpleExpression;
@@ -93,6 +94,7 @@ import ua.kiev.kpi.sc.parser.node.AVariableResultType;
 import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
 import ua.kiev.kpi.sc.parser.node.AVoidResultType;
 
+@Ignore
 public class JustTest {
 	public static String EXP = "\\s*case (\\d*): /\\* reduce (\\w*\\$?\\w*) \\*/\\s*";
 	

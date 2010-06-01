@@ -8,13 +8,16 @@ import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Sets;
 
+@Ignore
 public class NotTerminalsFromGrammar {
 	private static final String TXT = "ô<A>ô";
 	private static final String REGEX = "(<.*?>)";
+	
 	@Test
 	public void testMatch()
 	{
@@ -23,6 +26,7 @@ public class NotTerminalsFromGrammar {
 		Matcher m = p.matcher(TXT);
 		Assert.assertEquals(m.group(1), "<A>");
 	}
+	
 	@Test
 	public void doThat() throws Exception
 	{

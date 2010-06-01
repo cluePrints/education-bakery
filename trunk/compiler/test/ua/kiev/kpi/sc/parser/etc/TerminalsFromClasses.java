@@ -2,6 +2,7 @@ package ua.kiev.kpi.sc.parser.etc;
 
 import java.util.Collection;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ua.kiev.kpi.sc.parser.node.Node;
@@ -9,6 +10,7 @@ import ua.kiev.kpi.sc.parser.util.PackageLookup;
 
 import com.google.common.collect.Sets;
 
+@Ignore
 public class TerminalsFromClasses {
 	@Test
 	public void doThat() throws Exception
