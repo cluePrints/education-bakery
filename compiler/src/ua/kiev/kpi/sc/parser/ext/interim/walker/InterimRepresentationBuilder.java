@@ -20,6 +20,7 @@ import ua.kiev.kpi.sc.parser.ext.interim.repr.Marker;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.TypePointer;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.VariablePointer;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.op.Operation;
+import ua.kiev.kpi.sc.parser.ext.interim.semantic.Bound;
 import ua.kiev.kpi.sc.parser.ext.ui.Preferences;
 import ua.kiev.kpi.sc.parser.node.AAddSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AAndOperandOr;
@@ -51,6 +52,7 @@ import ua.kiev.kpi.sc.parser.node.APublicClass;
 import ua.kiev.kpi.sc.parser.node.ARecursiveElementalExpression;
 import ua.kiev.kpi.sc.parser.node.ARemSummand;
 import ua.kiev.kpi.sc.parser.node.ASimpleConditionalOperator;
+import ua.kiev.kpi.sc.parser.node.ASimpleExpression;
 import ua.kiev.kpi.sc.parser.node.ASimpleIf;
 import ua.kiev.kpi.sc.parser.node.ASimpleOperator;
 import ua.kiev.kpi.sc.parser.node.ASingleBlock;
@@ -326,19 +328,20 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		}
 		addToPoliz(Operation.MOD_FINAL());
 	}
-
+	
 	@Override
-	public void inASimpleOperator(ASimpleOperator node) {
-		mark();		
+	public void inASimpleExpression(ASimpleExpression node) {
+		polizStack.push(Bound.EXPR_START);
 	}
 	
 	@Override
-	public void outASimpleOperator(ASimpleOperator node) {
-		addComment(node.toString());
+	public void outASimpleExpression(ASimpleExpression node) {
+		polizStack.push(Bound.EXPR_END);
 	}
 	
 	@Override
 	public void inAAssignOperator(AAssignOperator node) {
+		polizStack.push(Bound.EXPR_START);
 		mark();
 	}
 	
@@ -347,6 +350,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		addComment(node.toString());
 		addToPoliz(new VariablePointer(node.getVariableName()));
 		addToPoliz(Operation.ASSIGN());
+		polizStack.push(Bound.EXPR_END);
 	}
 
 	@Override
@@ -453,7 +457,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		addToPoliz(Operation.RETURN());
 	}
 
-	private void mark() {
+	private void mark() {		
 		lastElemBeforeThisBlock.push(polizStack.peek());
 	}
 

@@ -1,0 +1,9 @@
+public class Test {
+	int a;
+	String b;
+	public void test()
+	{
+		2+true;
+		return;
+	}
+}
