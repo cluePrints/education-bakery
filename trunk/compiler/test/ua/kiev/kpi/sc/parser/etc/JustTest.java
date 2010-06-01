@@ -118,10 +118,6 @@ public class JustTest {
 			s = r.readLine();
 			if (s != null) {
 				Matcher m = p.matcher(s);
-				if (s.contains("case 0")) {
-					int i=0;
-					i++;
-				}
 				if (m.matches()) {
 					String num = m.group(1);
 					String clazz = m.group(2);

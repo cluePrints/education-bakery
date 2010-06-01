@@ -4,9 +4,6 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
 import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
 import ua.kiev.kpi.sc.parser.ext.MyException;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
@@ -63,6 +60,8 @@ import ua.kiev.kpi.sc.parser.node.AVariableDefinition;
 import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
 import ua.kiev.kpi.sc.parser.node.Node;
 
+import com.google.common.collect.Lists;
+
 public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	private LinkedList<Translation> polizStack;
 
@@ -115,8 +114,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		// TODO: check if is not reserved word
 		// TODO: equality operator
 		// TODO: 5+true
-		// TODO: &&, ||
-
+		// TODO: &&, ||		
 	}
 
 	/**
@@ -613,8 +611,8 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	public LinkedList<Translation> getFilteredPolizStack() {
 		LinkedList<Translation> result = Lists.newLinkedList();
 		for (Translation t : polizStack) {
-			if ((t instanceof InvisibleTranslation)) {
-				polizStack.add(t);
+			if (!(t instanceof InvisibleTranslation)) {
+				result.add(t);
 			}
 		}
 		return result;
