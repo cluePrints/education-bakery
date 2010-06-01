@@ -8,18 +8,22 @@ import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.InvisibleTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Literal;
+import ua.kiev.kpi.sc.parser.ext.interim.repr.VariablePointer;
 
 import com.google.common.collect.Lists;
 
-public class TypeEvaluator{
-	private Deque<TypeSymbol> stack;
+public class TypeEvaluator{	
 
-	public TypeSymbol evaluate(Deque<Translation> polizStack)
+	public TypeSymbol evaluatePart(Deque<Translation> polizStack)
 	{
-		stack = Lists.newLinkedList();
+		Deque<TypeSymbol> stack = Lists.newLinkedList();
 		Iterator<Translation> it = polizStack.descendingIterator();
-		while (it.hasNext()) {
-			validate(it.next());
+		Translation c = it.next();
+		c = moveToStart(it, c);
+		
+		while (it.hasNext() && c != Bound.EXPR_END) {
+			c = it.next();
+			validate(stack, c);
 		}
 		
 		if (stack.size() == 1) {
@@ -28,8 +32,15 @@ public class TypeEvaluator{
 			throw new MyException("Not possible to fold result to single value");
 		}
 	}
+
+	private Translation moveToStart(Iterator<Translation> it, Translation c) {
+		while (it.hasNext() && (c != Bound.EXPR_START)) {
+			c = it.next();
+		}
+		return c;
+	}
 	
-	private void validate(Translation next) {
+	private void validate(Deque<TypeSymbol> stack, Translation next) {
 		if (next instanceof InvisibleTranslation) {
 			// do nothing
 		} else if (next instanceof Evaluator){
@@ -39,6 +50,9 @@ public class TypeEvaluator{
 		} else if (next instanceof Literal) {
 			Literal l = (Literal) next;
 			stack.push(l.getType());
+			
+		} else if (next instanceof VariablePointer) {
+			
 		}
 	}
 }

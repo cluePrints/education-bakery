@@ -4,7 +4,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ua.kiev.kpi.sc.parser.ext.checker.SemanticCheckerFacade;
 import ua.kiev.kpi.sc.parser.ext.interim.walker.InterimRepresentationBuilder;
 import util.AbstractTest;
 
@@ -13,10 +12,7 @@ public class ScopeHarness extends AbstractTest{
 	public void okBasicTest() throws Throwable
 	{
 		load("okBasicTest");
-		Assert.assertTrue(caught == null);
-		
-		InterimRepresentationBuilder w = new InterimRepresentationBuilder();
-		syntaxTree.apply(w);
+		Assert.assertEquals(null, caught);
 	}
 	
 	@Test

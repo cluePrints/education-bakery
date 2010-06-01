@@ -1,0 +1,6 @@
+public class okReturnType {
+	public int test() {
+		return 2+3+5+5;
+	}
+	
+}

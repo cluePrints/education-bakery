@@ -18,21 +18,25 @@ public class TypeEvaluatorTest {
 	public void testResultExpectedSingleValue()
 	{
 		Deque<Translation> stack = Lists.newLinkedList();
+		stack.push(Bound.EXPR_START);
 		stack.push(new Literal("3", TypeSymbol.T_INT));
 		stack.push(new Literal("5", TypeSymbol.T_INT));
+		stack.push(Bound.EXPR_END);
 		TypeEvaluator ev = new TypeEvaluator();
-		ev.evaluate(stack);
+		ev.evaluatePart(stack);
 	}
 	
 	@Test
 	public void testIntIntAddition()
 	{
 		Deque<Translation> stack = Lists.newLinkedList();
+		stack.push(Bound.EXPR_START);
 		stack.push(new Literal("3", TypeSymbol.T_INT));
 		stack.push(new Literal("5", TypeSymbol.T_INT));
+		stack.push(Bound.EXPR_END);
 		stack.push(Operation.ADD());
 		TypeEvaluator ev = new TypeEvaluator();
-		TypeSymbol sym = ev.evaluate(stack);
+		TypeSymbol sym = ev.evaluatePart(stack);
 		Assert.assertTrue(sym == TypeSymbol.T_INT);
 	}
 	
@@ -40,11 +44,13 @@ public class TypeEvaluatorTest {
 	public void testAllIsOk()
 	{
 		Deque<Translation> stack = Lists.newLinkedList();
+		stack.push(Bound.EXPR_START);
 		stack.push(new Literal("3", TypeSymbol.T_INT));
 		stack.push(new Literal("5", TypeSymbol.T_FLOAT));
+		stack.push(Bound.EXPR_END);
 		stack.push(Operation.MUL());
 		TypeEvaluator ev = new TypeEvaluator();
-		TypeSymbol sym = ev.evaluate(stack);
+		TypeSymbol sym = ev.evaluatePart(stack);
 		Assert.assertTrue(sym == TypeSymbol.T_FLOAT);
 	}
 	
@@ -52,10 +58,12 @@ public class TypeEvaluatorTest {
 	public void testOthersFail()
 	{
 		Deque<Translation> stack = Lists.newLinkedList();
+		stack.push(Bound.EXPR_START);
 		stack.push(new Literal("3", TypeSymbol.T_INT));
 		stack.push(new Literal("5", TypeSymbol.T_STRING));
+		stack.push(Bound.EXPR_END);
 		stack.push(Operation.MUL());
 		TypeEvaluator ev = new TypeEvaluator();
-		ev.evaluate(stack);
+		ev.evaluatePart(stack);
 	}
 }

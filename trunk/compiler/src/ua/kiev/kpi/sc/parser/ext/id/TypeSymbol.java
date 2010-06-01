@@ -42,6 +42,11 @@ public class TypeSymbol extends Symbol{
 		public final int getDefPos() {
 			return -1;
 		};
+		
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 	
 	private static class ReservedTypeSymbol extends TypeSymbol {
@@ -57,5 +62,10 @@ public class TypeSymbol extends Symbol{
 		public final int getDefPos() {
 			return -1;
 		};
+		
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 }
