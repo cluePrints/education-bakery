@@ -2,14 +2,11 @@
 
 package ua.kiev.kpi.sc.parser.parser;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Queue;
 
 import ua.kiev.kpi.sc.parser.analysis.Analysis;
 import ua.kiev.kpi.sc.parser.analysis.AnalysisAdapter;

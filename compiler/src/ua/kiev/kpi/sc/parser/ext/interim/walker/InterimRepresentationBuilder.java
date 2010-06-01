@@ -4,6 +4,9 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
 import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
 import ua.kiev.kpi.sc.parser.ext.MyException;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
@@ -62,6 +65,7 @@ import ua.kiev.kpi.sc.parser.node.Node;
 
 public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	private LinkedList<Translation> polizStack;
+
 	/**
 	 * For delimiting blocks, we're pushing block start label when entering block and popping it when leaving block
 	 */
@@ -600,5 +604,19 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void outACycleOperator(ACycleOperator node) {
 		addComment(node.toString());
+	}
+	
+	public LinkedList<Translation> getPolizStack() {
+		return Lists.newLinkedList(polizStack);
+	}
+	
+	public LinkedList<Translation> getFilteredPolizStack() {
+		LinkedList<Translation> result = Lists.newLinkedList();
+		for (Translation t : polizStack) {
+			if ((t instanceof InvisibleTranslation)) {
+				polizStack.add(t);
+			}
+		}
+		return result;
 	}
 }

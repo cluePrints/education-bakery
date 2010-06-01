@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.PushbackReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -212,7 +213,8 @@ public class LexerUI extends JFrame {
 					taParsedTree.setText("");
 					tabPane.setSelectedIndex(0);									
 					
-					taLexerResult.setText(runLexer());					
+					taLexerResult.setText(Lexer.run(new StringReader(taCode
+							.getText())));					
 					taParsedTree.setText(parseTree());
 					StringBuilder rulesTriggered = new StringBuilder();
 					for (Integer ind : Parser.triggeredRulesInd)
@@ -254,17 +256,6 @@ public class LexerUI extends JFrame {
 		});
 	}
 
-	private static String convertToken(Token t) {
-		String nodeText = t.getText();
-		nodeText = nodeText.replace("\n", "\\n");
-		nodeText = nodeText.replace("\t", "\\t");
-		nodeText = nodeText.replace("\r", "\\r");
-
-		String res = String.format("[%1$3s, %2$3s]    %3$-15s %4$s", t
-				.getLine(), t.getPos(), t.getClass().getSimpleName(), nodeText);
-		return res;
-	}
-
 	private String parseTree() throws ParserException,
 			LexerException, IOException {
 		StringBuilder b = new StringBuilder();
@@ -277,25 +268,6 @@ public class LexerUI extends JFrame {
 		syntaxTree.apply(log);
 		b.append(log.toString());
 		return b.toString();
-	}
-
-	private String runLexer() {
-		try {
-			StringBuilder b = new StringBuilder();
-			Lexer lexer = new Lexer(new PushbackReader(new StringReader(taCode
-					.getText()), 1024));
-	
-			Token t = null;
-	
-			do {
-				t = lexer.next();
-				b.append(convertToken(t));
-				b.append("\n");
-			} while (!(t instanceof EOF));
-			return b.toString();
-		} catch (Exception ex){
-			throw new RuntimeException(ex);
-		}
 	}
 	
 	private Scope runScoper() throws Exception {
