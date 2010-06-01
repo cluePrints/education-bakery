@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -15,6 +16,7 @@ import com.google.common.collect.Lists;
 /**
  * Regexp frenzy, it's easier to simply look up by mapping sorted in order we want
  */
+@Ignore
 public class RulesForTableFromMapping {
 	private static final String TXT = "   put(15, ABooleanLiteral.class, \"literal = literal_boolean\");   ";
 	private static final String REGEX = ".*put.*\\.class,.*\"(.*)\".*";
