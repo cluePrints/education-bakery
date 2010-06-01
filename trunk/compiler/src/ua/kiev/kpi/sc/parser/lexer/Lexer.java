@@ -2,10 +2,61 @@
 
 package ua.kiev.kpi.sc.parser.lexer;
 
-import java.io.*;
-import ua.kiev.kpi.sc.parser.node.*;
+import java.io.IOException;
+import java.io.PushbackReader;
+import java.io.Reader;
 
-@SuppressWarnings("nls")
+import ua.kiev.kpi.sc.parser.node.EOF;
+import ua.kiev.kpi.sc.parser.node.TAmpAmp;
+import ua.kiev.kpi.sc.parser.node.TAssign;
+import ua.kiev.kpi.sc.parser.node.TBarBar;
+import ua.kiev.kpi.sc.parser.node.TBoolean;
+import ua.kiev.kpi.sc.parser.node.TChar;
+import ua.kiev.kpi.sc.parser.node.TClassToken;
+import ua.kiev.kpi.sc.parser.node.TComma;
+import ua.kiev.kpi.sc.parser.node.TDot;
+import ua.kiev.kpi.sc.parser.node.TDoubleQuote;
+import ua.kiev.kpi.sc.parser.node.TElse;
+import ua.kiev.kpi.sc.parser.node.TEmark;
+import ua.kiev.kpi.sc.parser.node.TEq;
+import ua.kiev.kpi.sc.parser.node.TFinal;
+import ua.kiev.kpi.sc.parser.node.TFloat;
+import ua.kiev.kpi.sc.parser.node.TFor;
+import ua.kiev.kpi.sc.parser.node.TGt;
+import ua.kiev.kpi.sc.parser.node.TGteq;
+import ua.kiev.kpi.sc.parser.node.TIdentifier;
+import ua.kiev.kpi.sc.parser.node.TIf;
+import ua.kiev.kpi.sc.parser.node.TInt;
+import ua.kiev.kpi.sc.parser.node.TLBkt;
+import ua.kiev.kpi.sc.parser.node.TLBrc;
+import ua.kiev.kpi.sc.parser.node.TLPar;
+import ua.kiev.kpi.sc.parser.node.TLiteralBoolean;
+import ua.kiev.kpi.sc.parser.node.TLiteralNull;
+import ua.kiev.kpi.sc.parser.node.TLt;
+import ua.kiev.kpi.sc.parser.node.TLteq;
+import ua.kiev.kpi.sc.parser.node.TMinus;
+import ua.kiev.kpi.sc.parser.node.TNeq;
+import ua.kiev.kpi.sc.parser.node.TNew;
+import ua.kiev.kpi.sc.parser.node.TNonNegativeInteger;
+import ua.kiev.kpi.sc.parser.node.TPercent;
+import ua.kiev.kpi.sc.parser.node.TPlus;
+import ua.kiev.kpi.sc.parser.node.TPublic;
+import ua.kiev.kpi.sc.parser.node.TRBkt;
+import ua.kiev.kpi.sc.parser.node.TRBrc;
+import ua.kiev.kpi.sc.parser.node.TRPar;
+import ua.kiev.kpi.sc.parser.node.TReturn;
+import ua.kiev.kpi.sc.parser.node.TSemi;
+import ua.kiev.kpi.sc.parser.node.TShort;
+import ua.kiev.kpi.sc.parser.node.TSlash;
+import ua.kiev.kpi.sc.parser.node.TStar;
+import ua.kiev.kpi.sc.parser.node.TStatic;
+import ua.kiev.kpi.sc.parser.node.TStringToken;
+import ua.kiev.kpi.sc.parser.node.TVoid;
+import ua.kiev.kpi.sc.parser.node.TWhile;
+import ua.kiev.kpi.sc.parser.node.TWhitespace;
+import ua.kiev.kpi.sc.parser.node.Token;
+
+@SuppressWarnings({"nls", "hiding"})
 public class Lexer
 {
     protected Token token;
@@ -18,6 +69,36 @@ public class Lexer
     private boolean eof;
     private final StringBuffer text = new StringBuffer();
 
+	public static String run(Reader in) {
+		try {
+			StringBuilder b = new StringBuilder();
+			Lexer lexer = new Lexer(new PushbackReader(in, 1024));
+	
+			Token t = null;
+	
+			do {
+				t = lexer.next();
+				b.append(convertToken(t));
+				b.append("\n");
+			} while (!(t instanceof EOF));
+			return b.toString();
+		} catch (Exception ex){
+			throw new RuntimeException(ex);
+		}
+	}
+	
+
+	private static String convertToken(Token t) {
+		String nodeText = t.getText();
+		nodeText = nodeText.replace("\n", "\\n");
+		nodeText = nodeText.replace("\t", "\\t");
+		nodeText = nodeText.replace("\r", "\\r");
+
+		String res = String.format("[%1$3s, %2$3s]    %3$-15s %4$s", t
+				.getLine(), t.getPos(), t.getClass().getSimpleName(), nodeText);
+		return res;
+	}
+    
     @SuppressWarnings("unused")
     protected void filter() throws LexerException, IOException
     {
