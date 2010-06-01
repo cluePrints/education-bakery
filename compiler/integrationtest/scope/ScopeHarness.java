@@ -22,14 +22,14 @@ public class ScopeHarness extends AbstractTest{
 	public void failWrongSignatureCallOnObj() throws Throwable
 	{
 		load("failWrongSignatureCallOnObj");
-		assertErrMsg("Function");
+		assertErrMsg("someFunction");
 	}
 	
 	@Test
 	public void failWrongSignatureCallOnThis() throws Throwable
 	{
 		load("failWrongSignatureCallOnThis");
-		assertErrMsg();
+		assertErrMsg("test");
 	}
 	
 	@Test
@@ -43,14 +43,14 @@ public class ScopeHarness extends AbstractTest{
 	public void failVoidFuncAssign() throws Throwable
 	{
 		load("failVoidFuncAssign");
-		assertErrMsg();
+		assertErrMsg("testVoid");
 	}
 	
 	@Test
 	public void failVarNotVIsible() throws Throwable
 	{
 		load("failVarNotVIsible");
-		assertErrMsg();
+		assertErrMsg("notDefined");
 	}
 }
 
