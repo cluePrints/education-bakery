@@ -26,6 +26,25 @@ public class Scope {
 	private Multimap<String, Symbol> declaredIdentifiers = HashMultimap.create();
 	private List<Scope> childScopes = new LinkedList<Scope>();
 	
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		String header;
+		if (headerSymbol != null) {
+			header = headerSymbol.getName();
+		} else {
+			header = "<none>";
+		}
+		b.append(getMargin()+"\\"+header+"\n");
+		for (Scope child : childScopes) { 
+			b.append(child);
+		}
+		for (Symbol id : declaredIdentifiers.values()) {
+			b.append(getMargin()+id.getName()+"\n");
+		}
+		return b.toString();
+	}
+	
 	public Scope(Scope parent) {
 		this(parent, null);
 	}
@@ -240,4 +259,26 @@ public class Scope {
 	public void setDefPos(int defPos) {
 		this.defPos = defPos;
 	}
+	
+	private int getDepth()
+	{
+		int i=0;
+		Scope scope = this;
+		while (!(scope instanceof RootScope)) {
+			scope = scope.getParent();
+			i++;
+		}
+		return i;
+	}
+	
+	private String getMargin()
+	{
+		String result ="";
+		for (int i=0; i<getDepth(); i++) {
+			result = result + "  ";
+		}
+		return result;
+	}
+	
+	
 }

@@ -226,7 +226,6 @@ public class ScopeTreeChecker extends DepthFirstAdapter{
 		super.inATypeName(node);
 	}
 
-
 	private VarSymbol variableUsageEncountered(int line, String name) {
 		VarSymbol var = currentScope.getVisibleVarSymbol(name);
 		if (var == null) {
@@ -248,5 +247,13 @@ public class ScopeTreeChecker extends DepthFirstAdapter{
 			throw new MyException(String.format("%2$s expected to be variable at line %1$d. ", line, name));
 		}
 		return var;
+	}
+	
+	public Scope getCurrentScope() {
+		return currentScope;
+	}
+
+	public void setCurrentScope(Scope currentScope) {
+		this.currentScope = currentScope;
 	}
 }
