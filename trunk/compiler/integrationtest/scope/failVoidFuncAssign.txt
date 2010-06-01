@@ -1,5 +1,5 @@
-public class Test {
 	final int a=0;
+public class Test {
 	String b;
 	NotPublicTest v;
 	int[] arra;
