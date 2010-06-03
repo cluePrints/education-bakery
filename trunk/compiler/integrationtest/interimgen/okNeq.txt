@@ -1,6 +1,6 @@
 public class Test {
 	public void testVoid() {
-		if (true==true) {
+		if (true!=true) {
 		}
 		return;
 	}

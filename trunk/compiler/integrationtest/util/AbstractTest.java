@@ -71,7 +71,7 @@ public class AbstractTest {
 	{
 		InterimRepresentationBuilder w = new InterimRepresentationBuilder();
 		syntaxTree.apply(w);
-		LinkedList<Translation> stack = w.getPolizStack();
+		LinkedList<Translation> stack = w.getFilteredPolizStack();
 		Bound last = null;
 		while (!stack.isEmpty()) {
 			Translation t = stack.pop();

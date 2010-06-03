@@ -36,7 +36,7 @@ public class ScopeHarness extends AbstractTest{
 		Iterator<Translation> it = stack.iterator();
 		Translation sym = it.next();
 		while (it.hasNext() && !Operation.NEGATION().equals(sym)) {
-			sym = it.next();
+			sym = it.next();		
 		}
 		Assert.assertTrue(Operation.NEGATION().equals(sym));
 	}
