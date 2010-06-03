@@ -26,13 +26,13 @@ class SingleType extends Operation implements Evaluator {
 		for (int i=0; i<args; i++) {
 			t = stack.pop();			
 			if (type != null && !t.equals(type)) {
-				throw new MyException("Only "+type+" allowed.");
+				throw new MyException("Type "+type+" expected.");
 			}
 			if (type == null) {
 				type = t;
 			}
 		}		
-		return resultType;
+		return type;
 	}
 	
 	@Override
