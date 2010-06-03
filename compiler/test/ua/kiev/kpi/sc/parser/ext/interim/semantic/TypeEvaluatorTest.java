@@ -32,9 +32,9 @@ public class TypeEvaluatorTest {
 		Deque<Translation> stack = Lists.newLinkedList();
 		stack.push(Bound.EXPR_START);
 		stack.push(new Literal("3", TypeSymbol.T_INT));
-		stack.push(new Literal("5", TypeSymbol.T_INT));
-		stack.push(Bound.EXPR_END);
+		stack.push(new Literal("5", TypeSymbol.T_INT));		
 		stack.push(Operation.ADD());
+		stack.push(Bound.EXPR_END);
 		TypeEvaluator ev = new TypeEvaluator();
 		TypeSymbol sym = ev.evaluatePart(stack);
 		Assert.assertTrue(sym == TypeSymbol.T_INT);
@@ -47,8 +47,8 @@ public class TypeEvaluatorTest {
 		stack.push(Bound.EXPR_START);
 		stack.push(new Literal("3", TypeSymbol.T_INT));
 		stack.push(new Literal("5", TypeSymbol.T_FLOAT));
-		stack.push(Bound.EXPR_END);
 		stack.push(Operation.MUL());
+		stack.push(Bound.EXPR_END);
 		TypeEvaluator ev = new TypeEvaluator();
 		TypeSymbol sym = ev.evaluatePart(stack);
 		Assert.assertTrue(sym == TypeSymbol.T_FLOAT);

@@ -14,4 +14,9 @@ public abstract class AbstractTranslation implements Translation {
 		this.comment = comment;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return toString().equals(String.valueOf(obj));
+	}
+	
 }

@@ -1,0 +1,8 @@
+public class Test {
+	String o;
+	public void test()
+	{
+		o >= true;
+		return;
+	}
+}

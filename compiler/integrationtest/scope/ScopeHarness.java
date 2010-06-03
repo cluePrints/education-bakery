@@ -4,7 +4,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import ua.kiev.kpi.sc.parser.ext.interim.walker.InterimRepresentationBuilder;
 import util.AbstractTest;
 
 public class ScopeHarness extends AbstractTest{

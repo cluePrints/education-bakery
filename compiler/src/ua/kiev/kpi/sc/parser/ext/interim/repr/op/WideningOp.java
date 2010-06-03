@@ -8,42 +8,42 @@ import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.semantic.Evaluator;
 
-class WideningOp extends Operation implements Evaluator{
-		private final int args;
-		private final String repr;
-		
-		WideningOp(int args, String repr) {
-			super();
-			this.args = args;
-			this.repr = repr;
-		}
-		
-		public TypeSymbol validate(Deque<TypeSymbol> stack, Translation next) {
-			Iterator<TypeSymbol> it = stack.iterator();
-			TypeSymbol first = stack.pop();
-			TypeSymbol second = stack.pop();
-			checkType(first);
-			checkType(second);
-			if (first == TypeSymbol.T_FLOAT || second == TypeSymbol.T_FLOAT) {
-				return TypeSymbol.T_FLOAT;
-			} else {
-				return TypeSymbol.T_INT;
-			}
-		}
+class WideningOp extends Operation implements Evaluator {
+	private final int args;
+	private final String repr;
 
-		private void checkType(TypeSymbol first) {
-			if (first != TypeSymbol.T_FLOAT && first != TypeSymbol.T_INT) {
-				throw new MyException("Addition operation is defined only for float and int types");
-			}
-		}
-		
-		@Override
-		public int getArgsRequired() {
-			return args;
-		}
-		
-		@Override
-		public String toString() {
-			return repr;
+	WideningOp(int args, String repr) {
+		super();
+		this.args = args;
+		this.repr = repr;
+	}
+
+	public TypeSymbol validate(Deque<TypeSymbol> stack, Translation next) {
+		TypeSymbol first = stack.pop();
+		TypeSymbol second = stack.pop();
+		checkType(first);
+		checkType(second);
+		if (first == TypeSymbol.T_FLOAT || second == TypeSymbol.T_FLOAT) {
+			return TypeSymbol.T_FLOAT;
+		} else {
+			return TypeSymbol.T_INT;
 		}
 	}
+
+	private void checkType(TypeSymbol first) {
+		if (first != TypeSymbol.T_FLOAT && first != TypeSymbol.T_INT) {
+			throw new MyException(
+					"Operation is defined only for float and int types");
+		}
+	}
+
+	@Override
+	public int getArgsRequired() {
+		return args;
+	}
+
+	@Override
+	public String toString() {
+		return repr;
+	}
+}

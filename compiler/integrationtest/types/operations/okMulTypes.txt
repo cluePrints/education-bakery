@@ -1,0 +1,7 @@
+public class Test {
+	public void test()
+	{
+		2*5*3;
+		return;
+	}
+}
