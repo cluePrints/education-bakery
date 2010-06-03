@@ -91,9 +91,11 @@ public class ScopeTreeBuilder extends DepthFirstAdapter{
 				AVariableDefinition def = (AVariableDefinition) multi.getVariableDefinition();
 				VarSymbol var = buildVar(def);
 				params.add(var);
+				lst = null;
 			}
-		} while (lst instanceof ASingleVarFormalArgList);
+		} while (lst instanceof ASingleVarFormalArgList || lst instanceof AMultipleNVarFormalArgList);
 		func.setParams(params);
+		func.setReturnType(currentScope.getClassSymbol(node.getResultType().toString().trim()));
 		
 		currentScope = new Scope(currentScope, func);
 		

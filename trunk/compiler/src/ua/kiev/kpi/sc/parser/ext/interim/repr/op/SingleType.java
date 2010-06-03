@@ -6,6 +6,7 @@ import ua.kiev.kpi.sc.parser.ext.MyException;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.semantic.Evaluator;
+import ua.kiev.kpi.sc.parser.ext.interim.semantic.Pair;
 
 class SingleType extends Operation implements Evaluator {
 	private final int args;
@@ -20,11 +21,11 @@ class SingleType extends Operation implements Evaluator {
 		this.resultType = resultType;
 	}
 
-	public TypeSymbol validate(Deque<TypeSymbol> stack, Translation next) {
+	public TypeSymbol validate(Deque<Pair> stack, Translation next) {
 		TypeSymbol type = resultType;
 		TypeSymbol t = null;
 		for (int i=0; i<args; i++) {
-			t = stack.pop();			
+			t = stack.pop().type;			
 			if (type != null && !t.equals(type)) {
 				throw new MyException("Type "+type+" expected.");
 			}

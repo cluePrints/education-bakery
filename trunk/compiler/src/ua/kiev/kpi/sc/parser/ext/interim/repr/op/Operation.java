@@ -11,7 +11,7 @@ public class Operation extends AbstractTranslation {
 	public static Operation DEF_ARR() { return operation("DEF_ARR", 2);}
 	public static Operation FUNC_DECL() { return operation("DEF_FUNC", -1);}
 	public static Operation CLASS_DECL() { return operation("DEF_ÑLASS", -1);}
-	public static Operation FUNC_CALL() { return operation("CALL", -1);}
+	public static Operation FUNC_CALL(int num) { return call();}
 	
 	public static Operation MOD_FINAL() { return operation("MOD_CONST", 1);}
 	public static Operation RETURN() { return operation("RETURN", 1);}
@@ -44,6 +44,11 @@ public class Operation extends AbstractTranslation {
 	 * TODO: not working yet
 	 */
 	public static Operation ARRAY_ACCESS() { return operation("ARR_IDX", 2);}
+	
+	private static Operation call()
+	{
+		return new FuncCall("CALL");
+	}
 	
 	private static Operation a()
 	{

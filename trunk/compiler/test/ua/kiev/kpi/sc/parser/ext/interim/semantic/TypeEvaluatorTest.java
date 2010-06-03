@@ -23,35 +23,7 @@ public class TypeEvaluatorTest {
 		stack.push(new Literal("5", TypeSymbol.T_INT));
 		stack.push(Bound.EXPR_END);
 		TypeEvaluator ev = new TypeEvaluator();
-		ev.evaluatePart(stack);
-	}
-	
-	@Test
-	public void testIntIntAddition()
-	{
-		Deque<Translation> stack = Lists.newLinkedList();
-		stack.push(Bound.EXPR_START);
-		stack.push(new Literal("3", TypeSymbol.T_INT));
-		stack.push(new Literal("5", TypeSymbol.T_INT));		
-		stack.push(Operation.ADD());
-		stack.push(Bound.EXPR_END);
-		TypeEvaluator ev = new TypeEvaluator();
-		TypeSymbol sym = ev.evaluatePart(stack);
-		Assert.assertTrue(sym == TypeSymbol.T_INT);
-	}
-	
-	@Test
-	public void testAllIsOk()
-	{
-		Deque<Translation> stack = Lists.newLinkedList();
-		stack.push(Bound.EXPR_START);
-		stack.push(new Literal("3", TypeSymbol.T_INT));
-		stack.push(new Literal("5", TypeSymbol.T_FLOAT));
-		stack.push(Operation.MUL());
-		stack.push(Bound.EXPR_END);
-		TypeEvaluator ev = new TypeEvaluator();
-		TypeSymbol sym = ev.evaluatePart(stack);
-		Assert.assertTrue(sym == TypeSymbol.T_FLOAT);
+		ev.evaluate(stack);
 	}
 	
 	@Test(expected=Throwable.class)
@@ -64,6 +36,6 @@ public class TypeEvaluatorTest {
 		stack.push(Bound.EXPR_END);
 		stack.push(Operation.MUL());
 		TypeEvaluator ev = new TypeEvaluator();
-		ev.evaluatePart(stack);
+		ev.evaluate(stack);
 	}
 }
