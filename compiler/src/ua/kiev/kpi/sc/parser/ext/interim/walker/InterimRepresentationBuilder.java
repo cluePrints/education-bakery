@@ -4,8 +4,8 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import ua.kiev.kpi.sc.parser.analysis.DepthFirstAdapter;
 import ua.kiev.kpi.sc.parser.ext.MyException;
+import ua.kiev.kpi.sc.parser.ext.ScopeTreeChecker;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.AbstractTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.InvisibleTranslation;
@@ -21,6 +21,7 @@ import ua.kiev.kpi.sc.parser.ext.interim.repr.TypePointer;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.VariablePointer;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.op.Operation;
 import ua.kiev.kpi.sc.parser.ext.interim.semantic.Bound;
+import ua.kiev.kpi.sc.parser.ext.scope.Scope;
 import ua.kiev.kpi.sc.parser.ext.ui.Preferences;
 import ua.kiev.kpi.sc.parser.node.AAddSimpleExpression;
 import ua.kiev.kpi.sc.parser.node.AAndOperandOr;
@@ -66,7 +67,7 @@ import ua.kiev.kpi.sc.parser.node.Node;
 
 import com.google.common.collect.Lists;
 
-public class InterimRepresentationBuilder extends DepthFirstAdapter {
+public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	private LinkedList<Translation> polizStack;
 
 	/**
@@ -75,7 +76,8 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	private LinkedList<Translation> blockLabelsStack;
 	private LinkedList<Translation> lastElemBeforeThisBlock;
 
-	public InterimRepresentationBuilder() {
+	public InterimRepresentationBuilder(Scope scope) {
+		super(scope);
 		reset();
 	}
 
@@ -115,6 +117,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void inAIdentifierElementalExpression(
 			AIdentifierElementalExpression node) {
+		super.inAIdentifierElementalExpression(node);
 		// TODO: check if is not reserved word
 		// TODO: equality operator
 		// TODO: 5+true
@@ -131,6 +134,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	 */
 	@Override
 	public void inACycleCycleOperator(ACycleCycleOperator node) {
+		super.inACycleCycleOperator(node);
 		mark();
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
 		addToPoliz(label0);
@@ -139,6 +143,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outACycleCycleOperator(ACycleCycleOperator node) {
+		super.outACycleCycleOperator(node);
 		// get marker of block start
 		Marker marker = (Marker) blockLabelsStack.pop();
 
@@ -190,6 +195,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void inASingleBlock(ASingleBlock node) {
+		super.inASingleBlock(node);
 		Marker marker = Marker.getInstance();
 		addToPoliz(marker);
 		blockLabelsStack.push(marker);
@@ -197,6 +203,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void outASingleBlock(ASingleBlock node) {
+		super.outASingleBlock(node);
 	}
 	
 	/**
@@ -209,11 +216,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	 */
 	@Override
 	public void inASimpleIf(ASimpleIf node) {
+		super.inASimpleIf(node);
 		mark();
 	}
 	
 	@Override
 	public void outASimpleIf(ASimpleIf node) {
+		super.outASimpleIf(node);
 		// get marker of block start
 		Marker marker = (Marker) blockLabelsStack.pop();
 
@@ -252,11 +261,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void inASimpleConditionalOperator(ASimpleConditionalOperator node) {
+		super.inASimpleConditionalOperator(node);
 		mark();
 	}
 	
 	@Override
 	public void outASimpleConditionalOperator(ASimpleConditionalOperator node) {
+		super.outASimpleConditionalOperator(node);
 		addComment("if ("
 				+ ((ASimpleIf) node.getSimpleIf()).getExpression().toString()
 				+ ")");
@@ -264,11 +275,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void inAElseConditionalOperator(AElseConditionalOperator node) {
+		super.inAElseConditionalOperator(node);
 		mark();
 	}
 
 	@Override
 	public void outAElseConditionalOperator(AElseConditionalOperator node) {
+		super.outAElseConditionalOperator(node);
 		addComment("if ("
 				+ ((ASimpleIf) node.getSimpleIf()).getExpression().toString()
 				+ ")"
@@ -291,16 +304,19 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outABooleanLiteral(ABooleanLiteral node) {
+		super.outABooleanLiteral(node);
 		addToPoliz(new Literal(node.toString(), TypeSymbol.T_BOOLEAN));
 	}
 
 	@Override
 	public void outAIntLiteralNumeric(AIntLiteralNumeric node) {
+		super.outAIntLiteralNumeric(node);
 		addToPoliz(new Literal(node.toString(), TypeSymbol.T_INT));
 	}
 
 	@Override
 	public void outAVariableDefinition(AVariableDefinition node) {
+		super.outAVariableDefinition(node);
 		addToPoliz(new Literal(node.getVariableName().toString(), TypeSymbol.T_STRING));
 		if (node.getVariableType() instanceof AArrayVariableType) {
 			addToPoliz(new TypePointer(((AArrayVariableType) node
@@ -316,6 +332,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outAConstantDefinition(AConstantDefinition node) {
+		super.outAConstantDefinition(node);
 		addToPoliz(new Literal(node.getVariableName().toString(), TypeSymbol.T_STRING));
 
 		if (node.getVariableType() instanceof AArrayVariableType) {
@@ -333,32 +350,38 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void inASimpleOperandOr(ASimpleOperandOr node) {
+		super.inASimpleOperandOr(node);
 		addToPoliz(Bound.EXPR_START);
 	}
 	
 	@Override
 	public void outASimpleOperandOr(ASimpleOperandOr node) {
+		super.outASimpleOperandOr(node);
 		addToPoliz(Bound.EXPR_END);
 	}
 	
 	@Override
 	public void inASimpleOperator(ASimpleOperator node) {
+		super.inASimpleOperator(node);
 		addToPoliz(Bound.EXPR_START);
 	}	
 	
 	@Override
 	public void outASimpleOperator(ASimpleOperator node) {
+		super.outASimpleOperator(node);
 		addToPoliz(Bound.EXPR_END);
 	}
 	
 	@Override
 	public void inAAssignOperator(AAssignOperator node) {
+		super.inAAssignOperator(node);
 		mark();
 		addToPoliz(Bound.EXPR_START);
 	}
 	
 	@Override
 	public void outAAssignOperator(AAssignOperator node) {
+		super.outAAssignOperator(node);
 		addComment(node.toString());
 		addToPoliz(new VariablePointer(node.getVariableName()));
 		addToPoliz(Operation.ASSIGN());
@@ -367,11 +390,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void outAEqOperandAnd(AEqOperandAnd node) {
+		super.outAEqOperandAnd(node);
 		addToPoliz(Operation.EQ());
 	}
 	
 	@Override
 	public void outANeqOperandAnd(ANeqOperandAnd node) {
+		super.outANeqOperandAnd(node);
 		addToPoliz(Operation.EQ());
 		addToPoliz(Operation.NEGATION());
 	}
@@ -379,61 +404,73 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outAOrExprExpression(AOrExprExpression node) {
+		super.outAOrExprExpression(node);
 		addToPoliz(Operation.OR());
 	}
 
 	@Override
 	public void outAAndOperandOr(AAndOperandOr node) {
+		super.outAAndOperandOr(node);
 		addToPoliz(Operation.AND());
 	}
 
 	@Override
 	public void outAAddSimpleExpression(AAddSimpleExpression node) {
+		super.outAAddSimpleExpression(node);
 		addToPoliz(Operation.ADD());
 	}
 
 	@Override
 	public void outASubSimpleExpression(ASubSimpleExpression node) {
+		super.outASubSimpleExpression(node);
 		addToPoliz(Operation.SUB());
 	}
 
 	@Override
 	public void outAGtComparisonExpression(AGtComparisonExpression node) {
+		super.outAGtComparisonExpression(node);
 		addToPoliz(Operation.GT());
 	}
 
 	@Override
 	public void outALtComparisonExpression(ALtComparisonExpression node) {
+		super.outALtComparisonExpression(node);
 		addToPoliz(Operation.LT());
 	}
 
 	@Override
 	public void outALteqComparisonExpression(ALteqComparisonExpression node) {
+		super.outALteqComparisonExpression(node);
 		addToPoliz(Operation.LE());
 	}
 
 	@Override
 	public void outAGteqComparisonExpression(AGteqComparisonExpression node) {
+		super.outAGteqComparisonExpression(node);
 		addToPoliz(Operation.GE());
 	}
 
 	@Override
 	public void outAMulSummand(AMulSummand node) {
+		super.outAMulSummand(node);
 		addToPoliz(Operation.MUL());
 	}
 
 	@Override
 	public void outADivSummand(ADivSummand node) {
+		super.outADivSummand(node);
 		addToPoliz(Operation.DIV());
 	}
 
 	@Override
 	public void outARemSummand(ARemSummand node) {
+		super.outARemSummand(node);		
 		addToPoliz(Operation.MOD());
 	}
 
 	@Override
 	public void outANegMultiplier(ANegMultiplier node) {
+		super.outANegMultiplier(node);
 		addToPoliz(Operation.NEGATION());
 	}
 
@@ -443,11 +480,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void outAArrElemElementalExpression(AArrElemElementalExpression node) {
+		super.outAArrElemElementalExpression(node);
 		addToPoliz(Operation.ARRAY_ACCESS());
 	}
 
 	@Override
 	public void outACallElementalExpression(ACallElementalExpression node) {
+		super.outACallElementalExpression(node);
 		addToPoliz(new FuncPointer(node.getIdentifier()));
 		int count = calcArguments(node);
 		addToPoliz(new Literal(String.valueOf(count), TypeSymbol.T_INT));
@@ -457,27 +496,32 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public void outAIdentifierElementalExpression(
 			AIdentifierElementalExpression node) {
+		super.outAIdentifierElementalExpression(node);
 		addToPoliz(new VariablePointer(node));
 	}
 	
 	@Override
 	public void inARecursiveElementalExpression(
 			ARecursiveElementalExpression node) {
+		super.inARecursiveElementalExpression(node);
 		addToPoliz(new VariablePointer(node.getIdentifier()));
 	}
 
 	@Override
 	public void outARecursiveElementalExpression(
 			ARecursiveElementalExpression node) {
+		super.outARecursiveElementalExpression(node);
 	}
 
 	@Override
 	public void outAVoidFunctionBody(AVoidFunctionBody node) {
+		super.outAVoidFunctionBody(node);
 		addToPoliz(Operation.EMPTY_RETURN());
 	}
 
 	@Override
 	public void outANormalFunctionBody(ANormalFunctionBody node) {
+		super.outANormalFunctionBody(node);
 		addToPoliz(Operation.RETURN());
 	}
 
@@ -494,6 +538,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void inAConstantClassBodyElem(AConstantClassBodyElem node) {
+		super.inAConstantClassBodyElem(node);
 		mark();
 	}
 	
@@ -510,7 +555,8 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		LABEL0 DEF_FUNC
 	 */
 	@Override
-	public void inAFunctionDeclaration(AFunctionDeclaration node) {		
+	public void inAFunctionDeclaration(AFunctionDeclaration node) {	
+		super.inAFunctionDeclaration(node);
 		addToPoliz(new TypePointer(node.getResultType()));
 		addToPoliz(new Literal(node.getFunctionName().toString(), TypeSymbol.T_STRING));
 		int count;
@@ -537,11 +583,13 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	}	
 	@Override
 	public void outAFunctionDeclaration(AFunctionDeclaration node) {
+		super.outAFunctionDeclaration(node);
 		addComment(node.toString());
 	}
 
 	@Override
 	public void inAFunctionClassBodyElem(AFunctionClassBodyElem node) {
+		super.inAFunctionClassBodyElem(node);
 		mark();
 		Marker marker = Marker.getInstance();
 		addToPoliz(marker);
@@ -550,6 +598,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void outAFunctionClassBodyElem(AFunctionClassBodyElem node) {
+		super.outAFunctionClassBodyElem(node);
 		Marker m = (Marker) blockLabelsStack.pop();
 		Deque<Translation> block = popBlock(m);
 		Marker m2 = (Marker)blockLabelsStack.pop();
@@ -564,6 +613,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void inAPublicClass(APublicClass node) {
+		super.inAPublicClass(node);
 		addCommentNow(" class "+node.getIdentifier().toString()+ " {");
 		Marker marker = Marker.getInstance();
 		addToPoliz(marker);
@@ -577,12 +627,14 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		
 	@Override
 	public void outAPublicClass(APublicClass node) {
+		super.outAPublicClass(node);
 		String className = node.getIdentifier().toString();
 		outAClass(className);
 	}
 	
 	@Override
 	public void inANotPublicClass(ANotPublicClass node) {
+		super.inANotPublicClass(node);
 		addCommentNow(" class "+node.getIdentifier().toString()+ " {");
 		Marker marker = Marker.getInstance();
 		addToPoliz(marker);
@@ -591,6 +643,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	
 	@Override
 	public void outANotPublicClass(ANotPublicClass node) {
+		super.outANotPublicClass(node);
 		String className = node.getIdentifier().toString();
 		outAClass(className);
 	}
@@ -609,26 +662,31 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 
 	@Override
 	public void inAVariableClassBodyElem(AVariableClassBodyElem node) {
+		super.inAVariableClassBodyElem(node);
 		mark();
 	}
 
 	@Override
 	public void inACycleOperator(ACycleOperator node) {
+		super.inACycleOperator(node);
 		mark();
 	}
 
 	@Override
 	public void outAConstantClassBodyElem(AConstantClassBodyElem node) {
+		super.outAConstantClassBodyElem(node);
 		addComment(node.toString());
 	}
 
 	@Override
 	public void outAVariableClassBodyElem(AVariableClassBodyElem node) {
+		super.outAVariableClassBodyElem(node);
 		addComment(node.toString());
 	}
 
 	@Override
 	public void outACycleOperator(ACycleOperator node) {
+		super.outACycleOperator(node);
 		addComment(node.toString());
 	}
 	

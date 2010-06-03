@@ -230,14 +230,13 @@ public class LexerUI extends JFrame {
 						rulesTriggeredStr = Parser.readableRulesTriggered;
 					}
 					taRR.setText(rulesTriggeredStr);
-					
-					
-					InterimRepresentationBuilder w = new InterimRepresentationBuilder();
-					syntaxTree.apply(w);
-					taPoliz.setText(w.toString());
-					
+														
 					scopeTreeRoot = runScoper();
 					trScopes.setModel(new DefaultTreeModel(new TreeNodeAdaptor(scopeTreeRoot)));
+					
+					InterimRepresentationBuilder w = new InterimRepresentationBuilder(scopeTreeRoot);
+					syntaxTree.apply(w);
+					taPoliz.setText(w.toString());
 					
 					runScopeChecker(scopeTreeRoot);
 					tabPane.setSelectedIndex(6);
