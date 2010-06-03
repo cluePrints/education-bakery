@@ -23,9 +23,11 @@ import ua.kiev.kpi.sc.parser.parser.Parser;
 public class AbstractTest {
 	protected Start syntaxTree;
 	protected RootScope rootScope;
-	protected Throwable caught;
+	protected InterimRepresentationBuilder interimBuilder;
+	protected Throwable caught;	
 	private Lexer lexer;
 	private Parser parser;
+	
 	protected void load(String name)
 	{
 		Reader file = getFile(name);
@@ -39,10 +41,10 @@ public class AbstractTest {
 			ScopeTreeChecker checker = new ScopeTreeChecker(rootScope);
 			syntaxTree.apply(checker);
 			
-			InterimRepresentationBuilder w = new InterimRepresentationBuilder();
-			syntaxTree.apply(w);
+			interimBuilder = new InterimRepresentationBuilder();
+			syntaxTree.apply(interimBuilder);
 			
-			LinkedList<Translation> stack = w.getFilteredPolizStack();
+			LinkedList<Translation> stack = interimBuilder.getFilteredPolizStack();
 			TypeEvaluator e = new TypeEvaluator();
 			TypeSymbol t = e.evaluatePart(stack);
 		} catch (Throwable ex) {			

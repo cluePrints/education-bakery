@@ -25,6 +25,7 @@ public class Operation extends AbstractTranslation {
 	public static Operation LT() { return operation("LT", 2);}
 	public static Operation GE() { return operation("GE", 2);}
 	public static Operation LE() { return operation("LE", 2);}
+	public static Operation EQ() { return operation("EQ", 2);}
 	
 	public static Operation MUL() { return w("MUL", 2);}
 	public static Operation ADD() { return w("ADD", 2);}

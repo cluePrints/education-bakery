@@ -1,0 +1,10 @@
+public class Test {
+	String s;
+	public void test()
+	{
+		2==2.0;
+		2==true;
+		s!=3;
+		return;
+	}
+}
