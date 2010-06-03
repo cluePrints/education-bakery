@@ -37,14 +37,14 @@ public class TypeCases extends AbstractTest{
 	public void failNegInt() throws Throwable
 	{
 		load("failNegInt");
-		assertErrMsg("boolean allowed");
+		assertErrMsg("boolean");
 	}
 	
 	@Test
 	public void failAssignDifferent() throws Throwable
 	{
 		load("failAssignDifferent");
-		assertErrMsg("");
+		assertErrMsg("int");
 	}
 	
 	@Test
@@ -72,7 +72,7 @@ public class TypeCases extends AbstractTest{
 	public void failAssignDirectType() throws Throwable
 	{
 		load("failDirectAssignType");
-		assertErrMsg();
+		assertErrMsg("int");
 	}
 	
 	@Test

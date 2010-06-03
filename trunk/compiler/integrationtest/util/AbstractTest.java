@@ -69,6 +69,9 @@ public class AbstractTest {
 	{
 		Assert.assertNotNull("Error is expected to be thrown", caught);
 		String str = caught.getMessage();
+		if (str == null) {
+			throw new RuntimeException(caught);
+		}
 		String softPattern = pattern.replace(" ", ".*");
 		boolean matches = str.matches(".*"+softPattern+".*");
 		Assert.assertTrue("Error message doesn't matches the pattern" +

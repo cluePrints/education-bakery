@@ -5,10 +5,12 @@ import java.util.Iterator;
 
 import ua.kiev.kpi.sc.parser.ext.MyException;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
+import ua.kiev.kpi.sc.parser.ext.id.VarSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.InvisibleTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Literal;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.VariablePointer;
+import ua.kiev.kpi.sc.parser.ext.scope.Scope;
 
 import com.google.common.collect.Lists;
 
@@ -56,7 +58,15 @@ public class TypeEvaluator{
 			stack.push(l.getType());
 			
 		} else if (next instanceof VariablePointer) {
-			throw new RuntimeException("Var types not supported yet:(");
+			VariablePointer p = (VariablePointer) next;
+			Scope scope = p.getScope();
+			String varName = p.getName();
+			VarSymbol var = scope.getVisibleVarSymbol(varName);
+			if (var == null) {
+				throw new MyException("Variable "+varName+" not visible.");
+			}
+			TypeSymbol type = scope.getClassSymbol(var.getType());
+			stack.push(type);
 		}
 	}
 }

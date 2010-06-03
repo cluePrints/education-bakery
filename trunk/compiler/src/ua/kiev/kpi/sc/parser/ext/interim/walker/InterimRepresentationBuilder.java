@@ -9,6 +9,7 @@ import ua.kiev.kpi.sc.parser.ext.ScopeTreeChecker;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.AbstractTranslation;
 import ua.kiev.kpi.sc.parser.ext.interim.InvisibleTranslation;
+import ua.kiev.kpi.sc.parser.ext.interim.ScopeAware;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.Comment;
 import ua.kiev.kpi.sc.parser.ext.interim.repr.FuncPointer;
@@ -142,8 +143,7 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 
 	@Override
-	public void outACycleCycleOperator(ACycleCycleOperator node) {
-		super.outACycleCycleOperator(node);
+	public void outACycleCycleOperator(ACycleCycleOperator node) {		
 		// get marker of block start
 		Marker marker = (Marker) blockLabelsStack.pop();
 
@@ -159,10 +159,11 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 		
 		addToPoliz(label1.getPointer());
 		addToPoliz(new JumpIfFalse());
-		addToPoliz(blockData);
+		copyToPoliz(blockData);
 		addToPoliz(label0.getPointer());
 		addToPoliz(new JumpAlways());
 		addToPoliz(label1);
+		super.outACycleCycleOperator(node);
 	}
 
 	private Deque<Translation> popBlock(Marker label0) {
@@ -186,9 +187,9 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 		return blockData;
 	}
 
-	private void addToPoliz(Deque<Translation> blockData) {
+	private void copyToPoliz(Deque<Translation> blockData) {
 		while (!blockData.isEmpty()) {
-			addToPoliz(blockData.pop());
+			addToPoliz(blockData.pop(), false);
 		}
 	}
 
@@ -222,7 +223,6 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	
 	@Override
 	public void outASimpleIf(ASimpleIf node) {
-		super.outASimpleIf(node);
 		// get marker of block start
 		Marker marker = (Marker) blockLabelsStack.pop();
 
@@ -233,12 +233,20 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 		addToPoliz(label0.getPointer());
 		addToPoliz(new JumpIfFalse());
 
-		addToPoliz(blockData);
+		copyToPoliz(blockData);
 
 		addToPoliz(label0);
+		super.outASimpleIf(node);
 	}
 
 	private void addToPoliz(Translation t) {
+		addToPoliz(t, true);
+	}
+	
+	private void addToPoliz(Translation t, boolean injectScope) {
+		if (injectScope && t instanceof ScopeAware) {
+			((ScopeAware) t).setScope(getCurrentScope());
+		}
 		polizStack.push(t);
 	}
 
@@ -266,11 +274,11 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 	
 	@Override
-	public void outASimpleConditionalOperator(ASimpleConditionalOperator node) {
-		super.outASimpleConditionalOperator(node);
+	public void outASimpleConditionalOperator(ASimpleConditionalOperator node) {		
 		addComment("if ("
 				+ ((ASimpleIf) node.getSimpleIf()).getExpression().toString()
 				+ ")");
+		super.outASimpleConditionalOperator(node);
 	}
 	
 	@Override
@@ -281,7 +289,6 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 
 	@Override
 	public void outAElseConditionalOperator(AElseConditionalOperator node) {
-		super.outAElseConditionalOperator(node);
 		addComment("if ("
 				+ ((ASimpleIf) node.getSimpleIf()).getExpression().toString()
 				+ ")"
@@ -297,26 +304,26 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 		addToPoliz(label1.getPointer());
 		addToPoliz(new JumpAlways());
 		addToPoliz(label0);
-		addToPoliz(blockData);
+		copyToPoliz(blockData);
 		addToPoliz(label1);	
+		super.outAElseConditionalOperator(node);
 	}
 	
 
 	@Override
-	public void outABooleanLiteral(ABooleanLiteral node) {
-		super.outABooleanLiteral(node);
+	public void outABooleanLiteral(ABooleanLiteral node) {		
 		addToPoliz(new Literal(node.toString(), TypeSymbol.T_BOOLEAN));
+		super.outABooleanLiteral(node);
 	}
 
 	@Override
 	public void outAIntLiteralNumeric(AIntLiteralNumeric node) {
-		super.outAIntLiteralNumeric(node);
 		addToPoliz(new Literal(node.toString(), TypeSymbol.T_INT));
+		super.outAIntLiteralNumeric(node);		
 	}
 
 	@Override
-	public void outAVariableDefinition(AVariableDefinition node) {
-		super.outAVariableDefinition(node);
+	public void outAVariableDefinition(AVariableDefinition node) {		
 		addToPoliz(new Literal(node.getVariableName().toString(), TypeSymbol.T_STRING));
 		if (node.getVariableType() instanceof AArrayVariableType) {
 			addToPoliz(new TypePointer(((AArrayVariableType) node
@@ -328,11 +335,11 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 			addToPoliz(Operation.DEF_VAR());
 
 		}
+		super.outAVariableDefinition(node);
 	}
 
 	@Override
-	public void outAConstantDefinition(AConstantDefinition node) {
-		super.outAConstantDefinition(node);
+	public void outAConstantDefinition(AConstantDefinition node) {		
 		addToPoliz(new Literal(node.getVariableName().toString(), TypeSymbol.T_STRING));
 
 		if (node.getVariableType() instanceof AArrayVariableType) {
@@ -346,6 +353,7 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 
 		}
 		addToPoliz(Operation.MOD_FINAL());
+		super.outAConstantDefinition(node);
 	}
 	
 	@Override
@@ -355,9 +363,9 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 	
 	@Override
-	public void outASimpleOperandOr(ASimpleOperandOr node) {
-		super.outASimpleOperandOr(node);
+	public void outASimpleOperandOr(ASimpleOperandOr node) {		
 		addToPoliz(Bound.EXPR_END);
+		super.outASimpleOperandOr(node);
 	}
 	
 	@Override
@@ -367,9 +375,9 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}	
 	
 	@Override
-	public void outASimpleOperator(ASimpleOperator node) {
-		super.outASimpleOperator(node);
+	public void outASimpleOperator(ASimpleOperator node) {		
 		addToPoliz(Bound.EXPR_END);
+		super.outASimpleOperator(node);
 	}
 	
 	@Override
@@ -380,98 +388,98 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 	
 	@Override
-	public void outAAssignOperator(AAssignOperator node) {
-		super.outAAssignOperator(node);
+	public void outAAssignOperator(AAssignOperator node) {		
 		addComment(node.toString());
 		addToPoliz(new VariablePointer(node.getVariableName()));
 		addToPoliz(Operation.ASSIGN());
 		addToPoliz(Bound.EXPR_END);
+		super.outAAssignOperator(node);
 	}
 	
 	@Override
-	public void outAEqOperandAnd(AEqOperandAnd node) {
+	public void outAEqOperandAnd(AEqOperandAnd node) {		
+		addToPoliz(Operation.EQ());
 		super.outAEqOperandAnd(node);
-		addToPoliz(Operation.EQ());
 	}
 	
 	@Override
-	public void outANeqOperandAnd(ANeqOperandAnd node) {
-		super.outANeqOperandAnd(node);
+	public void outANeqOperandAnd(ANeqOperandAnd node) {		
 		addToPoliz(Operation.EQ());
 		addToPoliz(Operation.NEGATION());
+		super.outANeqOperandAnd(node);
 	}
 
 
 	@Override
-	public void outAOrExprExpression(AOrExprExpression node) {
-		super.outAOrExprExpression(node);
+	public void outAOrExprExpression(AOrExprExpression node) {	
 		addToPoliz(Operation.OR());
+		super.outAOrExprExpression(node);
 	}
 
 	@Override
-	public void outAAndOperandOr(AAndOperandOr node) {
-		super.outAAndOperandOr(node);
+	public void outAAndOperandOr(AAndOperandOr node) {		
 		addToPoliz(Operation.AND());
+		super.outAAndOperandOr(node);
 	}
 
 	@Override
-	public void outAAddSimpleExpression(AAddSimpleExpression node) {
-		super.outAAddSimpleExpression(node);
+	public void outAAddSimpleExpression(AAddSimpleExpression node) {		
 		addToPoliz(Operation.ADD());
+		super.outAAddSimpleExpression(node);
 	}
 
 	@Override
-	public void outASubSimpleExpression(ASubSimpleExpression node) {
-		super.outASubSimpleExpression(node);
+	public void outASubSimpleExpression(ASubSimpleExpression node) {		
 		addToPoliz(Operation.SUB());
+		super.outASubSimpleExpression(node);
 	}
 
 	@Override
-	public void outAGtComparisonExpression(AGtComparisonExpression node) {
-		super.outAGtComparisonExpression(node);
+	public void outAGtComparisonExpression(AGtComparisonExpression node) {		
 		addToPoliz(Operation.GT());
+		super.outAGtComparisonExpression(node);
 	}
 
 	@Override
-	public void outALtComparisonExpression(ALtComparisonExpression node) {
-		super.outALtComparisonExpression(node);
+	public void outALtComparisonExpression(ALtComparisonExpression node) {		
 		addToPoliz(Operation.LT());
+		super.outALtComparisonExpression(node);
 	}
 
 	@Override
-	public void outALteqComparisonExpression(ALteqComparisonExpression node) {
-		super.outALteqComparisonExpression(node);
+	public void outALteqComparisonExpression(ALteqComparisonExpression node) {		
 		addToPoliz(Operation.LE());
+		super.outALteqComparisonExpression(node);
 	}
 
 	@Override
-	public void outAGteqComparisonExpression(AGteqComparisonExpression node) {
-		super.outAGteqComparisonExpression(node);
+	public void outAGteqComparisonExpression(AGteqComparisonExpression node) {		
 		addToPoliz(Operation.GE());
+		super.outAGteqComparisonExpression(node);
 	}
 
 	@Override
-	public void outAMulSummand(AMulSummand node) {
-		super.outAMulSummand(node);
+	public void outAMulSummand(AMulSummand node) {		
 		addToPoliz(Operation.MUL());
+		super.outAMulSummand(node);
 	}
 
 	@Override
-	public void outADivSummand(ADivSummand node) {
-		super.outADivSummand(node);
+	public void outADivSummand(ADivSummand node) {		
 		addToPoliz(Operation.DIV());
+		super.outADivSummand(node);
 	}
 
 	@Override
-	public void outARemSummand(ARemSummand node) {
-		super.outARemSummand(node);		
+	public void outARemSummand(ARemSummand node) {			
 		addToPoliz(Operation.MOD());
+		super.outARemSummand(node);
 	}
 
 	@Override
-	public void outANegMultiplier(ANegMultiplier node) {
-		super.outANegMultiplier(node);
+	public void outANegMultiplier(ANegMultiplier node) {		
 		addToPoliz(Operation.NEGATION());
+		super.outANegMultiplier(node);
 	}
 
 	/**
@@ -479,25 +487,25 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	 */
 
 	@Override
-	public void outAArrElemElementalExpression(AArrElemElementalExpression node) {
-		super.outAArrElemElementalExpression(node);
+	public void outAArrElemElementalExpression(AArrElemElementalExpression node) {		
 		addToPoliz(Operation.ARRAY_ACCESS());
+		super.outAArrElemElementalExpression(node);
 	}
 
 	@Override
-	public void outACallElementalExpression(ACallElementalExpression node) {
-		super.outACallElementalExpression(node);
+	public void outACallElementalExpression(ACallElementalExpression node) {		
 		addToPoliz(new FuncPointer(node.getIdentifier()));
 		int count = calcArguments(node);
 		addToPoliz(new Literal(String.valueOf(count), TypeSymbol.T_INT));
 		addToPoliz(Operation.FUNC_CALL());
+		super.outACallElementalExpression(node);
 	}
 
 	@Override
 	public void outAIdentifierElementalExpression(
-			AIdentifierElementalExpression node) {
-		super.outAIdentifierElementalExpression(node);
+			AIdentifierElementalExpression node) {		
 		addToPoliz(new VariablePointer(node));
+		super.outAIdentifierElementalExpression(node);
 	}
 	
 	@Override
@@ -514,15 +522,15 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 
 	@Override
-	public void outAVoidFunctionBody(AVoidFunctionBody node) {
-		super.outAVoidFunctionBody(node);
+	public void outAVoidFunctionBody(AVoidFunctionBody node) {		
 		addToPoliz(Operation.EMPTY_RETURN());
+		super.outAVoidFunctionBody(node);
 	}
 
 	@Override
-	public void outANormalFunctionBody(ANormalFunctionBody node) {
-		super.outANormalFunctionBody(node);
+	public void outANormalFunctionBody(ANormalFunctionBody node) {		
 		addToPoliz(Operation.RETURN());
+		super.outANormalFunctionBody(node);
 	}
 
 	private void mark() {		
@@ -582,9 +590,9 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 		return count;
 	}	
 	@Override
-	public void outAFunctionDeclaration(AFunctionDeclaration node) {
-		super.outAFunctionDeclaration(node);
+	public void outAFunctionDeclaration(AFunctionDeclaration node) {		
 		addComment(node.toString());
+		super.outAFunctionDeclaration(node);
 	}
 
 	@Override
@@ -597,18 +605,18 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 	
 	@Override
-	public void outAFunctionClassBodyElem(AFunctionClassBodyElem node) {
-		super.outAFunctionClassBodyElem(node);
+	public void outAFunctionClassBodyElem(AFunctionClassBodyElem node) {		
 		Marker m = (Marker) blockLabelsStack.pop();
 		Deque<Translation> block = popBlock(m);
 		Marker m2 = (Marker)blockLabelsStack.pop();
 		Deque<Translation> decl = popBlock(m2);
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
 		addToPoliz(label0);
-		addToPoliz(decl);
-		addToPoliz(block);
+		copyToPoliz(decl);
+		copyToPoliz(block);
 		addToPoliz(label0.getPointer());
 		addToPoliz(Operation.FUNC_DECL());
+		super.outAFunctionClassBodyElem(node);		
 	}
 	
 	@Override
@@ -626,10 +634,10 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 		
 	@Override
-	public void outAPublicClass(APublicClass node) {
-		super.outAPublicClass(node);
+	public void outAPublicClass(APublicClass node) {		
 		String className = node.getIdentifier().toString();
 		outAClass(className);
+		super.outAPublicClass(node);
 	}
 	
 	@Override
@@ -642,10 +650,10 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 	
 	@Override
-	public void outANotPublicClass(ANotPublicClass node) {
-		super.outANotPublicClass(node);
+	public void outANotPublicClass(ANotPublicClass node) {		
 		String className = node.getIdentifier().toString();
 		outAClass(className);
+		super.outANotPublicClass(node);
 	}
 	
 	private void outAClass(String className) {
@@ -655,7 +663,7 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 		LabelDeclaration label0 = LabelDeclaration.getInstance();
 		addToPoliz(label0);		
 		addToPoliz(new Literal(className, TypeSymbol.T_STRING));
-		addToPoliz(block);		
+		copyToPoliz(block);		
 		addToPoliz(label0.getPointer());
 		addToPoliz(Operation.CLASS_DECL());
 	}
@@ -673,21 +681,21 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 
 	@Override
-	public void outAConstantClassBodyElem(AConstantClassBodyElem node) {
+	public void outAConstantClassBodyElem(AConstantClassBodyElem node) {		
+		addComment(node.toString());
 		super.outAConstantClassBodyElem(node);
-		addComment(node.toString());
 	}
 
 	@Override
-	public void outAVariableClassBodyElem(AVariableClassBodyElem node) {
+	public void outAVariableClassBodyElem(AVariableClassBodyElem node) {		
+		addComment(node.toString());
 		super.outAVariableClassBodyElem(node);
-		addComment(node.toString());
 	}
 
 	@Override
-	public void outACycleOperator(ACycleOperator node) {
-		super.outACycleOperator(node);
+	public void outACycleOperator(ACycleOperator node) {		
 		addComment(node.toString());
+		super.outACycleOperator(node);
 	}
 	
 	public LinkedList<Translation> getPolizStack() {
