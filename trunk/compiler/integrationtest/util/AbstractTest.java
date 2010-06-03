@@ -38,10 +38,8 @@ public class AbstractTest {
 			ScopeTreeBuilder b = new ScopeTreeBuilder();
 			syntaxTree.apply(b);
 			rootScope = b.getRootScope();
-			ScopeTreeChecker checker = new ScopeTreeChecker(rootScope);
-			syntaxTree.apply(checker);
 			
-			interimBuilder = new InterimRepresentationBuilder();
+			interimBuilder = new InterimRepresentationBuilder(rootScope);
 			syntaxTree.apply(interimBuilder);
 			
 			LinkedList<Translation> stack = interimBuilder.getFilteredPolizStack();
@@ -67,30 +65,6 @@ public class AbstractTest {
 		}
 	}
 	
-	protected void testExprBoundsMatch()
-	{
-		InterimRepresentationBuilder w = new InterimRepresentationBuilder();
-		syntaxTree.apply(w);
-		LinkedList<Translation> stack = w.getFilteredPolizStack();
-		Bound last = null;
-		while (!stack.isEmpty()) {
-			Translation t = stack.pop();
-			if (t instanceof Bound) {
-				if (last == null) {
-					last = (Bound) t;
-				} else {
-					if (last != t) {
-						last = null;
-					} else {
-						throw new RuntimeException("Bounds mismatch: " + last + t);
-					}
-				}
-
-			}
-
-		}
-	}
-	
 	protected void assertErrMsg(String pattern)
 	{
 		Assert.assertNotNull("Error is expected to be thrown", caught);
@@ -100,7 +74,6 @@ public class AbstractTest {
 		Assert.assertTrue("Error message doesn't matches the pattern" +
 				"\n"+str+
 				"\n"+pattern, matches);
-		testExprBoundsMatch();
 	}
 	
 	protected void assertErrMsg()
