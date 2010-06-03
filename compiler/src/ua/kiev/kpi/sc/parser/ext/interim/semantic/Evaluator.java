@@ -9,5 +9,5 @@ public interface Evaluator {
 	// the idea is to throw exception if some problem encountered
 	// stack is result of previous computations
 	// all the validated elements should be removed from stack
-	TypeSymbol validate(Deque<TypeSymbol> stack, Translation next);
+	TypeSymbol validate(Deque<Pair> stack, Translation next);
 }

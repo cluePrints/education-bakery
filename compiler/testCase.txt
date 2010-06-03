@@ -1,9 +1,29 @@
 public class Test {
-	int a;
+	final int a=0;
 	String b;
-	public void test()
-	{
-		a=true;
+	NotPublicTest v;
+	int[] arra;
+	public void testVoid() {
 		return;
+	}
+	public int test() {
+		return 2+3;
+	}
+	
+}
+class NotPublicTest {
+	Integer someVar;
+	final int ZERO=0;
+	public Integer someFunction(int[] arg) {
+		someVar = arg[0];
+		if (someVar < 0) {
+			someVar = ZERO;
+		} else {
+			someVar = 1;
+		}
+		while (true < 0) {
+			someVar = 0;
+		}
+		return someVar;
 	}
 }

@@ -137,7 +137,7 @@ public class Scope {
 
 	public VarSymbol getVisibleVarSymbol(String name) {
 		VarSymbol result = getDeclaredVarSymbol(name);	
-		if (result == null) {			
+		if (result == null && parent != null) {			
 			result = parent.getVisibleVarSymbol(name);
 		}
 		
@@ -153,6 +153,24 @@ public class Scope {
 		return result;
 	}
 	
+	public FuncSymbol getVisibleFuncSymbol(String name) {
+		FuncSymbol result = getDeclaredFuncSymbol(name);	
+		if (result == null && parent != null) {			
+			result = parent.getVisibleFuncSymbol(name);
+		}
+		
+		return result;
+	}
+	
+	public FuncSymbol getVisibleFuncSymbol(String name, final List<TypeSymbol> types) {
+		FuncSymbol result = getDeclaredFuncSymbol(name, types);	
+		if (result == null && parent != null) {			
+			result = parent.getVisibleFuncSymbol(name, types);
+		}
+		
+		return result;
+	}
+	
 	public VarSymbol getDeclaredVarSymbol(String name)
 	{
 		return getDeclaredSymbol(name, VarSymbol.class);
@@ -161,6 +179,40 @@ public class Scope {
 	public FuncSymbol getDeclaredFuncSymbol(String name)
 	{
 		return getDeclaredSymbol(name, FuncSymbol.class);
+	}
+	
+	public FuncSymbol getDeclaredFuncSymbol(final String name, final List<TypeSymbol> types)
+	{
+		Collection<Symbol> symbols = declaredIdentifiers.get(name);
+		Iterable<FuncSymbol> vars = Iterables.filter(symbols, FuncSymbol.class);
+		
+		vars = Iterables.filter(vars, new Predicate<FuncSymbol>() {
+			public boolean apply(FuncSymbol input) {
+				if (!name.equals(input.getName())) {
+					return false;
+				}
+				List<VarSymbol> params = input.getParams();
+				if (params.size() != types.size()) {
+					return false;
+				}
+				for (int i = 0; i < types.size(); i++) {
+					if (!types.get(i).getName().equals(params.get(i).getType())) {
+						return false;
+					}
+				}
+				return true;
+			}
+		});
+		
+		Iterator<FuncSymbol> vIterator = vars.iterator();
+		FuncSymbol result = null;
+		if (vIterator.hasNext()) {
+			result = vIterator.next();
+			if (vIterator.hasNext()) {
+				throw new ScopeException("Two same typed symbols found in scope: "+name+"\n"+vIterator.next()+"\n"+result);
+			}
+		}
+		return result;
 	}
 	
 	protected <T extends Symbol> T getDeclaredSymbol(final String name, Class<T> clazz) {

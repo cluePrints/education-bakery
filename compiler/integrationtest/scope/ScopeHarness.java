@@ -22,10 +22,10 @@ public class ScopeHarness extends AbstractTest{
 	}
 	
 	@Test
-	public void failWrongSignatureCallOnThis() throws Throwable
+	public void okSignatureCallOnObj() throws Throwable
 	{
-		load("failWrongSignatureCallOnThis");
-		assertErrMsg("test");
+		load("okSignatureCallOnObj");
+		assertOk();
 	}
 	
 	@Test

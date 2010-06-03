@@ -38,6 +38,7 @@ import ua.kiev.kpi.sc.parser.node.ACycleOperator;
 import ua.kiev.kpi.sc.parser.node.ADivSummand;
 import ua.kiev.kpi.sc.parser.node.AElseConditionalOperator;
 import ua.kiev.kpi.sc.parser.node.AEqOperandAnd;
+import ua.kiev.kpi.sc.parser.node.AFracLiteralNumeric;
 import ua.kiev.kpi.sc.parser.node.AFunctionClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AFunctionDeclaration;
 import ua.kiev.kpi.sc.parser.node.AGtComparisonExpression;
@@ -53,9 +54,11 @@ import ua.kiev.kpi.sc.parser.node.ANormalFunctionBody;
 import ua.kiev.kpi.sc.parser.node.ANotPublicClass;
 import ua.kiev.kpi.sc.parser.node.AOrExprExpression;
 import ua.kiev.kpi.sc.parser.node.APublicClass;
+import ua.kiev.kpi.sc.parser.node.ARealLiteralNumeric;
 import ua.kiev.kpi.sc.parser.node.ARecursiveElementalExpression;
 import ua.kiev.kpi.sc.parser.node.ARemSummand;
 import ua.kiev.kpi.sc.parser.node.ASimpleConditionalOperator;
+import ua.kiev.kpi.sc.parser.node.ASimpleExpression;
 import ua.kiev.kpi.sc.parser.node.ASimpleIf;
 import ua.kiev.kpi.sc.parser.node.ASimpleOperandOr;
 import ua.kiev.kpi.sc.parser.node.ASimpleOperator;
@@ -65,6 +68,9 @@ import ua.kiev.kpi.sc.parser.node.AVariableClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AVariableDefinition;
 import ua.kiev.kpi.sc.parser.node.AVoidFunctionBody;
 import ua.kiev.kpi.sc.parser.node.Node;
+import ua.kiev.kpi.sc.parser.node.PElementalExpression;
+import ua.kiev.kpi.sc.parser.node.PFactArgList;
+import ua.kiev.kpi.sc.parser.node.PFunctionBody;
 
 import com.google.common.collect.Lists;
 
@@ -119,9 +125,6 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	public void inAIdentifierElementalExpression(
 			AIdentifierElementalExpression node) {
 		super.inAIdentifierElementalExpression(node);
-		// TODO: check if is not reserved word
-		// TODO: equality operator
-		// TODO: 5+true
 		// TODO: &&, ||		
 	}
 
@@ -323,6 +326,18 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 	}
 
 	@Override
+	public void outAFracLiteralNumeric(AFracLiteralNumeric node) {
+		addToPoliz(new Literal(node.toString(), TypeSymbol.T_FLOAT));
+		super.outAFracLiteralNumeric(node);
+	}
+	
+	@Override
+	public void outARealLiteralNumeric(ARealLiteralNumeric node) {
+		addToPoliz(new Literal(node.toString(), TypeSymbol.T_FLOAT));
+		super.outARealLiteralNumeric(node);
+	}
+	
+	@Override
 	public void outAVariableDefinition(AVariableDefinition node) {		
 		addToPoliz(new Literal(node.getVariableName().toString(), TypeSymbol.T_STRING));
 		if (node.getVariableType() instanceof AArrayVariableType) {
@@ -354,18 +369,41 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 		}
 		addToPoliz(Operation.MOD_FINAL());
 		super.outAConstantDefinition(node);
+	}	
+	
+	@Override
+	public void inASimpleExpression(ASimpleExpression node) {
+		super.inASimpleExpression(node);
+		
+		bound(node, Bound.EXPR_START);
+	}
+
+	private void bound(Node node, Bound b) {
+		boolean add = false;
+		if (node.parent() instanceof ACycleCycleOperator) {
+			add = true;
+		}
+		if (node.parent() instanceof ASimpleIf) {
+			add = true;
+		}
+		if (node.parent() instanceof PElementalExpression) {
+			add = true;
+		}
+		if (node.parent() instanceof PFactArgList) {
+			add = false;
+		}
+		/*if (node.parent() instanceof PFunctionBody) {
+			add = true;
+		}*/
+		if (add) {
+			addToPoliz(b);
+		}
 	}
 	
 	@Override
-	public void inASimpleOperandOr(ASimpleOperandOr node) {
-		super.inASimpleOperandOr(node);
-		addToPoliz(Bound.EXPR_START);
-	}
-	
-	@Override
-	public void outASimpleOperandOr(ASimpleOperandOr node) {		
-		addToPoliz(Bound.EXPR_END);
-		super.outASimpleOperandOr(node);
+	public void outASimpleExpression(ASimpleExpression node) {
+		bound(node, Bound.EXPR_END);
+		super.outASimpleExpression(node);
 	}
 	
 	@Override
@@ -497,7 +535,7 @@ public class InterimRepresentationBuilder extends ScopeTreeChecker {
 		addToPoliz(new FuncPointer(node.getIdentifier()));
 		int count = calcArguments(node);
 		addToPoliz(new Literal(String.valueOf(count), TypeSymbol.T_INT));
-		addToPoliz(Operation.FUNC_CALL());
+		addToPoliz(Operation.FUNC_CALL(count));
 		super.outACallElementalExpression(node);
 	}
 

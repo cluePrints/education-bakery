@@ -44,7 +44,7 @@ public class AbstractTest {
 			
 			LinkedList<Translation> stack = interimBuilder.getFilteredPolizStack();
 			TypeEvaluator e = new TypeEvaluator();
-			TypeSymbol t = e.evaluatePart(stack);
+			e.evaluate(stack);
 		} catch (Throwable ex) {			
 			caught = ex;
 			/*

@@ -2,7 +2,7 @@ public class Test {
 	final int a=0;
 	NotPublicTest v;
 	public void test() {
-		b = v.someFunction(9.0, 8, 7);
+		a = v.someFunction(8, 7.1);
 		if (true) {
 		}
 		return;
@@ -10,8 +10,8 @@ public class Test {
 	
 }
 class NotPublicTest {
-	Integer someVar;
-	public Integer someFunction(int a, double b) {
+	int someVar;
+	public int someFunction(int a, double b) {
 		return someVar;
 	}
 }

@@ -6,6 +6,7 @@ import ua.kiev.kpi.sc.parser.ext.MyException;
 import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.semantic.Evaluator;
+import ua.kiev.kpi.sc.parser.ext.interim.semantic.Pair;
 
 class WideningOp extends Operation implements Evaluator {
 	protected final int args;
@@ -19,9 +20,9 @@ class WideningOp extends Operation implements Evaluator {
 		this.repr = repr;
 	}
 
-	public TypeSymbol validate(Deque<TypeSymbol> stack, Translation next) {
-		TypeSymbol first = stack.pop();
-		TypeSymbol second = stack.pop();
+	public TypeSymbol validate(Deque<Pair> stack, Translation next) {
+		TypeSymbol first = stack.pop().type;
+		TypeSymbol second = stack.pop().type;
 		checkType(first);
 		checkType(second);		
 		return transformToResult(first, second);
