@@ -6,24 +6,24 @@ import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.Translation;
 import ua.kiev.kpi.sc.parser.ext.interim.semantic.Evaluator;
 
-class AnyOp extends Operation implements Evaluator {
+class AnyType extends Operation implements Evaluator {
 	private final int args;
 	private final String repr;
-	private final TypeSymbol resultType;
+	private final TypeSymbol type;
 	
 
-	private AnyOp(int args, String repr, TypeSymbol resultType) {
+	public AnyType(int args, String repr, TypeSymbol resultType) {
 		super();
 		this.args = args;
 		this.repr = repr;
-		this.resultType = resultType;
+		this.type = resultType;
 	}
 
 	public TypeSymbol validate(Deque<TypeSymbol> stack, Translation next) {
 		for (int i=0; i<args; i++) {
 			stack.pop();
 		}
-		return resultType;
+		return type;
 	}
 	
 	@Override

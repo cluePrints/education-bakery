@@ -1,5 +1,6 @@
 package ua.kiev.kpi.sc.parser.ext.interim.repr.op;
 
+import ua.kiev.kpi.sc.parser.ext.id.TypeSymbol;
 import ua.kiev.kpi.sc.parser.ext.interim.AbstractTranslation;
 
 public class Operation extends AbstractTranslation {
@@ -15,23 +16,27 @@ public class Operation extends AbstractTranslation {
 	public static Operation MOD_FINAL() { return operation("MOD_CONST", 1);}
 	public static Operation RETURN() { return operation("RETURN", 1);}
 	public static Operation EMPTY_RETURN() { return operation("RETURN;",0);}
-	public static Operation NEGATION() { return operation("NEG", 1);}
 	
-	public static Operation ASSIGN() {return operation("ASSIGN", 2);}
+	
 	
 	public static Operation OR() { return operation("OR", 2);}
 	public static Operation AND() { return operation("AND", 2);}
-	public static Operation GT() { return operation("GT", 2);}
-	public static Operation LT() { return operation("LT", 2);}
-	public static Operation GE() { return operation("GE", 2);}
-	public static Operation LE() { return operation("LE", 2);}
-	public static Operation EQ() { return operation("EQ", 2);}
 	
-	public static Operation MUL() { return w("MUL", 2);}
-	public static Operation ADD() { return w("ADD", 2);}
-	public static Operation SUB() { return w("SUB", 2);}
-	public static Operation DIV() { return w("DIV", 2);}
-	public static Operation MOD() { return w("MOD", 2);}
+	public static Operation ASSIGN() {return a();}
+	
+	public static Operation GT() { return c("GT");}
+	public static Operation LT() { return c("LT");}
+	public static Operation GE() { return c("GE");}
+	public static Operation LE() { return c("LE");}
+	
+	public static Operation NEGATION() { return n();}
+	public static Operation EQ() { return eq();}
+	
+	public static Operation MUL() { return w("MUL");}
+	public static Operation ADD() { return w("ADD");}
+	public static Operation SUB() { return w("SUB");}
+	public static Operation DIV() { return w("DIV");}
+	public static Operation MOD() { return w("MOD");}
 	
 	
 	
@@ -40,9 +45,28 @@ public class Operation extends AbstractTranslation {
 	 */
 	public static Operation ARRAY_ACCESS() { return operation("ARR_IDX", 2);}
 	
-	private static Operation w(final String repr, final int args)
+	private static Operation a()
+	{
+		return new SingleType(2, "ASSIGN", null);
+	}
+	
+	private static Operation c(String repr) 
+	{
+		return new CompareOp(repr);
+	}
+	
+	private static Operation n()
+	{
+		return new SingleType(1, "NEG", TypeSymbol.T_BOOLEAN);
+	}
+	
+	private static Operation w(final String repr)
 	{		
-		return new WideningOp(args, repr);
+		return new WideningOp(2, repr);
+	}
+	
+	private static Operation eq() {
+		return new AnyType(2, "EQ", TypeSymbol.T_BOOLEAN);
 	}
 	
 	private static Operation operation(final String repr, final int args) {

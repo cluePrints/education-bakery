@@ -3,7 +3,7 @@ public class Test {
 	String b;
 	public void test()
 	{
-		a=true;
+		a=0;
 		return;
 	}
 }

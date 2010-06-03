@@ -26,6 +26,10 @@ public class TypeEvaluator{
 			validate(stack, c);
 		}
 		
+		while (it.hasNext() && c != Bound.EXPR_START) {
+			c = it.next();
+		}
+		
 		if (stack.size() == 1) {
 			return stack.pop();
 		} else {
@@ -52,7 +56,7 @@ public class TypeEvaluator{
 			stack.push(l.getType());
 			
 		} else if (next instanceof VariablePointer) {
-			
+			throw new RuntimeException("Var types not supported yet:(");
 		}
 	}
 }

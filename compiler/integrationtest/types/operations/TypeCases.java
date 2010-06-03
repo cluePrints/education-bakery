@@ -6,7 +6,7 @@ import util.AbstractTest;
 
 public class TypeCases extends AbstractTest{
 	@Test
-	public void okBasicTest() throws Throwable
+	public void okReturnType() throws Throwable
 	{
 		load("okReturnType");
 		assertOk();
@@ -37,14 +37,28 @@ public class TypeCases extends AbstractTest{
 	public void failNegInt() throws Throwable
 	{
 		load("failNegInt");
-		assertErrMsg();
+		assertErrMsg("boolean allowed");
+	}
+	
+	@Test
+	public void failAssignDifferent() throws Throwable
+	{
+		load("failAssignDifferent");
+		assertErrMsg("");
+	}
+	
+	@Test
+	public void okAssignSame() throws Throwable
+	{
+		load("okAssignSame");
+		assertOk();
 	}
 	
 	@Test
 	public void failCompareWithObject() throws Throwable
 	{
 		load("failCompareWithObject");
-		assertErrMsg();
+		assertErrMsg("float int");
 	}
 	
 	@Test

@@ -35,6 +35,7 @@ import ua.kiev.kpi.sc.parser.node.ACycleCycleOperator;
 import ua.kiev.kpi.sc.parser.node.ACycleOperator;
 import ua.kiev.kpi.sc.parser.node.ADivSummand;
 import ua.kiev.kpi.sc.parser.node.AElseConditionalOperator;
+import ua.kiev.kpi.sc.parser.node.AEqOperandAnd;
 import ua.kiev.kpi.sc.parser.node.AFunctionClassBodyElem;
 import ua.kiev.kpi.sc.parser.node.AFunctionDeclaration;
 import ua.kiev.kpi.sc.parser.node.AGtComparisonExpression;
@@ -45,6 +46,7 @@ import ua.kiev.kpi.sc.parser.node.ALtComparisonExpression;
 import ua.kiev.kpi.sc.parser.node.ALteqComparisonExpression;
 import ua.kiev.kpi.sc.parser.node.AMulSummand;
 import ua.kiev.kpi.sc.parser.node.ANegMultiplier;
+import ua.kiev.kpi.sc.parser.node.ANeqOperandAnd;
 import ua.kiev.kpi.sc.parser.node.ANormalFunctionBody;
 import ua.kiev.kpi.sc.parser.node.ANotPublicClass;
 import ua.kiev.kpi.sc.parser.node.AOrExprExpression;
@@ -52,8 +54,8 @@ import ua.kiev.kpi.sc.parser.node.APublicClass;
 import ua.kiev.kpi.sc.parser.node.ARecursiveElementalExpression;
 import ua.kiev.kpi.sc.parser.node.ARemSummand;
 import ua.kiev.kpi.sc.parser.node.ASimpleConditionalOperator;
-import ua.kiev.kpi.sc.parser.node.ASimpleExpression;
 import ua.kiev.kpi.sc.parser.node.ASimpleIf;
+import ua.kiev.kpi.sc.parser.node.ASimpleOperandOr;
 import ua.kiev.kpi.sc.parser.node.ASimpleOperator;
 import ua.kiev.kpi.sc.parser.node.ASingleBlock;
 import ua.kiev.kpi.sc.parser.node.ASubSimpleExpression;
@@ -87,7 +89,7 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder();
-		Iterator<Translation> it = polizStack.descendingIterator();
+		Iterator<Translation> it = getPolizStack().descendingIterator();
 		while (it.hasNext()) {			
 			Translation t = it.next();
 			String comment = null;
@@ -330,19 +332,29 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	}
 	
 	@Override
-	public void inASimpleExpression(ASimpleExpression node) {
-		polizStack.push(Bound.EXPR_START);
+	public void inASimpleOperandOr(ASimpleOperandOr node) {
+		addToPoliz(Bound.EXPR_START);
 	}
 	
 	@Override
-	public void outASimpleExpression(ASimpleExpression node) {
-		polizStack.push(Bound.EXPR_END);
+	public void outASimpleOperandOr(ASimpleOperandOr node) {
+		addToPoliz(Bound.EXPR_END);
+	}
+	
+	@Override
+	public void inASimpleOperator(ASimpleOperator node) {
+		addToPoliz(Bound.EXPR_START);
+	}	
+	
+	@Override
+	public void outASimpleOperator(ASimpleOperator node) {
+		addToPoliz(Bound.EXPR_END);
 	}
 	
 	@Override
 	public void inAAssignOperator(AAssignOperator node) {
-		polizStack.push(Bound.EXPR_START);
 		mark();
+		addToPoliz(Bound.EXPR_START);
 	}
 	
 	@Override
@@ -350,8 +362,20 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 		addComment(node.toString());
 		addToPoliz(new VariablePointer(node.getVariableName()));
 		addToPoliz(Operation.ASSIGN());
-		polizStack.push(Bound.EXPR_END);
+		addToPoliz(Bound.EXPR_END);
 	}
+	
+	@Override
+	public void outAEqOperandAnd(AEqOperandAnd node) {
+		addToPoliz(Operation.EQ());
+	}
+	
+	@Override
+	public void outANeqOperandAnd(ANeqOperandAnd node) {
+		addToPoliz(Operation.EQ());
+		addToPoliz(Operation.NEGATION());
+	}
+
 
 	@Override
 	public void outAOrExprExpression(AOrExprExpression node) {
@@ -609,13 +633,20 @@ public class InterimRepresentationBuilder extends DepthFirstAdapter {
 	}
 	
 	public LinkedList<Translation> getPolizStack() {
+		//return getFilteredPolizStack();
 		return Lists.newLinkedList(polizStack);
 	}
 	
 	public LinkedList<Translation> getFilteredPolizStack() {
 		LinkedList<Translation> result = Lists.newLinkedList();
+		Bound bound = null;
 		for (Translation t : polizStack) {
-			if (!(t instanceof InvisibleTranslation)) {
+			if (t instanceof Bound) {
+				if (bound == null || bound != t){
+					bound = (Bound) t;
+					result.add(bound);
+				}
+			} else if (!(t instanceof InvisibleTranslation)) {
 				result.add(t);
 			}
 		}

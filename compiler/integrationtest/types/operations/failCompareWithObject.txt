@@ -1,8 +1,7 @@
 public class Test {
-	String o;
 	public void test()
 	{
-		o >= true;
+		3 >= true;
 		return;
 	}
 }
